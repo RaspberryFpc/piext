@@ -19,6 +19,20 @@ The first image created in an image folder automatically becomes a **Base Image*
 * Image filenames are generated automatically
 * Images are stored as `.zst` files
 
+
+## Installation
+
+PiExt is distributed as a Debian package (`.deb`) for Raspberry Pi systems.
+Download the latest release from the **Releases** section of this repository and install the package with:
+
+```bash
+sudo apt install ./piext.deb
+```
+
+After installation, PiExt can be started from the application menu.
+PiExt requires appropriate permissions to access source and target partitions.
+
+
 ## Source and Target Partitions
 
 For image creation, a **Source Partition** must be selected.
