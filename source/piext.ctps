@@ -26,10 +26,11 @@
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
         <UsageCount Value="142"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="61"/>
-        <CursorPos X="16" Y="72"/>
+        <CursorPos X="35" Y="71"/>
       </Unit>
       <Unit>
         <Filename Value="ext4bitmap.pas"/>
@@ -119,11 +120,10 @@
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
         <UsageCount Value="68"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="8"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="109"/>
-        <CursorPos X="54" Y="117"/>
+        <TopLine Value="83"/>
+        <CursorPos X="120" Y="119"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/local/codetyphon/typhon/lcl/include/control.inc"/>
@@ -348,7 +348,7 @@
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="72" Column="16" TopLine="61"/>
+        <Caret Line="72" Column="20" TopLine="61"/>
       </Position>
     </JumpHistory>
     <RunParams>

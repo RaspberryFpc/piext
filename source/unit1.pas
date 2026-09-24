@@ -69,7 +69,7 @@ var
   Form1: TForm1;
 
   const
-  version = 'v1.0.0';
+  version = 'v1.0.1';
 
 
 implementation
