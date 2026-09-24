@@ -9,11 +9,11 @@
         <FRMtype Value="0"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
-        <UsageCount Value="140"/>
-        <EditorIndex Value="11"/>
+        <UsageCount Value="142"/>
+        <EditorIndex Value="14"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="8"/>
-        <CursorPos X="11" Y="16"/>
+        <TopLine Value="16"/>
+        <CursorPos X="39" Y="27"/>
       </Unit>
       <Unit>
         <Filename Value="unit1.pas"/>
@@ -25,18 +25,18 @@
         <UnitName Value="Unit1"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-        <UsageCount Value="140"/>
+        <UsageCount Value="142"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="646"/>
-        <CursorPos X="9" Y="654"/>
+        <TopLine Value="61"/>
+        <CursorPos X="16" Y="72"/>
       </Unit>
       <Unit>
         <Filename Value="ext4bitmap.pas"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
-        <UsageCount Value="136"/>
-        <EditorIndex Value="10"/>
+        <UsageCount Value="138"/>
+        <EditorIndex Value="13"/>
         <WindowIndex Value="0"/>
         <TopLine Value="166"/>
         <CursorPos X="24" Y="178"/>
@@ -46,8 +46,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Zstd"/>
         <Loaded Value="True"/>
-        <UsageCount Value="133"/>
-        <EditorIndex Value="9"/>
+        <UsageCount Value="135"/>
+        <EditorIndex Value="12"/>
         <WindowIndex Value="0"/>
         <TopLine Value="55"/>
         <CursorPos X="3" Y="108"/>
@@ -57,8 +57,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Imageutils"/>
         <Loaded Value="True"/>
-        <UsageCount Value="130"/>
-        <EditorIndex Value="8"/>
+        <UsageCount Value="132"/>
+        <EditorIndex Value="11"/>
         <WindowIndex Value="0"/>
         <TopLine Value="34"/>
         <CursorPos X="48" Y="46"/>
@@ -68,8 +68,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Language"/>
         <Loaded Value="True"/>
-        <UsageCount Value="44"/>
-        <EditorIndex Value="6"/>
+        <UsageCount Value="46"/>
+        <EditorIndex Value="7"/>
         <WindowIndex Value="0"/>
         <TopLine Value="135"/>
         <CursorPos X="16" Y="129"/>
@@ -84,23 +84,26 @@
         <UnitName Value="Unit2"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-        <UsageCount Value="39"/>
-        <EditorIndex Value="3"/>
+        <UsageCount Value="41"/>
+        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <CursorPos X="44" Y="35"/>
+        <TopLine Value="10"/>
+        <CursorPos X="35" Y="14"/>
       </Unit>
       <Unit>
         <Filename Value="updater.pas"/>
         <FRMtype Value="200"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form5"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <Loaded Value="True"/>
-        <UsageCount Value="23"/>
-        <IsVisibleTab Value="True"/>
+        <LoadedDesigner Value="True"/>
+        <UsageCount Value="25"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="260"/>
-        <CursorPos Y="263"/>
+        <TopLine Value="259"/>
+        <CursorPos Y="267"/>
       </Unit>
       <Unit>
         <Filename Value="../piextdiffimager/udiskiecontrol.pas"/>
@@ -115,11 +118,12 @@
         <Filename Value="rawimage.pas"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="66"/>
-        <EditorIndex Value="7"/>
+        <UsageCount Value="68"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="8"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="110"/>
-        <CursorPos X="37" Y="116"/>
+        <TopLine Value="109"/>
+        <CursorPos X="54" Y="117"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/local/codetyphon/typhon/lcl/include/control.inc"/>
@@ -168,8 +172,8 @@
         <Filename Value="piext_de.html"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="19"/>
-        <EditorIndex Value="5"/>
+        <UsageCount Value="21"/>
+        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
         <TopLine Value="385"/>
         <CursorPos X="53" Y="399"/>
@@ -178,8 +182,8 @@
         <Filename Value="piext_en.html"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="19"/>
-        <EditorIndex Value="4"/>
+        <UsageCount Value="21"/>
+        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
         <CursorPos X="15" Y="2"/>
       </Unit>
@@ -187,136 +191,164 @@
         <Filename Value="exebash.pas"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="23"/>
+        <TopLine Value="13"/>
         <CursorPos X="15" Y="24"/>
         <Bookmarks Count="1">
           <Item0 Left="1" Top="1" ID="6"/>
         </Bookmarks>
       </Unit>
+      <Unit>
+        <Filename Value="updater.frm"/>
+        <FRMtype Value="0"/>
+        <Loaded Value="True"/>
+        <UsageCount Value="12"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="20" Y="5"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/include/customform.inc"/>
+        <FRMtype Value="0"/>
+        <Loaded Value="True"/>
+        <UsageCount Value="11"/>
+        <EditorIndex Value="9"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="76"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/forms.pp"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="Forms"/>
+        <Loaded Value="True"/>
+        <UsageCount Value="11"/>
+        <EditorIndex Value="10"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2410"/>
+        <CursorPos X="59" Y="2421"/>
+      </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
         <Filename Value="updater.pas"/>
-        <Caret Line="286" Column="32" TopLine="267"/>
+        <Caret Line="283" Column="31" TopLine="277"/>
       </Position>
       <Position>
         <Filename Value="updater.pas"/>
-        <Caret Line="149" Column="13" TopLine="140"/>
+        <Caret Line="272" Column="5" TopLine="259"/>
+      </Position>
+      <Position>
+        <Filename Value="rawimage.pas"/>
+        <Caret Line="119" Column="63" TopLine="110"/>
       </Position>
       <Position>
         <Filename Value="updater.pas"/>
-        <Caret Line="145" Column="91" TopLine="140"/>
+        <Caret Line="49" Column="60" TopLine="47"/>
       </Position>
       <Position>
         <Filename Value="updater.pas"/>
-        <Caret Line="278" Column="51" TopLine="268"/>
+        <Caret Line="54" Column="31" TopLine="49"/>
       </Position>
       <Position>
         <Filename Value="updater.pas"/>
-        <Caret Line="286" Column="72" TopLine="267"/>
+        <Caret Line="51" Column="4" TopLine="47"/>
       </Position>
       <Position>
         <Filename Value="updater.pas"/>
-        <Caret Line="274" Column="43" TopLine="264"/>
+        <Caret Line="236" Column="33" TopLine="229"/>
       </Position>
       <Position>
         <Filename Value="updater.pas"/>
-        <Caret Line="132" Column="3" TopLine="125"/>
+        <Caret Line="28" Column="6" TopLine="22"/>
       </Position>
       <Position>
         <Filename Value="updater.pas"/>
-        <Caret Line="48" Column="56" TopLine="37"/>
+        <Caret Line="238" Column="16" TopLine="52"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="55" TopLine="53"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="262" Column="25" TopLine="255"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="257" TopLine="255"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="60" TopLine="55"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="59" TopLine="55"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="265" TopLine="258"/>
+      </Position>
+      <Position>
+        <Filename Value="piext.ppr"/>
+        <Caret Line="27" Column="39" TopLine="16"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="55" TopLine="48"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="258" TopLine="251"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="264" TopLine="253"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="291" Column="38" TopLine="286"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="224" Column="17" TopLine="218"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="50" TopLine="42"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="273" Column="58" TopLine="261"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="269" Column="17" TopLine="262"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="282" Column="37" TopLine="270"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="270" TopLine="270"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="265" TopLine="257"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="265" TopLine="259"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="171" Column="39" TopLine="268"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="173" Column="39" TopLine="173"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="655" TopLine="649"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="652" Column="12" TopLine="645"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="31" Column="44" TopLine="51"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="264" Column="28" TopLine="254"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="69" Column="10" TopLine="62"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="259" Column="26" TopLine="247"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="31" Column="26" TopLine="24"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="259" Column="26" TopLine="247"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="264" Column="30" TopLine="252"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="50" Column="25" TopLine="44"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="652" Column="15" TopLine="645"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="31" Column="38" TopLine="27"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="650" Column="24" TopLine="645"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="57" Column="4" TopLine="50"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="653" Column="40" TopLine="646"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="56" Column="4" TopLine="50"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="58" Column="4" TopLine="51"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="654" Column="9" TopLine="646"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="31" Column="26" TopLine="24"/>
-      </Position>
-      <Position>
-        <Filename Value="updater.pas"/>
-        <Caret Line="256" Column="26" TopLine="259"/>
+        <Caret Line="72" Column="16" TopLine="61"/>
       </Position>
     </JumpHistory>
     <RunParams>

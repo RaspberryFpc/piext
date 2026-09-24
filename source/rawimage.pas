@@ -747,9 +747,7 @@ var
         sdd2 -> sdd
         vda3 -> vda
     }
-    while (P > 0) and
-          (DevName[P] >= '0') and
-          (DevName[P] <= '9') do
+    while (P > 0) and (DevName[P] >= '0') and (DevName[P] <= '9') do
       Dec(P);
 
     if P <= 0 then
@@ -759,8 +757,7 @@ var
         mmcblk0p2 -> mmcblk0
         nvme0n1p2 -> nvme0n1
     }
-    if (P > 0) and
-       (DevName[P] = 'p') then
+    if (P > 0) and (DevName[P] = 'p') then
       Dec(P);
 
     if P <= 0 then
@@ -800,7 +797,7 @@ var
 
         Move(
           BaseOutBuffer[BaseZOutPos],
-          PByte(P)[Done],
+          pbyte(P)[Done],
           CopyCount);
 
         Inc(BaseZOutPos, CopyCount);
@@ -818,17 +815,12 @@ var
 
       if BaseZIn.pos >= BaseZIn.size then
       begin
-        N := fpRead(
-          BaseFD,
-          BaseInBuffer[0],
-          Length(BaseInBuffer));
+        N := fpRead(BaseFD, BaseInBuffer[0], Length(BaseInBuffer));
 
         if N < 0 then
         begin
           LogMsg(
-            Format(
-              _(TXT_BASE_READ_ERROR),
-              [fpGetErrno]),
+            Format(_(TXT_BASE_READ_ERROR), [fpGetErrno]),
             OnLog);
           Exit;
         end;
@@ -850,16 +842,12 @@ var
       BaseZOut.size := Length(BaseOutBuffer);
       BaseZOut.pos := 0;
 
-      BaseZRet := ZSTD_decompressStream(
-        BaseDctx,
-        BaseZOut,
-        BaseZIn);
+      BaseZRet := ZSTD_decompressStream(BaseDctx, BaseZOut, BaseZIn);
 
       if ZSTD_isError(BaseZRet) <> 0 then
       begin
         LogMsg(
-          _(TXT_ZSTD_COMPRESSION_ERROR) + ': ' +
-          StrPas(ZSTD_getErrorName(BaseZRet)),
+          _(TXT_ZSTD_COMPRESSION_ERROR) + ': ' + StrPas(ZSTD_getErrorName(BaseZRet)),
           OnLog);
         Exit;
       end;
@@ -901,7 +889,7 @@ var
 
         Move(
           DiffOutBuffer[DiffZOutPos],
-          PByte(P)[Done],
+          pbyte(P)[Done],
           CopyCount);
 
         Inc(DiffZOutPos, CopyCount);
@@ -919,17 +907,12 @@ var
 
       if DiffZIn.pos >= DiffZIn.size then
       begin
-        N := fpRead(
-          DiffFD,
-          DiffInBuffer[0],
-          Length(DiffInBuffer));
+        N := fpRead(DiffFD, DiffInBuffer[0], Length(DiffInBuffer));
 
         if N < 0 then
         begin
           LogMsg(
-            Format(
-              _(TXT_DIFF_READ_ERROR),
-              [fpGetErrno]),
+            Format(_(TXT_DIFF_READ_ERROR), [fpGetErrno]),
             OnLog);
           Exit;
         end;
@@ -951,16 +934,12 @@ var
       DiffZOut.size := Length(DiffOutBuffer);
       DiffZOut.pos := 0;
 
-      DiffZRet := ZSTD_decompressStream(
-        DiffDctx,
-        DiffZOut,
-        DiffZIn);
+      DiffZRet := ZSTD_decompressStream(DiffDctx, DiffZOut, DiffZIn);
 
       if ZSTD_isError(DiffZRet) <> 0 then
       begin
         LogMsg(
-          _(TXT_DIFF_ZSTD_ERROR) + ': ' +
-          StrPas(ZSTD_getErrorName(DiffZRet)),
+          _(TXT_DIFF_ZSTD_ERROR) + ': ' + StrPas(ZSTD_getErrorName(DiffZRet)),
           OnLog);
         Exit;
       end;
@@ -985,9 +964,7 @@ var
   end;
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 begin
   Result := False;
 
@@ -1012,9 +989,7 @@ begin
     { Größe der Zielpartition ermitteln                            }
     { ------------------------------------------------------------- }
 
-    if not GetDeviceSize(
-      Device,
-      DeviceSize) then
+    if not GetDeviceSize(Device, DeviceSize) then
     begin
       LogMsg(
         _(TXT_DEVICE_SIZE_ERROR),
@@ -1026,11 +1001,7 @@ begin
     { Zielpartition und übergeordnetes Laufwerk bestimmen           }
     { ------------------------------------------------------------- }
 
-    if not GetPartitionTarget(
-      Device,
-      TargetDrive,
-      TargetOffset,
-      TargetPartitionSize) then
+    if not GetPartitionTarget(Device, TargetDrive, TargetOffset, TargetPartitionSize) then
     begin
       LogMsg(
         _(TXT_PARTITION_TARGET_ERROR),
@@ -1039,27 +1010,19 @@ begin
     end;
 
     LogMsg(
-      Format(
-        _(TXT_RESTORE_TARGET_PARTITION),
-        [Device]),
+      Format(_(TXT_RESTORE_TARGET_PARTITION), [Device]),
       OnLog);
 
     LogMsg(
-      Format(
-        _(TXT_TARGET_DRIVE),
-        [TargetDrive]),
+      Format(_(TXT_TARGET_DRIVE), [TargetDrive]),
       OnLog);
 
     LogMsg(
-      Format(
-        _(TXT_PARTITION_START),
-        [TargetOffset]),
+      Format(_(TXT_PARTITION_START), [TargetOffset]),
       OnLog);
 
     LogMsg(
-      Format(
-        _(TXT_PARTITION_SIZE_INFO),
-        [TargetPartitionSize]),
+      Format(_(TXT_PARTITION_SIZE_INFO), [TargetPartitionSize]),
       OnLog);
 
     { ------------------------------------------------------------- }
@@ -1069,9 +1032,7 @@ begin
     if TargetPartitionSize <> DeviceSize then
     begin
       LogMsg(
-        Format(
-          _(TXT_TARGET_PARTITION_SIZE_ERROR),
-          [TargetPartitionSize, DeviceSize]),
+        Format(_(TXT_TARGET_PARTITION_SIZE_ERROR), [TargetPartitionSize, DeviceSize]),
         OnLog);
       Exit;
     end;
@@ -1080,30 +1041,21 @@ begin
     { Physisches Ziellaufwerk öffnen                                }
     { ------------------------------------------------------------- }
 
-    DevFD := fpOpen(
-      PChar(TargetDrive),
-      O_WRONLY);
+    DevFD := fpOpen(PChar(TargetDrive), O_WRONLY);
 
     if DevFD < 0 then
     begin
       LogMsg(
-        Format(
-          _(TXT_TARGET_DRIVE_OPEN_ERROR),
-          [fpGetErrno]),
+        Format(_(TXT_TARGET_DRIVE_OPEN_ERROR), [fpGetErrno]),
         OnLog);
       Exit;
     end;
 
     { Auf Beginn der Zielpartition positionieren }
-    if fpLseek(
-      DevFD,
-      TargetOffset,
-      SEEK_SET) < 0 then
+    if fpLseek(DevFD, TargetOffset, SEEK_SET) < 0 then
     begin
       LogMsg(
-        Format(
-          _(TXT_TARGET_POSITION_ERROR),
-          [fpGetErrno]),
+        Format(_(TXT_TARGET_POSITION_ERROR), [fpGetErrno]),
         OnLog);
       Exit;
     end;
@@ -1112,16 +1064,12 @@ begin
     { Basisimage öffnen                                              }
     { ------------------------------------------------------------- }
 
-    BaseFD := fpOpen(
-      PChar(BaseImage),
-      O_RDONLY);
+    BaseFD := fpOpen(PChar(BaseImage), O_RDONLY);
 
     if BaseFD < 0 then
     begin
       LogMsg(
-        Format(
-          _(TXT_BASE_IMAGE_OPEN_ERROR),
-          [fpGetErrno]),
+        Format(_(TXT_BASE_IMAGE_OPEN_ERROR), [fpGetErrno]),
         OnLog);
       Exit;
     end;
@@ -1130,16 +1078,12 @@ begin
     { Differenzimage öffnen                                          }
     { ------------------------------------------------------------- }
 
-    DiffFD := fpOpen(
-      PChar(DiffImage),
-      O_RDONLY);
+    DiffFD := fpOpen(PChar(DiffImage), O_RDONLY);
 
     if DiffFD < 0 then
     begin
       LogMsg(
-        Format(
-          _(TXT_DIFF_IMAGE_CREATE_ERROR),
-          [fpGetErrno]),
+        Format(_(TXT_DIFF_IMAGE_CREATE_ERROR), [fpGetErrno]),
         OnLog);
       Exit;
     end;
@@ -1148,16 +1092,13 @@ begin
     { Basisimage Header                                               }
     { ------------------------------------------------------------- }
 
-    if not ReadExact(BaseFD,BaseHeader,SizeOf(BaseHeader),ErrorCode) then
+    if not ReadExact(BaseFD, BaseHeader, SizeOf(BaseHeader), ErrorCode) then
     begin
-      LogMsg( _(TXT_BASE_IMAGE_HEADER_ERROR),OnLog);
+      LogMsg(_(TXT_BASE_IMAGE_HEADER_ERROR), OnLog);
       Exit;
     end;
 
-    if not CompareMem(
-      @BaseHeader.Magic[0],
-      @BASE_MAGIC[1],
-      8) then
+    if not CompareMem(@BaseHeader.Magic[0], @BASE_MAGIC[1], 8) then
     begin
       LogMsg(
         _(TXT_INVALID_BASE_IMAGE),
@@ -1220,11 +1161,7 @@ begin
       SizeInt(BitmapSize));
 
     if BitmapSize > 0 then
-      if not ReadExact(
-        BaseFD,
-        BaseBitmap[0],
-        SizeInt(BitmapSize),
-        ErrorCode) then
+      if not ReadExact(BaseFD, BaseBitmap[0], SizeInt(BitmapSize), ErrorCode) then
       begin
         LogMsg(
           _(TXT_BASE_BITMAP_READ_ERROR),
@@ -1244,11 +1181,7 @@ begin
     { Diff Header                                                     }
     { ------------------------------------------------------------- }
 
-    if not ReadExact(
-      DiffFD,
-      DiffHeader,
-      SizeOf(DiffHeader),
-      ErrorCode) then
+    if not ReadExact(DiffFD, DiffHeader, SizeOf(DiffHeader), ErrorCode) then
     begin
       LogMsg(
         _(TXT_DIFF_HEADER_READ_ERROR),
@@ -1256,10 +1189,7 @@ begin
       Exit;
     end;
 
-    if not CompareMem(
-      @DiffHeader.Magic[0],
-      @DIFF_MAGIC[1],
-      8) then
+    if not CompareMem(@DiffHeader.Magic[0], @DIFF_MAGIC[1], 8) then
     begin
       LogMsg(
         _(TXT_INVALID_DIFF_IMAGE),
@@ -1285,13 +1215,13 @@ begin
 
     if DiffHeader.SectorSize <> SectorSize then
     begin
-      LogMsg(_(TXT_SECTOR_SIZE_MISMATCH),OnLog);
+      LogMsg(_(TXT_SECTOR_SIZE_MISMATCH), OnLog);
       Exit;
     end;
 
     if DiffHeader.SectorCount <> SectorCount then
     begin
-      LogMsg(_(TXT_SECTOR_COUNT_ERROR),OnLog);
+      LogMsg(_(TXT_SECTOR_COUNT_ERROR), OnLog);
       Exit;
     end;
 
@@ -1299,18 +1229,18 @@ begin
     { Diff-Bitmap lesen                                              }
     { ------------------------------------------------------------- }
 
-    SetLength(DiffBitmap,SizeInt(BitmapSize));
+    SetLength(DiffBitmap, SizeInt(BitmapSize));
 
     if BitmapSize > 0 then
-      if not ReadExact(DiffFD,DiffBitmap[0],SizeInt(BitmapSize),ErrorCode) then
+      if not ReadExact(DiffFD, DiffBitmap[0], SizeInt(BitmapSize), ErrorCode) then
       begin
-        LogMsg( _(TXT_DIFF_BITMAP_READ_ERROR), OnLog);
+        LogMsg(_(TXT_DIFF_BITMAP_READ_ERROR), OnLog);
         Exit;
       end;
 
     DiffSectorCount := CountSetBits(DiffBitmap);
 
-    LogMsg(Format(_(TXT_DIFF_INFO),[DiffSectorCount]),OnLog);
+    LogMsg(Format(_(TXT_DIFF_INFO), [DiffSectorCount]), OnLog);
 
     { ------------------------------------------------------------- }
     { ZSTD Decoder                                                    }
@@ -1320,7 +1250,7 @@ begin
 
     if BaseDctx = nil then
     begin
-      LogMsg(_(TXT_BASE_DECODER_ERROR),OnLog);
+      LogMsg(_(TXT_BASE_DECODER_ERROR), OnLog);
       Exit;
     end;
 
@@ -1328,7 +1258,7 @@ begin
 
     if DiffDctx = nil then
     begin
-      LogMsg(_(TXT_DIFF_DECODER_ERROR),OnLog);
+      LogMsg(_(TXT_DIFF_DECODER_ERROR), OnLog);
       Exit;
     end;
 
@@ -1336,15 +1266,15 @@ begin
     { Buffer                                                           }
     { ------------------------------------------------------------- }
 
-    SetLength( RestoreBuffer,RESTORE_BLOCK_SIZE);
-    SetLength(  BaseInBuffer,ZSTD_BUFFER_SIZE);
-     SetLength( BaseOutBuffer,ZSTD_BUFFER_SIZE);
-      SetLength(DiffInBuffer,ZSTD_BUFFER_SIZE);
-    SetLength(DiffOutBuffer,ZSTD_BUFFER_SIZE);
-    FillChar(BaseZIn, SizeOf(BaseZIn),0);
-    FillChar(BaseZOut,SizeOf(BaseZOut),0);
+    SetLength(RestoreBuffer, RESTORE_BLOCK_SIZE);
+    SetLength(BaseInBuffer, ZSTD_BUFFER_SIZE);
+    SetLength(BaseOutBuffer, ZSTD_BUFFER_SIZE);
+    SetLength(DiffInBuffer, ZSTD_BUFFER_SIZE);
+    SetLength(DiffOutBuffer, ZSTD_BUFFER_SIZE);
+    FillChar(BaseZIn, SizeOf(BaseZIn), 0);
+    FillChar(BaseZOut, SizeOf(BaseZOut), 0);
     FillChar(DiffZIn, SizeOf(DiffZIn), 0);
-     FillChar(DiffZOut, SizeOf(DiffZOut),0);
+    FillChar(DiffZOut, SizeOf(DiffZOut), 0);
 
     BaseZOutPos := 0;
     BaseZOutSize := 0;
@@ -1370,7 +1300,7 @@ begin
 
       BlockSectors := BlockSize div SectorSize;
 
-      FillChar(RestoreBuffer[0],SizeInt(BlockSize),0);
+      FillChar(RestoreBuffer[0], SizeInt(BlockSize), 0);
 
       for Sector := 0 to BlockSectors - 1 do
       begin
@@ -1378,16 +1308,16 @@ begin
           uint64(TargetPos) div SectorSize + Sector;
 
         { Basisdaten }
-        if IsSet(BaseBitmap,TargetSector) then
+        if IsSet(BaseBitmap, TargetSector) then
         begin
-          if not ReadBaseBytes(@RestoreBuffer[Sector * uint64(SectorSize)],SectorSize) then
+          if not ReadBaseBytes(@RestoreBuffer[Sector * uint64(SectorSize)], SectorSize) then
             Exit;
         end;
 
         { Diffdaten überschreiben Basisdaten }
-        if IsSet(DiffBitmap,TargetSector) then
+        if IsSet(DiffBitmap, TargetSector) then
         begin
-          if not ReadDiffBytes(@RestoreBuffer[Sector * uint64(SectorSize)],SectorSize) then
+          if not ReadDiffBytes(@RestoreBuffer[Sector * uint64(SectorSize)], SectorSize) then
             Exit;
         end;
       end;
@@ -1397,33 +1327,32 @@ begin
       { Der Dateioffset steht bereits auf TargetOffset + TargetPos. }
       { ----------------------------------------------------------- }
 
-      if not WriteExact(DevFD,RestoreBuffer[0],BlockSize,ErrorCode) then
+      if not WriteExact(DevFD, RestoreBuffer[0], BlockSize, ErrorCode) then
       begin
-        LogMsg(Format(_(TXT_RESTORE_ERROR_MESSAGE),[Format('errno=%d', [ErrorCode])]),OnLog);
+        LogMsg(Format(_(TXT_RESTORE_ERROR_MESSAGE), [Format('errno=%d', [ErrorCode])]), OnLog);
         Exit;
       end;
 
-      Inc(TargetPos,BlockSize);
+      Inc(TargetPos, BlockSize);
 
       RawImageBytesProcessed := TargetPos;
 
-      if Assigned(OnProgress) then OnProgress(nil,TargetPos,DeviceSize);
+      if Assigned(OnProgress) then OnProgress(nil, TargetPos, DeviceSize);
     end;
 
     { ------------------------------------------------------------- }
     { Datenmengen prüfen                                             }
     { ------------------------------------------------------------- }
 
-    if BaseBytesProduced <>
-      int64(BaseHeader.UsedSectors) * SectorSize then
+    if BaseBytesProduced <> int64(BaseHeader.UsedSectors) * SectorSize then
     begin
-      LogMsg(_(TXT_BASE_DATA_COUNT_ERROR),OnLog);
+      LogMsg(_(TXT_BASE_DATA_COUNT_ERROR), OnLog);
       Exit;
     end;
 
     if DiffBytesRead <> int64(DiffSectorCount) * SectorSize then
     begin
-      LogMsg(_(TXT_DIFF_DATA_COUNT_ERROR),OnLog);
+      LogMsg(_(TXT_DIFF_DATA_COUNT_ERROR), OnLog);
       Exit;
     end;
 
@@ -1433,22 +1362,22 @@ begin
 
     if fpFSync(DevFD) <> 0 then
     begin
-      LogMsg(Format(_(TXT_FSYNC_ERROR),[fpGetErrno]),OnLog);
+      LogMsg(Format(_(TXT_FSYNC_ERROR), [fpGetErrno]), OnLog);
       Exit;
     end;
 
-    LogMsg(_(TXT_RESTORE_SUCCESS),OnLog);
+    LogMsg(_(TXT_RESTORE_SUCCESS), OnLog);
 
-    LogMsg(Format(_(TXT_WRITTEN_DATA),[DeviceSize / 1024 / 1024 / 1024]),OnLog);
+    LogMsg(Format(_(TXT_WRITTEN_DATA), [DeviceSize / 1024 / 1024 / 1024]), OnLog);
 
-    LogMsg(Format(_(TXT_RESTORE_TARGET), [TargetDrive, TargetOffset]),OnLog);
+    LogMsg(Format(_(TXT_RESTORE_TARGET), [TargetDrive, TargetOffset]), OnLog);
 
     Result := True;
 
   except
     on E: Exception do
     begin
-      LogMsg(Format( _(TXT_RESTORE_ERROR_MESSAGE), [E.Message]),OnLog);
+      LogMsg(Format(_(TXT_RESTORE_ERROR_MESSAGE), [E.Message]), OnLog);
       Result := False;
     end;
   end;

@@ -5,6 +5,7 @@ object Form1: TForm1
   Width = 489
   AlphaBlend = True
   Anchors = [akTop]
+  Caption = 'PiExt'
   ClientHeight = 367
   ClientWidth = 489
   Color = 16777168

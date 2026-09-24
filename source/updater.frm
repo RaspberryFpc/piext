@@ -4,12 +4,12 @@ object Form5: TForm5
   Top = 101
   Width = 306
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsToolWindow
+  BorderStyle = bsSizeToolWin
   Caption = 'pibackup updater'
   ClientHeight = 138
   ClientWidth = 306
   Position = poMainFormCenter
-  LCLVersion = '8.9'
+  LCLVersion = '9.0'
   object Button1: TButton
     Left = 16
     Height = 25

@@ -78,7 +78,9 @@
         <Filename Value="updater.pas"/>
         <FRMtype Value="200"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form5"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
       </Unit>
     </Units>
   </ProjectOptions>

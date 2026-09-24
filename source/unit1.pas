@@ -69,7 +69,7 @@ var
   Form1: TForm1;
 
   const
-  version = 'v0.0.1';
+  version = 'v1.0.0';
 
 
 implementation
@@ -652,6 +652,7 @@ procedure TForm1.Timer1Timer(Sender: TObject);
 begin
    timer1.Enabled := False;
    CheckForUpdates(memo1);
+
 end;
 
 

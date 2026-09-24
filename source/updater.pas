@@ -1,4 +1,4 @@
-unit updater;
+ unit updater;
 
 {$mode objfpc}{$H+}
 
@@ -7,6 +7,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Process, exebash, fileutil;
+
+procedure CheckForUpdates(memo: Tmemo);
 
 type
 
@@ -23,12 +25,11 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+   // procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
   end;
 
 var
   Form5: TForm5;
-
-procedure CheckForUpdates(memo: Tmemo);
 
 implementation
 
@@ -38,33 +39,15 @@ uses
   fpjson, jsonparser, unit1;
 
 const
-  PROG=  'piext';
-  REPO = 'RaspberryFpc/'+PROG;
-  NEWDEB =      '/var/lib/'+PROG+'/'+PROG+'_new.deb';
-  LASTGOODDEB = '/var/lib/'+PROG+'/'+PROG+'_last_good.deb';
-
-
-
+  PROG = 'piext';
+  REPO = 'RaspberryFpc/' + PROG;
+  NEWDEB = '/var/lib/' + PROG + '/' + PROG + '_new.deb';
+  LASTGOODDEB = '/var/lib/' + PROG + '/' + PROG + '_last_good.deb';
 
 var
   RemoteVersion: string;
 
-{ TForm5 }
 
-procedure TForm5.Button1Click(Sender: TObject);
-begin
-  ModalResult := 1;
-end;
-
-procedure TForm5.Button2Click(Sender: TObject);
-begin
-  ModalResult := 2;
-end;
-
-procedure TForm5.Button3Click(Sender: TObject);
-begin
-  ModalResult := 3;
-end;
 
 function GetRemoteVersion: string;
 var
@@ -74,8 +57,8 @@ var
 begin
   Result := '';
 
-  if not RunCommand('curl -L -s --fail https://api.github.com/repos/' + REPO + '/releases/latest',S) then
-                  Exit;
+  if not RunCommand('curl -L -s --fail https://api.github.com/repos/' + REPO + '/releases/latest', S) then
+    Exit;
 
   try
     J := GetJSON(S);
@@ -131,35 +114,28 @@ var
 begin
   ForceDirectories('/var/lib/pibackup');
 
-  DownloadURL :=
-    'https://raw.githubusercontent.com/' +
-    REPO + '/' + RemoteVersion + '/bin/pibackup.deb';
+  DownloadURL := 'https://raw.githubusercontent.com/' + REPO + '/' + RemoteVersion + '/bin/pibackup.deb';
 
-  S := PrexeBash('wget -O ' + NEWDEB + ' "' + DownloadURL + '"',memo);
+  S := PrexeBash('wget -O ' + NEWDEB + ' "' + DownloadURL + '"', memo);
 
   if not FileExists(NEWDEB) then
   begin
-    MessageDlg( 'Error','Download failed.',mtError,[mbOK],0);
+    MessageDlg('Error', 'Download failed.', mtError, [mbOK], 0);
     Exit;
   end;
 
-  S := PrexeBash('bash -c "sudo env DEBIAN_FRONTEND=noninteractive apt install -y ' + NEWDEB + '"',form1.memo1);
+  S := PrexeBash('bash -c "sudo env DEBIAN_FRONTEND=noninteractive apt install -y ' + NEWDEB + '"', form1.Memo1);
 
   if LastExitCode = 0 then
   begin
     DeleteFile(NEWDEB);
     DeleteFile(LASTGOODDEB);
 
-    if MessageDlg('updater','Update installed successfully.' + LineEnding +'      Restart pibackup?',
-      mtInformation,[mbYes, mbNo],0) = mrYes then
-    begin
+    if MessageDlg('updater', 'Update installed successfully.' + LineEnding + '      Restart pibackup?', mtInformation, [mbYes, mbNo], 0) = mrYes then
       RestartApplication;
-    end;
   end
   else
-  begin
-    MessageDlg('updater','Update failed' + LineEnding + 'System remains unchanged.',mtError,[mbOK],0);
-  end;
+    MessageDlg('updater', 'Update failed' + LineEnding + 'System remains unchanged.', mtError, [mbOK], 0);
 end;
 
 procedure SnoozeInstall;
@@ -245,15 +221,34 @@ begin
     Minor := StrToInt64(Copy(Ver, P1 + 1, P2 - P1 - 1));
     Patch := StrToInt64(Copy(Ver, P2 + 1, MaxInt));
 
-    Result := Major * 100000000 +
-              Minor * 10000 +
-              Patch;
+    Result := Major * 100000000 + Minor * 10000 + Patch;
   except
     Result := -1;
   end;
 end;
 
+{ TForm5 }
+
+procedure TForm5.Button1Click(Sender: TObject);
+begin
+  InstallUpdate(form1.Memo1);
+  Form5.Close;
+end;
+
+procedure TForm5.Button2Click(Sender: TObject);
+begin
+  Form5.Close;
+end;
+
+procedure TForm5.Button3Click(Sender: TObject);
+begin
+  SnoozeInstall;
+end;
+
+
 procedure CheckForUpdates(memo: Tmemo);
+var
+  remoteval,versionval:int64;
 begin
   if IsSnoozed then
     Exit;
@@ -263,21 +258,18 @@ begin
   if RemoteVersion = '' then
     Exit;
 
-  if VersionToInt64(RemoteVersion) <= VersionToInt64(Version) then
-    Exit;
+   remoteval:=VersionToInt64(remoteversion);
+   versionval:=VersionToInt64(version);
+
+
+  if remoteval<=Versionval then exit;                      //   auflösen nach int64    muss grösser sein
 
   Form5.Label1.Caption := 'There is a update available';
   Form5.Label2.Caption := 'Do you want install the update?';
   Form5.Label3.Caption := 'Installed: ' + VERSION;
   Form5.Label4.Caption := 'Available: ' + RemoteVersion;
 
-  Form5.ShowModal;
-
-  case Form5.ModalResult of
-    1: InstallUpdate(memo);
-    2: Exit;
-    3: SnoozeInstall;
-  end;
+  Form5.Show;
 end;
 
 end.
