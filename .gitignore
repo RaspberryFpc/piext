@@ -1,4 +1,5 @@
 source/piext.dbg
+source/piext.cfg
 piext_pkg/
 source/lib/
 build_deb.sh
