@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiExt</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+            color: #222;
+            background: #fff;
+        }
+
+        h1 {
+            border-bottom: 2px solid #444;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            margin-top: 35px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            margin-top: 25px;
+        }
+
+        code {
+            font-family: Consolas, "Liberation Mono", monospace;
+            background: #f2f2f2;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        pre {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        ul, ol {
+            margin-top: 8px;
+        }
+
+        .important {
+            background: #fff8dc;
+            border-left: 4px solid #e0b000;
+            padding: 12px 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>PiExt</h1>
+
+<p>
+    PiExt creates and restores compressed images of Linux
+    EXT2, EXT3 and EXT4 partitions.
+</p>
+
+<p>
+    The first image created in an image folder is automatically a
+    <strong>Base Image</strong>. Further images are created as
+    <strong>Differential Images</strong> based on this Base Image.
+</p>
+
+
+<h2>Source and Target Partitions</h2>
+
+<p>
+    For image creation, a <strong>Source Partition</strong> must be selected.
+</p>
+
+<p>
+    The Source Partition is the EXT2, EXT3 or EXT4 partition from which
+    the image is created.
+</p>
+
+<p>
+    For image restoration, a <strong>Target Partition</strong> must be selected.
+</p>
+
+<p>
+    The Target Partition is the partition to which the selected image is restored.
+</p>
+
+<p>
+    The image storage folder is selected separately from the Source or Target
+    Partition.
+</p>
+
+
+<h2>Image Folder</h2>
+
+<p>
+    PiExt uses a folder to store the image files.
+</p>
+
+<p>
+    For image creation, an image folder must be selected or created.
+</p>
+
+<p>
+    For image restoration, the folder containing the required image files
+    must be selected.
+</p>
+
+<p>
+    Only <strong>one Base Image</strong> is allowed per image folder.
+</p>
+
+<p>
+    PiExt automatically assigns the image filenames.
+    No filename needs to be entered manually.
+</p>
+
+
+<h2>Image Storage</h2>
+
+<p>
+    PiExt does not store the complete partition.
+</p>
+
+<p>
+    Only <strong>used sectors of the EXT filesystem are stored</strong>.
+    Unused sectors are omitted from the image.
+</p>
+
+<p>
+    This significantly reduces the amount of data that needs to be stored
+    and processed, especially when the partition contains a large amount
+    of free space.
+</p>
+
+<p>
+    All images are <strong>compressed on the fly using Zstandard (ZSTD)</strong>
+    while they are being created.
+</p>
+
+<p>
+    The resulting image files use the <code>.zst</code> file extension.
+</p>
+
+
+<h2>Base Image</h2>
+
+<p>
+    The first image created in an empty image folder is automatically
+    created as a Base Image.
+</p>
+
+<p>
+    The Base Image contains the initial state of the EXT partition.
+</p>
+
+<p>Example:</p>
+
+<pre><code>base_image_sda2_2026-09-21.zst</code></pre>
+
+<p>
+    The filename contains the source partition and the creation date.
+</p>
+
+
+<h2>Differential Images</h2>
+
+<p>
+    Every additional image created in the same image folder is automatically
+    created as a Differential Image.
+</p>
+
+<p>
+    A Differential Image contains the changes relative to the Base Image.
+</p>
+
+<p>Examples:</p>
+
+<pre><code>diff-image_2026-09-21_1.zst
+diff-image_2026-09-21_2.zst</code></pre>
+
+<p>
+    The number is automatically increased for each new Differential Image.
+</p>
+
+<p>
+    Differential Images are based directly on the Base Image and do not
+    depend on other Differential Images.
+</p>
+
+
+<h2>Restoring Images</h2>
+
+<p>
+    Every image in the folder can be selected individually for restoration.
+</p>
+
+
+<h3>Restoring the Base Image</h3>
+
+<p>
+    When the Base Image is selected, only the Base Image is required.
+</p>
+
+<pre><code>base_image_sda2_2026-09-21.zst</code></pre>
+
+
+<h3>Restoring a Differential Image</h3>
+
+<p>
+    When a Differential Image is selected, the corresponding Base Image
+    must also be available in the same image folder.
+</p>
+
+<p>For example:</p>
+
+<pre><code>base_image_sda2_2026-09-21.zst
+diff-image_2026-09-21_1.zst</code></pre>
+
+<p>
+    The restore operation combines the Base Image with the selected
+    Differential Image.
+</p>
+
+<pre><code>Base Image + Diff Image 1 &rarr; restored partition</code></pre>
+
+<p>
+    The other Differential Images are not required for the restore.
+    They can be deleted if they are no longer needed.
+</p>
+
+<p>
+    Each Differential Image can therefore be selected and restored independently.
+</p>
+
+
+<h2>Image Structure</h2>
+
+<p>
+    An image folder can contain:
+</p>
+
+<pre><code>base_image_sda2_2026-09-21.zst
+diff-image_2026-09-21_1.zst
+diff-image_2026-09-21_2.zst
+diff-image_2026-09-21_3.zst</code></pre>
+
+<p>
+    The structure is:
+</p>
+
+<pre><code>Base Image
+     |
+     +-- Diff Image 1
+     +-- Diff Image 2
+     +-- Diff Image 3</code></pre>
+
+<p>
+    Each Differential Image uses the same Base Image.
+</p>
+
+<p>
+    Individual Differential Images can be deleted if they are no longer required.
+</p>
+
+<p>
+    The Base Image must remain available for all Differential Images that are
+    still to be restored.
+</p>
+
+
+<h2>Image Compatibility</h2>
+
+<p>
+    The image format used by PiExt is a program-specific format.
+</p>
+
+<p>
+    At present, images created by PiExt
+    <strong>can only be restored using PiExt</strong>.
+</p>
+
+<p>
+    The <code>.zst</code> files should therefore not be treated as standard
+    disk images that can be written directly to a device with tools such as
+    <code>dd</code>.
+</p>
+
+
+<h2>Important</h2>
+
+<div class="important">
+    <ul>
+        <li>A Source Partition must be selected for image creation.</li>
+        <li>A Target Partition must be selected for image restoration.</li>
+        <li>Only used sectors of the EXT filesystem are stored.</li>
+        <li>All images are compressed on the fly using Zstandard.</li>
+        <li>The first image in an empty folder is automatically the Base Image.</li>
+        <li>Only one Base Image is allowed per image folder.</li>
+        <li>All subsequent images are Differential Images.</li>
+        <li>Differential Images are based directly on the Base Image.</li>
+        <li>A Differential Image requires the Base Image for restoration.</li>
+        <li>The Base Image must remain available as long as Differential Images are needed.</li>
+        <li>Individual Differential Images can be deleted if they are no longer needed.</li>
+        <li>Each image can be selected and restored independently.</li>
+        <li>Filenames are generated automatically.</li>
+        <li>Images use the <code>.zst</code> file extension.</li>
+        <li>Differential imaging is intended for EXT2, EXT3 and EXT4 partitions.</li>
+        <li>Images can currently only be restored using PiExt.</li>
+    </ul>
+</div>
+
+
+<h2>Typical Workflow</h2>
+
+
+<h3>Create Images</h3>
+
+<ol>
+    <li>Select the <strong>Source Partition</strong>.</li>
+    <li>Select or create the image folder.</li>
+    <li>Create the first image.</li>
+    <li>The first image automatically becomes the Base Image.</li>
+    <li>Make changes to the system.</li>
+    <li>Create another image.</li>
+    <li>The new image is automatically created as a Differential Image.</li>
+    <li>Repeat as required.</li>
+    <li>Delete Differential Images that are no longer needed.</li>
+</ol>
+
+
+<h3>Restore an Image</h3>
+
+<ol>
+    <li>Select the <strong>Target Partition</strong>.</li>
+    <li>Select the image folder containing the images.</li>
+    <li>Select the desired image.</li>
+    <li>Start the restore operation.</li>
+    <li>
+        If a Differential Image is selected, the Base Image must also be
+        present in the image folder.
+    </li>
+</ol>
+
+<p>
+    The selected image is restored directly to the Target Partition.
+</p>
+
+
+<h2>Restoring the Active Root Partition</h2>
+
+<p>
+    The currently running root partition cannot be restored while the system
+    is running.
+</p>
+
+<p>
+    To restore the active root partition, boot the Raspberry Pi from another
+    system or boot medium first.
+</p>
+
+<p>
+    A recommended solution is to create a <strong>separate SD card or USB
+    stick with a minimal Linux system and a minimal desktop environment,
+    with PiExt installed</strong>.
+</p>
+
+<p>
+    Boot the Raspberry Pi from this SD card or USB stick and run
+    PiExt from the separate system. The original system partition
+    is then no longer the active root partition and can be restored.
+</p>
+
+<p>
+    The image files can be stored on another USB drive, network storage,
+    or another accessible storage device.
+</p>
+
+<p>
+    After the restore operation has completed, shut down the Raspberry Pi
+    and boot it again from the restored system.
+</p>
+<h2>License</h2>
+
+<p>
+    PiExt is free software released under the
+    <strong>MIT License</strong>.
+</p>
+
+<p>
+    The complete license text is available in the
+    <code>LICENSE</code> file in the PiExt GitHub repository.
+</p>
+
+</body>
+</html>

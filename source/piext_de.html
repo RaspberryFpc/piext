@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiExt</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+            color: #222;
+            background: #fff;
+        }
+
+```
+    h1 {
+        border-bottom: 2px solid #444;
+        padding-bottom: 10px;
+    }
+
+    h2 {
+        margin-top: 35px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+    }
+
+    h3 {
+        margin-top: 25px;
+    }
+
+    code {
+        font-family: Consolas, "Liberation Mono", monospace;
+        background: #f2f2f2;
+        padding: 2px 5px;
+        border-radius: 3px;
+    }
+
+    pre {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        overflow-x: auto;
+    }
+
+    ul, ol {
+        margin-top: 8px;
+    }
+
+    .important {
+        background: #fff8dc;
+        border-left: 4px solid #e0b000;
+        padding: 12px 15px;
+        margin: 20px 0;
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<h1>PiExt</h1>
+
+<p>
+    PiExt erstellt und stellt komprimierte Images von Linux-
+    EXT2-, EXT3- und EXT4-Partitionen wieder her.
+</p>
+
+<p>
+    Das erste in einem Image-Ordner erstellte Image wird automatisch als
+    <strong>Basis-Image</strong> erstellt. Weitere Images werden als
+    <strong>differenzielle Images</strong> auf Basis dieses Basis-Images erstellt.
+</p>
+
+<h2>Quell- und Zielpartitionen</h2>
+
+<p>
+    Für die Image-Erstellung muss eine <strong>Quellpartition</strong> ausgewählt werden.
+</p>
+
+<p>
+    Die Quellpartition ist die EXT2-, EXT3- oder EXT4-Partition, von der
+    das Image erstellt wird.
+</p>
+
+<p>
+    Für die Wiederherstellung eines Images muss eine <strong>Zielpartition</strong>
+    ausgewählt werden.
+</p>
+
+<p>
+    Die Zielpartition ist die Partition, auf die das ausgewählte Image
+    wiederhergestellt wird.
+</p>
+
+<p>
+    Der Ordner für die Speicherung der Images wird unabhängig von der
+    Quell- oder Zielpartition ausgewählt.
+</p>
+
+<h2>Image-Ordner</h2>
+
+<p>
+    PiExt verwendet einen Ordner zum Speichern der Image-Dateien.
+</p>
+
+<p>
+    Für die Image-Erstellung muss ein Image-Ordner ausgewählt oder erstellt werden.
+</p>
+
+<p>
+    Für die Wiederherstellung muss der Ordner ausgewählt werden, der die
+    benötigten Image-Dateien enthält.
+</p>
+
+<p>
+    Pro Image-Ordner ist nur <strong>ein Basis-Image</strong> zulässig.
+</p>
+
+<p>
+    PiExt vergibt die Dateinamen der Images automatisch.
+    Ein Dateiname muss nicht manuell eingegeben werden.
+</p>
+
+<h2>Image-Speicherung</h2>
+
+<p>
+    PiExt speichert nicht die vollständige Partition.
+</p>
+
+<p>
+    Es werden nur die <strong>belegten Sektoren des EXT-Dateisystems</strong>
+    gespeichert. Nicht belegte Sektoren werden aus dem Image ausgelassen.
+</p>
+
+<p>
+    Dadurch wird die Menge der zu speichernden und zu verarbeitenden Daten
+    deutlich reduziert, insbesondere wenn die Partition über einen großen
+    Anteil freien Speicherplatzes verfügt.
+</p>
+
+<p>
+    Alle Images werden während der Erstellung <strong>direkt mit
+    Zstandard (ZSTD) komprimiert</strong>.
+</p>
+
+<p>
+    Die erzeugten Image-Dateien verwenden die Dateiendung <code>.zst</code>.
+</p>
+
+<h2>Basis-Image</h2>
+
+<p>
+    Das erste Image, das in einem leeren Image-Ordner erstellt wird,
+    wird automatisch als Basis-Image erstellt.
+</p>
+
+<p>
+    Das Basis-Image enthält den ursprünglichen Zustand der EXT-Partition.
+</p>
+
+<p>Beispiel:</p>
+
+<pre><code>base_image_sda2_2026-09-21.zst</code></pre>
+
+<p>
+    Der Dateiname enthält die Quellpartition und das Erstellungsdatum.
+</p>
+
+<h2>Differenzielle Images</h2>
+
+<p>
+    Jedes weitere Image, das im selben Image-Ordner erstellt wird,
+    wird automatisch als differenzielles Image erstellt.
+</p>
+
+<p>
+    Ein differenzielles Image enthält die Änderungen gegenüber dem
+    Basis-Image.
+</p>
+
+<p>Beispiele:</p>
+
+<pre><code>diff-image_2026-09-21_1.zst
+diff-image_2026-09-21_2.zst</code></pre>
+
+<p>
+    Die Nummer wird für jedes neue differenzielle Image automatisch erhöht.
+</p>
+
+<p>
+    Differenzielle Images basieren direkt auf dem Basis-Image und sind
+    nicht von anderen differenziellen Images abhängig.
+</p>
+
+<h2>Images wiederherstellen</h2>
+
+<p>
+    Jedes Image im Ordner kann einzeln zur Wiederherstellung ausgewählt werden.
+</p>
+
+<h3>Basis-Image wiederherstellen</h3>
+
+<p>
+    Wenn das Basis-Image ausgewählt wird, wird nur das Basis-Image benötigt.
+</p>
+
+<pre><code>base_image_sda2_2026-09-21.zst</code></pre>
+
+<h3>Differenzielles Image wiederherstellen</h3>
+
+<p>
+    Wenn ein differenzielles Image ausgewählt wird, muss das zugehörige
+    Basis-Image ebenfalls im selben Image-Ordner vorhanden sein.
+</p>
+
+<p>Beispiel:</p>
+
+<pre><code>base_image_sda2_2026-09-21.zst
+diff-image_2026-09-21_1.zst</code></pre>
+
+<p>
+    Der Wiederherstellungsvorgang kombiniert das Basis-Image mit dem
+    ausgewählten differenziellen Image.
+</p>
+
+<pre><code>Basis-Image + Diff-Image 1 &rarr; wiederhergestellte Partition</code></pre>
+
+<p>
+    Die anderen differenziellen Images werden für die Wiederherstellung
+    nicht benötigt. Sie können gelöscht werden, wenn sie nicht mehr
+    benötigt werden.
+</p>
+
+<p>
+    Jedes differenzielle Image kann daher unabhängig ausgewählt und
+    wiederhergestellt werden.
+</p>
+
+<h2>Image-Struktur</h2>
+
+<p>
+    Ein Image-Ordner kann beispielsweise folgende Dateien enthalten:
+</p>
+
+<pre><code>base_image_sda2_2026-09-21.zst
+diff-image_2026-09-21_1.zst
+diff-image_2026-09-21_2.zst
+diff-image_2026-09-21_3.zst</code></pre>
+
+<p>
+    Die Struktur ist:
+</p>
+
+<pre><code>Basis-Image
+     |
+     +-- Diff-Image 1
+     +-- Diff-Image 2
+     +-- Diff-Image 3</code></pre>
+
+<p>
+    Jedes differenzielle Image verwendet dasselbe Basis-Image.
+</p>
+
+<p>
+    Einzelne differenzielle Images können gelöscht werden, wenn sie
+    nicht mehr benötigt werden.
+</p>
+
+<p>
+    Das Basis-Image muss für alle differenziellen Images, die noch
+    wiederhergestellt werden sollen, verfügbar bleiben.
+</p>
+
+<h2>Image-Kompatibilität</h2>
+
+<p>
+    Das von PiExt verwendete Image-Format ist ein
+    programmspezifisches Format.
+</p>
+
+<p>
+    Derzeit können mit PiExt erstellte Images
+    <strong>nur mit PiExt wiederhergestellt werden</strong>.
+</p>
+
+<p>
+    Die <code>.zst</code>-Dateien sollten daher nicht als normale
+    Festplatten-Images betrachtet werden, die beispielsweise mit Tools
+    wie <code>dd</code> direkt auf ein Gerät geschrieben werden können.
+</p>
+
+<h2>Wichtig</h2>
+
+<div class="important">
+    <ul>
+        <li>Für die Image-Erstellung muss eine Quellpartition ausgewählt werden.</li>
+        <li>Für die Image-Wiederherstellung muss eine Zielpartition ausgewählt werden.</li>
+        <li>Es werden nur belegte Sektoren des EXT-Dateisystems gespeichert.</li>
+        <li>Alle Images werden während der Erstellung mit Zstandard komprimiert.</li>
+        <li>Das erste Image in einem leeren Ordner wird automatisch zum Basis-Image.</li>
+        <li>Pro Image-Ordner ist nur ein Basis-Image zulässig.</li>
+        <li>Alle nachfolgenden Images werden als differenzielle Images erstellt.</li>
+        <li>Differenzielle Images basieren direkt auf dem Basis-Image.</li>
+        <li>Ein differenzielles Image benötigt das Basis-Image für die Wiederherstellung.</li>
+        <li>Das Basis-Image muss verfügbar bleiben, solange differenzielle Images benötigt werden.</li>
+        <li>Einzelne differenzielle Images können gelöscht werden, wenn sie nicht mehr benötigt werden.</li>
+        <li>Jedes Image kann unabhängig ausgewählt und wiederhergestellt werden.</li>
+        <li>Die Dateinamen werden automatisch vergeben.</li>
+        <li>Die Images verwenden die Dateiendung <code>.zst</code>.</li>
+        <li>Die differenzielle Image-Erstellung ist für EXT2-, EXT3- und EXT4-Partitionen vorgesehen.</li>
+        <li>Images können derzeit nur mit PiExt wiederhergestellt werden.</li>
+    </ul>
+</div>
+
+<h2>Typischer Arbeitsablauf</h2>
+
+<h3>Images erstellen</h3>
+
+<ol>
+    <li>Die <strong>Quellpartition</strong> auswählen.</li>
+    <li>Den Image-Ordner auswählen oder erstellen.</li>
+    <li>Das erste Image erstellen.</li>
+    <li>Das erste Image wird automatisch zum Basis-Image.</li>
+    <li>Änderungen am System vornehmen.</li>
+    <li>Ein weiteres Image erstellen.</li>
+    <li>Das neue Image wird automatisch als differenzielles Image erstellt.</li>
+    <li>Den Vorgang bei Bedarf wiederholen.</li>
+    <li>Differenzielle Images löschen, die nicht mehr benötigt werden.</li>
+</ol>
+
+<h3>Ein Image wiederherstellen</h3>
+
+<ol>
+    <li>Die <strong>Zielpartition</strong> auswählen.</li>
+    <li>Den Image-Ordner auswählen, der die Images enthält.</li>
+    <li>Das gewünschte Image auswählen.</li>
+    <li>Die Wiederherstellung starten.</li>
+    <li>
+        Wenn ein differenzielles Image ausgewählt wurde, muss das
+        Basis-Image ebenfalls im Image-Ordner vorhanden sein.
+    </li>
+</ol>
+
+<p>
+    Das ausgewählte Image wird direkt auf der Zielpartition wiederhergestellt.
+</p>
+
+<h2>Die aktive Root-Partition wiederherstellen</h2>
+
+<p>
+    Die aktuell laufende Root-Partition kann nicht wiederhergestellt werden,
+    während das System von dieser Partition ausgeführt wird.
+</p>
+
+<p>
+    Um die aktive Root-Partition wiederherzustellen, muss der Raspberry Pi
+    zunächst von einem anderen System oder einem anderen Boot-Medium gestartet werden.
+</p>
+
+<p>
+    Eine empfohlene Lösung ist eine <strong>separate SD-Karte oder ein
+    USB-Stick mit einem minimalen Linux-System und einer minimalen
+    Desktop-Umgebung, auf dem PiExt installiert ist</strong>.
+</p>
+
+<p>
+    Den Raspberry Pi von dieser SD-Karte oder diesem USB-Stick starten und
+    PiExt vom separaten System ausführen. Die ursprüngliche
+    Systempartition ist dann nicht mehr die aktive Root-Partition und
+    kann wiederhergestellt werden.
+</p>
+
+<p>
+    Die Image-Dateien können auf einem anderen USB-Laufwerk, einem
+    Netzwerkspeicher oder einem anderen zugänglichen Speichermedium
+    gespeichert werden.
+</p>
+
+<p>
+    Nach Abschluss der Wiederherstellung den Raspberry Pi herunterfahren
+    und anschließend erneut vom wiederhergestellten System starten.
+</p>
+```html
+<h2>Lizenz</h2>
+
+<p>
+    PiExt ist freie Software und wird unter der
+    <strong>MIT License</strong> veröffentlicht.
+</p>
+
+<p>
+    Der vollständige Lizenztext befindet sich in der Datei
+    <code>LICENSE</code> im PiExt GitHub-Repository.
+</p>
+```
+
+</body>
+</html>
+
