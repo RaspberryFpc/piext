@@ -1,4 +1,4 @@
-# PiEx
+# PiExt
 
 PiExt is a backup and restore tool for Raspberry Pi systems that creates and restores compressed images of Linux EXT2, EXT3 and EXT4 partitions.
 
