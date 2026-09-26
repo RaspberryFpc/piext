@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 
 <html lang="de">
@@ -16,50 +17,47 @@
             background: #fff;
         }
 
-```
-    h1 {
-        border-bottom: 2px solid #444;
-        padding-bottom: 10px;
-    }
+        h1 {
+            border-bottom: 2px solid #444;
+            padding-bottom: 10px;
+        }
 
-    h2 {
-        margin-top: 35px;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 5px;
-    }
+        h2 {
+            margin-top: 35px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
 
-    h3 {
-        margin-top: 25px;
-    }
+        h3 {
+            margin-top: 25px;
+        }
 
-    code {
-        font-family: Consolas, "Liberation Mono", monospace;
-        background: #f2f2f2;
-        padding: 2px 5px;
-        border-radius: 3px;
-    }
+        code {
+            font-family: Consolas, "Liberation Mono", monospace;
+            background: #f2f2f2;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
 
-    pre {
-        background: #f5f5f5;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        overflow-x: auto;
-    }
+        pre {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
 
-    ul, ol {
-        margin-top: 8px;
-    }
+        ul, ol {
+            margin-top: 8px;
+        }
 
-    .important {
-        background: #fff8dc;
-        border-left: 4px solid #e0b000;
-        padding: 12px 15px;
-        margin: 20px 0;
-    }
-</style>
-```
-
+        .important {
+            background: #fff8dc;
+            border-left: 4px solid #e0b000;
+            padding: 12px 15px;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -386,7 +384,141 @@ diff-image_2026-09-21_3.zst</code></pre>
     Nach Abschluss der Wiederherstellung den Raspberry Pi herunterfahren
     und anschließend erneut vom wiederhergestellten System starten.
 </p>
-```html
+
+<h2>Kommandozeilenparameter</h2>
+
+<p>
+    PiExt kann auch über die Kommandozeile verwendet werden. Sobald
+    mindestens ein Kommandozeilenparameter angegeben wird, arbeitet PiExt
+    im <strong>CLI-Modus</strong>. Die grafische Oberfläche wird dabei
+    nicht angezeigt. Nach Abschluss des Vorgangs wird PiExt automatisch
+    beendet.
+</p>
+
+<p>
+    Parameter können entweder mit <code>=</code> oder durch ein Leerzeichen
+    angegeben werden.
+</p>
+
+<p>Beispiele:</p>
+
+<pre><code>--sourcepartition=/dev/sda2</code></pre>
+
+<p>oder:</p>
+
+<pre><code>--sourcepartition /dev/sda2</code></pre>
+
+<h3>Image erstellen</h3>
+
+<table>
+    <tr>
+        <th>Parameter</th>
+        <th>Beschreibung</th>
+    </tr>
+    <tr>
+        <td><code>--create</code></td>
+        <td>Startet automatisch die Erstellung eines Images.</td>
+    </tr>
+    <tr>
+        <td><code>--sourcepartition &lt;partition&gt;</code></td>
+        <td>Gibt die Quellpartition an, von der das Image erstellt wird, z. B. <code>/dev/sda2</code>.</td>
+    </tr>
+    <tr>
+        <td><code>--createdestination &lt;ordner&gt;</code></td>
+        <td>Gibt den Zielordner für das Image an. Existiert der Ordner nicht, wird er automatisch erstellt.</td>
+    </tr>
+    <tr>
+        <td><code>--destination &lt;ordner&gt;</code></td>
+        <td>Gibt den Zielordner für das Image an. Der Ordner muss bereits existieren.</td>
+    </tr>
+    <tr>
+        <td><code>--compressionlevel &lt;wert&gt;</code></td>
+        <td>Legt die Zstandard-Kompressionsstufe fest.</td>
+    </tr>
+    <tr>
+        <td><code>--lastsettings</code></td>
+        <td>Verwendet die zuletzt gespeicherten PiExt-Einstellungen als Ausgangswerte. Explizit angegebene Kommandozeilenparameter überschreiben diese Einstellungen.</td>
+    </tr>
+</table>
+
+<h3>Image wiederherstellen</h3>
+
+<table>
+    <tr>
+        <th>Parameter</th>
+        <th>Beschreibung</th>
+    </tr>
+    <tr>
+        <td><code>--restore</code></td>
+        <td>Startet automatisch die Wiederherstellung eines Images.</td>
+    </tr>
+    <tr>
+        <td><code>--sourceimage &lt;datei&gt;</code></td>
+        <td>Gibt die Image-Datei an, die wiederhergestellt werden soll.</td>
+    </tr>
+    <tr>
+        <td><code>--targetpartition &lt;partition&gt;</code></td>
+        <td>Gibt die Zielpartition an, auf die das Image wiederhergestellt wird, z. B. <code>/dev/sda2</code>.</td>
+    </tr>
+</table>
+
+<h3>Allgemeine Hinweise</h3>
+
+<p>
+    <code>--create</code> und <code>--restore</code> starten den jeweiligen
+    Vorgang automatisch.
+</p>
+
+<p>
+    Der Unterschied zwischen <code>--createdestination</code> und
+    <code>--destination</code> besteht darin, dass
+    <code>--createdestination</code> einen noch nicht vorhandenen
+    Zielordner automatisch anlegt, während <code>--destination</code>
+    einen bereits vorhandenen Zielordner voraussetzt.
+</p>
+
+<p>
+    <code>--lastsettings</code> kann zusammen mit den anderen Parametern
+    verwendet werden. Explizit angegebene Kommandozeilenparameter haben
+    Vorrang vor den gespeicherten Einstellungen.
+</p>
+
+<h3>Beispiele</h3>
+
+<p>Image erstellen und Zielordner bei Bedarf anlegen:</p>
+
+<pre><code>sudo piext --create --sourcepartition /dev/sda2 --createdestination "/media/pi/hzg2/Diff_image"</code></pre>
+
+<p>Image erstellen mit Kompressionsstufe 5:</p>
+
+<pre><code>sudo piext --create --sourcepartition /dev/sda2 --createdestination "/media/pi/hzg2/Diff_image" --compressionlevel 5</code></pre>
+
+<p>Image erstellen mit bereits vorhandenem Zielordner:</p>
+
+<pre><code>sudo piext --create --sourcepartition /dev/sda2 --destination "/media/pi/hzg2/Diff_image"</code></pre>
+
+<p>Image wiederherstellen:</p>
+
+<pre><code>sudo piext --restore --sourceimage "/media/pi/hzg2/Diff_image/base_image_sda2_2026-09-21.zst" --targetpartition /dev/sdd2</code></pre>
+
+<p>
+    Gespeicherte Einstellungen verwenden und die Image-Erstellung
+    automatisch starten:
+</p>
+
+<pre><code>sudo piext --lastsettings --create</code></pre>
+
+<h3>Rückgabewerte</h3>
+
+<p>
+    Im CLI-Modus beendet sich PiExt nach Abschluss des Vorgangs automatisch.
+</p>
+
+<ul>
+    <li><code>0</code> = Vorgang erfolgreich abgeschlossen</li>
+    <li><code>1</code> = Fehler beim Vorgang</li>
+</ul>
+
 <h2>Lizenz</h2>
 
 <p>
@@ -398,8 +530,7 @@ diff-image_2026-09-21_3.zst</code></pre>
     Der vollständige Lizenztext befindet sich in der Datei
     <code>LICENSE</code> im PiExt GitHub-Repository.
 </p>
-```
 
 </body>
 </html>
-
+```

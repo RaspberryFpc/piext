@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -54,6 +54,7 @@ ul, ol {
 }
 </style>
 </head>
+
 <body>
 
 <h1>PiExt</h1>
@@ -63,8 +64,15 @@ ul, ol {
 </p>
 
 <p>
-    PiExt creates and restores compressed images of Linux
-    <strong>EXT2, EXT3 and EXT4 partitions on Raspberry Pi systems</strong>.
+    PiExt is a <strong>backup and restore application for Raspberry Pi
+    systems</strong> that can be used either through its
+    <strong>graphical user interface (GUI)</strong> or from the
+    <strong>command line (CLI)</strong>.
+</p>
+
+<p>
+    It creates and restores compressed images of Linux
+    <strong>EXT2, EXT3 and EXT4 partitions</strong>.
 </p>
 
 <p>
@@ -119,9 +127,173 @@ ul, ol {
 </p>
 
 <p>
-    After installation, PiExt can be started from the desktop application
-    menu.
+    After installation, PiExt can be started either from the desktop
+    application menu using the graphical user interface or from a terminal
+    using the command <code>piext</code>.
 </p>
+
+<h2>Graphical User Interface (GUI)</h2>
+
+<p>
+    When PiExt is started without command-line parameters, it starts in
+    <strong>GUI mode</strong>.
+</p>
+
+<p>
+    The graphical user interface can be used to select the Source Partition,
+    Target Partition, image folder and other settings and to start image
+    creation or restoration interactively.
+</p>
+
+<h2>Command-Line Interface (CLI)</h2>
+
+<p>
+    PiExt can also be operated completely from the command line.
+    When one or more command-line parameters are specified, PiExt
+    automatically operates in <strong>CLI mode</strong>.
+</p>
+
+<p>
+    In CLI mode, the graphical user interface is not displayed.
+    The requested operation can therefore be performed without user
+    interaction through the GUI.
+</p>
+
+<p>
+    After the operation has completed, PiExt automatically exits and
+    returns an exit code to the operating system.
+</p>
+
+<p>
+    Command-line parameters can be specified either using
+    <code>=</code> or separated from the value by a space.
+</p>
+
+<p>Examples:</p>
+
+<pre><code>--sourcepartition=/dev/sda2</code></pre>
+
+<p>or:</p>
+
+<pre><code>--sourcepartition /dev/sda2</code></pre>
+
+<h3>Create an Image</h3>
+
+<table>
+    <tr>
+        <th>Parameter</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><code>--create</code></td>
+        <td>Automatically starts image creation.</td>
+    </tr>
+    <tr>
+        <td><code>--sourcepartition &lt;partition&gt;</code></td>
+        <td>Specifies the Source Partition from which the image is created, for example <code>/dev/sda2</code>.</td>
+    </tr>
+    <tr>
+        <td><code>--createdestination &lt;folder&gt;</code></td>
+        <td>Specifies the destination folder for the image. If the folder does not exist, it is created automatically.</td>
+    </tr>
+    <tr>
+        <td><code>--destination &lt;folder&gt;</code></td>
+        <td>Specifies the destination folder for the image. The folder must already exist.</td>
+    </tr>
+    <tr>
+        <td><code>--compressionlevel &lt;value&gt;</code></td>
+        <td>Sets the Zstandard compression level.</td>
+    </tr>
+    <tr>
+        <td><code>--lastsettings</code></td>
+        <td>Uses the last saved PiExt settings as the initial values. Explicitly specified command-line parameters override these settings.</td>
+    </tr>
+</table>
+
+<h3>Restore an Image</h3>
+
+<table>
+    <tr>
+        <th>Parameter</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><code>--restore</code></td>
+        <td>Automatically starts image restoration.</td>
+    </tr>
+    <tr>
+        <td><code>--sourceimage &lt;file&gt;</code></td>
+        <td>Specifies the image file to be restored.</td>
+    </tr>
+    <tr>
+        <td><code>--targetpartition &lt;partition&gt;</code></td>
+        <td>Specifies the Target Partition to which the image is restored, for example <code>/dev/sda2</code>.</td>
+    </tr>
+</table>
+
+<h3>General CLI Notes</h3>
+
+<p>
+    <code>--create</code> and <code>--restore</code> automatically start the
+    corresponding operation.
+</p>
+
+<p>
+    The difference between <code>--createdestination</code> and
+    <code>--destination</code> is that <code>--createdestination</code>
+    automatically creates a destination folder if it does not exist,
+    whereas <code>--destination</code> requires the destination folder
+    to already exist.
+</p>
+
+<p>
+    <code>--lastsettings</code> can be used together with the other parameters.
+    Explicitly specified command-line parameters take precedence over the
+    saved settings.
+</p>
+
+<h3>CLI Examples</h3>
+
+<p>
+    Create an image and create the destination folder if necessary:
+</p>
+
+<pre><code>sudo piext --create --sourcepartition /dev/sda2 --createdestination "/media/pi/hzg2/Diff_image"</code></pre>
+
+<p>
+    Create an image using compression level 5:
+</p>
+
+<pre><code>sudo piext --create --sourcepartition /dev/sda2 --createdestination "/media/pi/hzg2/Diff_image" --compressionlevel 5</code></pre>
+
+<p>
+    Create an image using an existing destination folder:
+</p>
+
+<pre><code>sudo piext --create --sourcepartition /dev/sda2 --destination "/media/pi/hzg2/Diff_image"</code></pre>
+
+<p>
+    Restore an image:
+</p>
+
+<pre><code>sudo piext --restore --sourceimage "/media/pi/hzg2/Diff_image/base_image_sda2_2026-09-21.zst" --targetpartition /dev/sdd2</code></pre>
+
+<p>
+    Use the saved settings and automatically start image creation:
+</p>
+
+<pre><code>sudo piext --lastsettings --create</code></pre>
+
+<h3>CLI Exit Codes</h3>
+
+<p>
+    In CLI mode, PiExt automatically exits after the operation has completed.
+</p>
+
+<ul>
+    <li><code>0</code> = operation completed successfully</li>
+    <li><code>1</code> = error during the operation</li>
+</ul>
 
 <h2>Source and Target Partitions</h2>
 
@@ -283,6 +455,10 @@ diff-image_2026-09-21_1.zst</code></pre>
 
 <div class="important">
     <ul>
+        <li>PiExt supports both a graphical user interface (GUI) and a command-line interface (CLI).</li>
+        <li>PiExt starts in GUI mode when no command-line parameters are specified.</li>
+        <li>PiExt automatically switches to CLI mode when command-line parameters are specified.</li>
+        <li>In CLI mode, the graphical user interface is not displayed.</li>
         <li>A Source Partition must be selected to create an image.</li>
         <li>A Target Partition must be selected to restore an image.</li>
         <li>Only sectors currently used by the EXT filesystem are stored.</li>
@@ -371,9 +547,12 @@ diff-image_2026-09-21_1.zst</code></pre>
 
 <ul>
     <li>Linux</li>
+    <li>Raspberry Pi system</li>
     <li>EXT2, EXT3 or EXT4 Source/Target Partitions</li>
     <li>Zstandard (ZSTD)</li>
     <li>Appropriate permissions to access the Source and Target Partitions</li>
+    <li>A graphical desktop environment for the PiExt GUI</li>
+    <li>A terminal for using the PiExt CLI</li>
 </ul>
 
 </body>

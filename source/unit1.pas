@@ -6,15 +6,12 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, Spin, ActnList, rawimage,imageutils, process,
-  inifiles, Language, unit2,updater;
+  StdCtrls, ComCtrls, ExtCtrls, Spin, ActnList, rawimage, imageutils, process,
+  inifiles, Language, unit2, updater;
 
 type
-
   { TForm1 }
-
   TForm1 = class(TForm)
-
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -36,7 +33,6 @@ type
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     SpinEdit1: TSpinEdit;
     Timer1: TTimer;
-
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -45,8 +41,8 @@ type
     procedure EditImageChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure RadioRestoreChange(Sender: TObject);
-    procedure RestoreImg;
-    procedure CreateImg;
+    function RestoreImg: Boolean;
+    function CreateImg: Boolean;
     procedure ButtonStartClick(Sender: TObject);
     procedure ComboBox1DropDown(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -55,22 +51,27 @@ type
     procedure saveini;
     procedure readini;
     procedure Timer1Timer(Sender: TObject);
-
   public
-
-
+    procedure StartCLI;
   private
     FLastSpeedBytes: Int64;
+    FCliMode: Boolean;
+    FCliHide: Boolean;
+    FCliStart: Boolean;
+    FCliCreate: Boolean;
+    FCliRestore: Boolean;
+    FCliCreateDestination: Boolean;
+    FCliDestinationSpecified: Boolean;
     procedure Progress(Sender: TObject; BPosition, Total: Int64);
     procedure Log(Sender: TObject; const Msg: string);
+    procedure ProcessCommandLine;
   end;
 
 var
   Form1: TForm1;
 
-  const
-  version = 'v1.0.1';
-
+const
+  version = 'v1.2.0';
 
 implementation
 
@@ -86,6 +87,12 @@ var
   LastProgressPosition: Int64;
   SmoothedETASeconds: Int64;
   restoredevice, restorefilename, createdevice, createfolder: string;
+
+procedure TForm1.StartCLI;
+begin
+  if FCliStart then
+    ButtonStartClick(ButtonStart);
+end;
 
 procedure TForm1.Progress(Sender: TObject; BPosition, Total: Int64);
 var
@@ -132,7 +139,6 @@ begin
         begin
           Remaining := Total - BPosition;
           ETASeconds := Remaining / Speed;
-
           SmoothedETASeconds := Round((SmoothedETASeconds * 3 + ETASeconds) / 4);
 
           Hours := SmoothedETASeconds div 3600;
@@ -144,12 +150,10 @@ begin
           else
             ETAText := Format(_(TXT_ETA_MINUTES), [Minutes, Seconds]);
 
-          //LabelSpeed.Caption
-          button4.Caption := SpeedText + '  ' + ETAText;
+          Button4.Caption := SpeedText + '  ' + ETAText;
         end
         else
-          //LabelSpeed.Caption := SpeedText;
-          button4.Caption := SpeedText;
+          Button4.Caption := SpeedText;
       end;
 
       LastProgressTime := Tick;
@@ -172,18 +176,27 @@ begin
   Application.ProcessMessages;
 end;
 
-
 function extractdevice(s: string): string;
 var
   p: Integer;
 begin
-  s := '/dev/' + s;
+  s := Trim(s);
+
+  if s = '' then
+  begin
+    Result := '';
+    Exit;
+  end;
+
   p := Pos(' ', s);
 
   if p > 0 then
-    Result := Copy(s, 1, p - 1)
-  else
-    Result := s;
+    s := Copy(s, 1, p - 1);
+
+  if Pos('/dev/', s) <> 1 then
+    s := '/dev/' + s;
+
+  Result := s;
 end;
 
 function createBasedestname: string;
@@ -203,7 +216,9 @@ begin
 
   dir := IncludeTrailingPathDelimiter(Form1.EditImage.Text);
 
-  Result := IncludeTrailingPathDelimiter(dir) + prefixbaseimage + device + '_' + FormatDateTime('yyyy-mm-dd', Date) + '.zst';
+  Result := IncludeTrailingPathDelimiter(dir) +
+    prefixbaseimage + device + '_' +
+    FormatDateTime('yyyy-mm-dd', Date) + '.zst';
 end;
 
 procedure GetImageSourcePartitions(ComboBox: TComboBox);
@@ -260,9 +275,10 @@ begin
       if MountPoint = '' then
         MountPoint := '-';
 
-      ComboBox.Items.Add(Target + '  ' + FormatFloat('0.0', Size / 1024 / 1024 / 1024) + ' GiB  ' + MountPoint);
+      ComboBox.Items.Add(Target + '  ' +
+        FormatFloat('0.0', Size / 1024 / 1024 / 1024) +
+        ' GiB  ' + MountPoint);
     end;
-
   finally
     P.Free;
     Lines.Free;
@@ -289,16 +305,18 @@ var
 begin
   Result := 0;
 
-  if FindFirst(IncludeTrailingPathDelimiter(Dir) + prefixdiffimage + '*', faAnyFile, SR) = 0 then
+  if FindFirst(IncludeTrailingPathDelimiter(Dir) +
+    prefixdiffimage + '*', faAnyFile, SR) = 0 then
   begin
     repeat
-      if (SR.Name <> '.') and (SR.Name <> '..') and ((SR.Attr and faDirectory) = 0) then
+      if (SR.Name <> '.') and (SR.Name <> '..') and
+        ((SR.Attr and faDirectory) = 0) then
       begin
         s := SR.Name;
+
         Delete(s, 1, Length(prefixdiffimage));
 
         p := Pos('.', s);
-
         if p > 0 then
           Delete(s, p, MaxInt);
 
@@ -315,54 +333,91 @@ begin
         if n > Result then
           Result := n;
       end;
-
     until FindNext(SR) <> 0;
 
     FindClose(SR);
   end;
 end;
 
-procedure creatediff(dir, existingbasefile: string);
+function creatediff(dir, existingbasefile: string): Boolean;
 var
   n: Integer;
-  dateiname: string;
+  Dateiname: string;
 begin
+  Result := False;
+
   n := GetmaxDiffFile(Dir);
 
-  Dateiname := IncludeTrailingPathDelimiter(dir) + prefixdiffimage + FormatDateTime('yyyy-mm-dd', Date) + '_' + IntToStr(n + 1) + '.zst';
+  Dateiname := IncludeTrailingPathDelimiter(dir) +
+    prefixdiffimage + FormatDateTime('yyyy-mm-dd', Date) + '_' +
+    IntToStr(n + 1) + '.zst';
 
   Form1.Memo1.Clear;
 
-  Form1.Log(Form1, Format(_(TXT_CREATING_DIFF_IMAGE), [dateiname]));
+  Form1.Log(Form1,
+    Format(_(TXT_CREATING_DIFF_IMAGE), [Dateiname]));
 
   Form1.ProgressBar1.Position := 0;
 
-  if CreateDiffBitmap(Trim(extractdevice(Form1.ComboBox1.Text)), existingbasefile, Dateiname, @Form1.Progress, @Form1.Log) then
-    Form1.Log(Form1, _(TXT_DIFF_IMAGE_CREATED))
+  if CreateDiffBitmap(
+    Trim(extractdevice(Form1.ComboBox1.Text)),
+    existingbasefile,
+    Dateiname,
+    @Form1.Progress,
+    @Form1.Log) then
+  begin
+    Form1.Log(Form1, _(TXT_DIFF_IMAGE_CREATED));
+    Result := True;
+  end
   else
     Form1.Log(Form1, _(TXT_DIFF_IMAGE_ERROR));
 end;
 
-procedure TForm1.CreateImg;
+function TForm1.CreateImg: Boolean;
 var
   destname, existingbasefilename, f_ext, device, dir: string;
 begin
+  Result := False;
+
   Memo1.Clear;
   ProgressBar1.Position := 0;
-
   FLastSpeedBytes := 0;
-  //LabelSpeed
-  button4.Caption := '0.0 MB/s';
+  Button4.Caption := '0.0 MB/s';
 
   try
     dir := Trim(EditImage.Text);
 
-    existingbasefilename := FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) + prefixbaseimage);
+    if dir = '' then
+    begin
+      Log(Self, 'No destination folder specified.');
+      Exit;
+    end;
+
+    if FCliMode and FCliDestinationSpecified and
+      not FCliCreateDestination and not DirectoryExists(dir) then
+    begin
+      Log(Self, 'Destination folder does not exist: ' + dir);
+      Exit;
+    end;
+
+    if not DirectoryExists(dir) then
+    begin
+      if not ForceDirectories(dir) then
+      begin
+        Log(Self, 'Could not create destination folder: ' + dir);
+        Exit;
+      end;
+    end;
+
+    existingbasefilename :=
+      FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) +
+      prefixbaseimage);
+
     f_ext := ExtractFileExt(existingbasefilename);
 
     if f_ext = '.zst' then
     begin
-      creatediff(dir, existingbasefilename);
+      Result := creatediff(dir, existingbasefilename);
       Exit;
     end;
 
@@ -379,18 +434,15 @@ begin
     if destname = '' then
       Exit;
 
-    if not DirectoryExists(dir) then
-      ForceDirectories(dir);
-
     if CreateRawImage(device, Destname, @Progress, @Log) then
-      Log(Self, _(TXT_BASE_IMAGE_CREATED))
+    begin
+      Log(Self, _(TXT_BASE_IMAGE_CREATED));
+      Result := True;
+    end
     else
       Log(Self, _(TXT_BASE_IMAGE_ERROR));
-
   finally
-
-    //LabelSpeed
-    button4.Caption := '0.0 MB/s';
+    Button4.Caption := '0.0 MB/s';
   end;
 end;
 
@@ -422,7 +474,7 @@ begin
     Button2.Caption := 'EN';
     ButtonCancel.Caption := 'abbrechen';
     Button3.Caption := 'Hilfe';
-    Buttonstart.Caption:= _(TXT_CREATE_IMAGE);
+    Buttonstart.Caption := _(TXT_CREATE_IMAGE);
   end
   else
   begin
@@ -430,7 +482,7 @@ begin
     Button2.Caption := 'DE';
     ButtonCancel.Caption := 'cancel';
     Button3.Caption := 'help';
-    Buttonstart.Caption:= _(TXT_CREATE_IMAGE);
+    Buttonstart.Caption := _(TXT_CREATE_IMAGE);
   end;
 end;
 
@@ -450,50 +502,77 @@ begin
 end;
 
 procedure TForm1.ButtonStartClick(Sender: TObject);
+var
+  Success: Boolean;
 begin
   cancelrequested := False;
   ButtonStart.Enabled := False;
   LastProgressTime := 0;
+  Success := False;
 
   try
     if RadioCreate.Checked then
-      CreateImg;
+      Success := CreateImg;
 
     if RadioRestore.Checked then
-      RestoreImg;
-
+      Success := RestoreImg;
   except
     on E: Exception do
-     if not cancelrequested then Log(Self, E.Message);
+    begin
+      if not cancelrequested then
+        Log(Self, E.Message);
+
+      Success := False;
+    end;
   end;
+
   if cancelrequested then
   begin
-    Log(Self,_(TXT_CANCELLED));
-    progressbar1.Position:=0;
+    Log(Self, _(TXT_CANCELLED));
+    ProgressBar1.Position := 0;
   end;
-  // LabelSpeed.
-  button4.Caption := '';
 
+  Button4.Caption := '';
   ButtonStart.Enabled := True;
-  cancelrequested:=false;
+
+  if FCliMode then
+  begin
+    if Success then
+      ExitCode := 0
+    else
+      ExitCode := 1;
+    Application.Terminate;
+  end;
+  cancelrequested := False;
+
 end;
 
 
 
-procedure TForm1.RestoreImg;
+
+function TForm1.RestoreImg: Boolean;
 var
   TargetDevice: string;
   MountPoint, S: string;
   BaseFilename, DiffFilename, Dir: string;
   SourceFile: string;
 begin
-  MountPoint := '';
+  Result := False;
 
+  MountPoint := '';
   TargetDevice := Trim(extractdevice(ComboBox1.Text));
 
-  if not DirectoryExists('/sys/class/block/' + ExtractFileName(TargetDevice)) then
+  if TargetDevice = '' then
   begin
-    Log(Self, TargetDevice + ' ' + _(TXT_DOES_NOT_EXIST_RESTORE_SUSPENDED));
+    Log(Self, _(TXT_PARTITION_NOT_SELECTED));
+    Exit;
+  end;
+
+  if not DirectoryExists('/sys/class/block/' +
+    ExtractFileName(TargetDevice)) then
+  begin
+    Log(Self, TargetDevice + ' ' +
+      _(TXT_DOES_NOT_EXIST_RESTORE_SUSPENDED));
     Exit;
   end;
 
@@ -502,7 +581,8 @@ begin
 
   if MountPoint = '/' then
   begin
-    Log(Self, TargetDevice + ' ' + _(TXT_ROOT_RESTORE_SUSPENDED));
+    Log(Self, TargetDevice + ' ' +
+      _(TXT_ROOT_RESTORE_SUSPENDED));
     Exit;
   end;
 
@@ -512,14 +592,29 @@ begin
     RunCommand('umount ' + TargetDevice, S);
   end;
 
+  if not FileExists(Trim(EditImage.Text)) then
+  begin
+    Log(Self, 'Image file does not exist: ' +
+      Trim(EditImage.Text));
+    Exit;
+  end;
+
   SourceFile := ExtractFileName(Trim(EditImage.Text));
 
-  if MessageDlg(TargetDevice + ' ' + _(TXT_WILL_BE_RESTORED) + LineEnding + SourceFile + LineEnding + _(TXT_ALL_DATA_WILL_BE_LOST), mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
-    Exit;
+  if not FCliHide then
+    if MessageDlg(
+      TargetDevice + ' ' + _(TXT_WILL_BE_RESTORED) +
+      LineEnding + SourceFile + LineEnding +
+      _(TXT_ALL_DATA_WILL_BE_LOST),
+      mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+      Exit;
 
   Dir := ExtractFilePath(Trim(EditImage.Text));
 
-  BaseFilename := FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) + prefixbaseimage);
+  BaseFilename :=
+    FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) +
+    prefixbaseimage);
+
   DiffFilename := Trim(EditImage.Text);
 
   if BaseFilename = DiffFilename then
@@ -527,8 +622,16 @@ begin
 
   TargetDevice := Trim(extractdevice(ComboBox1.Text));
 
-  if RestoreImage(TargetDevice, BaseFilename, DiffFilename, @Progress, @Log) then
-    Log(Self, _(TXT_IMAGE_RESTORED))
+  if RestoreImage(
+    TargetDevice,
+    BaseFilename,
+    DiffFilename,
+    @Progress,
+    @Log) then
+  begin
+    Log(Self, _(TXT_IMAGE_RESTORED));
+    Result := True;
+  end
   else
     Log(Self, _(TXT_RESTORE_ERROR));
 end;
@@ -541,14 +644,23 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Form1.Caption := f_caption + ' ' + version;
-
-  //LabelSpeed
-  button4.Caption := '';
+  Button4.Caption := '';
 
   RadioRestore.Checked := False;
   RadioCreate.Checked := True;
 
-  ReadIni;
+  FCliMode := ParamCount > 0;
+
+  if FCliMode then
+begin
+  Application.ShowMainForm := False;
+  Hide;
+end;
+
+  if not FCliMode then
+    ReadIni
+  else
+    ProcessCommandLine;
 
   if CurrentLanguage = LANG_ENGLISH then
   begin
@@ -565,13 +677,28 @@ begin
 
   ButtonStart.Caption := _(TXT_CREATE_IMAGE);
   Button1.Caption := '▼';
-
   Label1.Caption := _(TXT_SOURCE_PARTITION);
   Label2.Caption := _(TXT_IMAGE_FOLDER);
   Label3.Caption := _(TXT_COMPRESSION_LEVEL);
 
-  ComboBox1.Text := createdevice;
-  EditImage.Text := createfolder;
+  if FCliRestore then
+  begin
+    RadioRestore.Checked := True;
+    ComboBox1.Text := restoredevice;
+    EditImage.Text := restorefilename;
+  end
+  else
+  begin
+    RadioCreate.Checked := True;
+    ComboBox1.Text := createdevice;
+    EditImage.Text := createfolder;
+  end;
+
+  if FCliHide then
+  begin
+    Application.ShowMainForm := False;
+    Hide;
+  end;
 end;
 
 procedure TForm1.ComboBox1Change(Sender: TObject);
@@ -599,9 +726,7 @@ begin
     ButtonStart.Caption := _(TXT_CREATE_IMAGE);
     Label1.Caption := _(TXT_SOURCE_PARTITION);
     Label2.Caption := _(TXT_IMAGE_FOLDER);
-
     SaveIni;
-
     EditImage.Text := createfolder;
     ComboBox1.Text := createdevice;
   end;
@@ -609,7 +734,6 @@ end;
 
 procedure TForm1.SpinEdit1Change(Sender: TObject);
 begin
-
 end;
 
 procedure TForm1.RadioRestoreChange(Sender: TObject);
@@ -619,9 +743,7 @@ begin
     ButtonStart.Caption := _(TXT_RESTORE_IMAGE);
     Label1.Caption := _(TXT_TARGET_PARTITION);
     Label2.Caption := _(TXT_IMAGE_FILE);
-
     SaveIni;
-
     EditImage.Text := restorefilename;
     ComboBox1.Text := restoredevice;
   end;
@@ -647,14 +769,13 @@ begin
   end;
 end;
 
-
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
-   timer1.Enabled := False;
-   CheckForUpdates(memo1);
+  Timer1.Enabled := False;
 
+  if not FCliMode then
+    CheckForUpdates(Memo1);
 end;
-
 
 procedure TForm1.saveini;
 var
@@ -673,6 +794,116 @@ begin
     ini.WriteString('restore', 'filename', restorefilename);
   finally
     ini.Free;
+  end;
+end;
+
+procedure TForm1.ProcessCommandLine;
+var
+  I, V: Integer;
+  P, S: string;
+  LastSettings: Boolean;
+
+  function GetOptionValue(const Name: string; var Index: Integer; out Value: string): Boolean;
+  var
+    Prefix: string;
+  begin
+    Result := False;
+    Value := '';
+    Prefix := Name + '=';
+
+    if SameText(Copy(ParamStr(Index), 1, Length(Prefix)), Prefix) then
+    begin
+      Value := Copy(ParamStr(Index), Length(Prefix) + 1, MaxInt);
+      Result := True;
+      Exit;
+    end;
+
+    if SameText(ParamStr(Index), Name) and (Index < ParamCount) then
+    begin
+      Inc(Index);
+      Value := ParamStr(Index);
+      Result := True;
+    end;
+  end;
+
+begin
+  FCliHide := False;
+  FCliStart := False;
+  FCliCreate := False;
+  FCliRestore := False;
+  FCliCreateDestination := False;
+  FCliDestinationSpecified := False;
+
+  LastSettings := False;
+
+  for I := 1 to ParamCount do
+    if SameText(ParamStr(I), '--lastsettings') then
+      LastSettings := True;
+
+  if LastSettings then
+    ReadIni
+  else
+  begin
+    createdevice := '';
+    createfolder := '';
+    restoredevice := '';
+    restorefilename := '';
+    SpinEdit1.Value := 3;
+  end;
+
+  I := 1;
+
+  while I <= ParamCount do
+  begin
+    P := ParamStr(I);
+
+    if SameText(P, '--hide') then
+      FCliHide := True
+    else if SameText(P, '--lastsettings') then
+    begin
+    end
+    else if SameText(P, '--create') then
+    begin
+      FCliCreate := True;
+      FCliRestore := False;
+      FCliStart := True;
+    end
+    else if SameText(P, '--restore') then
+    begin
+      FCliRestore := True;
+      FCliCreate := False;
+      FCliStart := True;
+    end
+    else if GetOptionValue('--sourcepartition', I, S) then
+      createdevice := S
+    else if GetOptionValue('--createdestination', I, S) then
+    begin
+      createfolder := S;
+      FCliCreateDestination := True;
+      FCliDestinationSpecified := True;
+    end
+    else if GetOptionValue('--destination', I, S) then
+    begin
+      createfolder := S;
+      FCliCreateDestination := False;
+      FCliDestinationSpecified := True;
+    end
+    else if GetOptionValue('--compressionlevel', I, S) then
+    begin
+      V := StrToIntDef(S, -1);
+
+      if (V >= SpinEdit1.MinValue) and
+        (V <= SpinEdit1.MaxValue) then
+        SpinEdit1.Value := V
+      else
+        Log(Self, 'Invalid compression level: ' + S);
+    end
+    else if GetOptionValue('--sourceimage', I, S) then
+      restorefilename := S
+    else if GetOptionValue('--targetpartition', I, S) then
+      restoredevice := S;
+
+    Inc(I);
   end;
 end;
 

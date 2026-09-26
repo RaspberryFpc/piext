@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,47 +16,50 @@
             background: #fff;
         }
 
-        h1 {
-            border-bottom: 2px solid #444;
-            padding-bottom: 10px;
-        }
+```
+    h1 {
+        border-bottom: 2px solid #444;
+        padding-bottom: 10px;
+    }
 
-        h2 {
-            margin-top: 35px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
-        }
+    h2 {
+        margin-top: 35px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+    }
 
-        h3 {
-            margin-top: 25px;
-        }
+    h3 {
+        margin-top: 25px;
+    }
 
-        code {
-            font-family: Consolas, "Liberation Mono", monospace;
-            background: #f2f2f2;
-            padding: 2px 5px;
-            border-radius: 3px;
-        }
+    code {
+        font-family: Consolas, "Liberation Mono", monospace;
+        background: #f2f2f2;
+        padding: 2px 5px;
+        border-radius: 3px;
+    }
 
-        pre {
-            background: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            overflow-x: auto;
-        }
+    pre {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        overflow-x: auto;
+    }
 
-        ul, ol {
-            margin-top: 8px;
-        }
+    ul, ol {
+        margin-top: 8px;
+    }
 
-        .important {
-            background: #fff8dc;
-            border-left: 4px solid #e0b000;
-            padding: 12px 15px;
-            margin: 20px 0;
-        }
-    </style>
+    .important {
+        background: #fff8dc;
+        border-left: 4px solid #e0b000;
+        padding: 12px 15px;
+        margin: 20px 0;
+    }
+</style>
+```
+
 </head>
 
 <body>
@@ -72,7 +76,6 @@
     <strong>Base Image</strong>. Further images are created as
     <strong>Differential Images</strong> based on this Base Image.
 </p>
-
 
 <h2>Source and Target Partitions</h2>
 
@@ -98,7 +101,6 @@
     Partition.
 </p>
 
-
 <h2>Image Folder</h2>
 
 <p>
@@ -122,7 +124,6 @@
     PiExt automatically assigns the image filenames.
     No filename needs to be entered manually.
 </p>
-
 
 <h2>Image Storage</h2>
 
@@ -150,7 +151,6 @@
     The resulting image files use the <code>.zst</code> file extension.
 </p>
 
-
 <h2>Base Image</h2>
 
 <p>
@@ -169,7 +169,6 @@
 <p>
     The filename contains the source partition and the creation date.
 </p>
-
 
 <h2>Differential Images</h2>
 
@@ -196,13 +195,11 @@ diff-image_2026-09-21_2.zst</code></pre>
     depend on other Differential Images.
 </p>
 
-
 <h2>Restoring Images</h2>
 
 <p>
     Every image in the folder can be selected individually for restoration.
 </p>
-
 
 <h3>Restoring the Base Image</h3>
 
@@ -211,7 +208,6 @@ diff-image_2026-09-21_2.zst</code></pre>
 </p>
 
 <pre><code>base_image_sda2_2026-09-21.zst</code></pre>
-
 
 <h3>Restoring a Differential Image</h3>
 
@@ -240,7 +236,6 @@ diff-image_2026-09-21_1.zst</code></pre>
 <p>
     Each Differential Image can therefore be selected and restored independently.
 </p>
-
 
 <h2>Image Structure</h2>
 
@@ -276,7 +271,6 @@ diff-image_2026-09-21_3.zst</code></pre>
     still to be restored.
 </p>
 
-
 <h2>Image Compatibility</h2>
 
 <p>
@@ -293,7 +287,6 @@ diff-image_2026-09-21_3.zst</code></pre>
     disk images that can be written directly to a device with tools such as
     <code>dd</code>.
 </p>
-
 
 <h2>Important</h2>
 
@@ -318,9 +311,7 @@ diff-image_2026-09-21_3.zst</code></pre>
     </ul>
 </div>
 
-
 <h2>Typical Workflow</h2>
-
 
 <h3>Create Images</h3>
 
@@ -335,7 +326,6 @@ diff-image_2026-09-21_3.zst</code></pre>
     <li>Repeat as required.</li>
     <li>Delete Differential Images that are no longer needed.</li>
 </ol>
-
 
 <h3>Restore an Image</h3>
 
@@ -353,7 +343,6 @@ diff-image_2026-09-21_3.zst</code></pre>
 <p>
     The selected image is restored directly to the Target Partition.
 </p>
-
 
 <h2>Restoring the Active Root Partition</h2>
 
@@ -388,6 +377,139 @@ diff-image_2026-09-21_3.zst</code></pre>
     After the restore operation has completed, shut down the Raspberry Pi
     and boot it again from the restored system.
 </p>
+
+<h2>Command-Line Parameters</h2>
+
+<p>
+    PiExt can also be used from the command line. As soon as at least one
+    command-line parameter is specified, PiExt operates in
+    <strong>CLI mode</strong>. The graphical user interface is not displayed.
+    After the operation has completed, PiExt exits automatically.
+</p>
+
+<p>
+    Parameters can be specified either using <code>=</code> or separated
+    from the value by a space.
+</p>
+
+<p>Examples:</p>
+
+<pre><code>--sourcepartition=/dev/sda2</code></pre>
+
+<p>or:</p>
+
+<pre><code>--sourcepartition /dev/sda2</code></pre>
+
+<h3>Create an Image</h3>
+
+<table>
+    <tr>
+        <th>Parameter</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><code>--create</code></td>
+        <td>Automatically starts image creation.</td>
+    </tr>
+    <tr>
+        <td><code>--sourcepartition &lt;partition&gt;</code></td>
+        <td>Specifies the Source Partition from which the image is created, for example <code>/dev/sda2</code>.</td>
+    </tr>
+    <tr>
+        <td><code>--createdestination &lt;folder&gt;</code></td>
+        <td>Specifies the destination folder for the image. If the folder does not exist, it is created automatically.</td>
+    </tr>
+    <tr>
+        <td><code>--destination &lt;folder&gt;</code></td>
+        <td>Specifies the destination folder for the image. The folder must already exist.</td>
+    </tr>
+    <tr>
+        <td><code>--compressionlevel &lt;value&gt;</code></td>
+        <td>Sets the Zstandard compression level.</td>
+    </tr>
+    <tr>
+        <td><code>--lastsettings</code></td>
+        <td>Uses the last saved PiExt settings as the initial values. Explicitly specified command-line parameters override these settings.</td>
+    </tr>
+</table>
+
+<h3>Restore an Image</h3>
+
+<table>
+    <tr>
+        <th>Parameter</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><code>--restore</code></td>
+        <td>Automatically starts image restoration.</td>
+    </tr>
+    <tr>
+        <td><code>--sourceimage &lt;file&gt;</code></td>
+        <td>Specifies the image file to be restored.</td>
+    </tr>
+    <tr>
+        <td><code>--targetpartition &lt;partition&gt;</code></td>
+        <td>Specifies the Target Partition to which the image is restored, for example <code>/dev/sda2</code>.</td>
+    </tr>
+</table>
+
+<h3>General Notes</h3>
+
+<p>
+    <code>--create</code> and <code>--restore</code> automatically start the
+    corresponding operation.
+</p>
+
+<p>
+    The difference between <code>--createdestination</code> and
+    <code>--destination</code> is that <code>--createdestination</code>
+    automatically creates a destination folder if it does not exist,
+    whereas <code>--destination</code> requires the destination folder
+    to already exist.
+</p>
+
+<p>
+    <code>--lastsettings</code> can be used together with the other parameters.
+    Explicitly specified command-line parameters take precedence over the
+    saved settings.
+</p>
+
+<h3>Examples</h3>
+
+<p>Create an image and create the destination folder if necessary:</p>
+
+<pre><code>sudo piext --create --sourcepartition /dev/sda2 --createdestination "/media/pi/hzg2/Diff_image"</code></pre>
+
+<p>Create an image using compression level 5:</p>
+
+<pre><code>sudo piext --create --sourcepartition /dev/sda2 --createdestination "/media/pi/hzg2/Diff_image" --compressionlevel 5</code></pre>
+
+<p>Create an image using an existing destination folder:</p>
+
+<pre><code>sudo piext --create --sourcepartition /dev/sda2 --destination "/media/pi/hzg2/Diff_image"</code></pre>
+
+<p>Restore an image:</p>
+
+<pre><code>sudo piext --restore --sourceimage "/media/pi/hzg2/Diff_image/base_image_sda2_2026-09-21.zst" --targetpartition /dev/sdd2</code></pre>
+
+<p>
+    Use the saved settings and automatically start image creation:
+</p>
+
+<pre><code>sudo piext --lastsettings --create</code></pre>
+
+<h3>Exit Codes</h3>
+
+<p>
+    In CLI mode, PiExt exits automatically after the operation has completed.
+</p>
+
+<ul>
+    <li><code>0</code> = operation completed successfully</li>
+    <li><code>1</code> = error during the operation</li>
+</ul>
+
 <h2>License</h2>
 
 <p>

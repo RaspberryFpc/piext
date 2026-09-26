@@ -1,6 +1,8 @@
 # PiExt
 
-PiExt is a backup and restore tool for Raspberry Pi systems that creates and restores compressed images of Linux EXT2, EXT3 and EXT4 partitions.
+PiExt is a backup and restore tool for **Raspberry Pi systems** that creates and restores compressed images of Linux **EXT2, EXT3 and EXT4 partitions**.
+
+PiExt can be used either through its **graphical user interface (GUI)** or from the **command line (CLI)**.
 
 Instead of storing the complete partition, PiExt stores only the sectors currently used by the filesystem. The data is compressed on the fly using **Zstandard (ZSTD)**.
 
@@ -9,29 +11,142 @@ The first image created in an image folder automatically becomes a **Base Image*
 ## Features
 
 * Supports EXT2, EXT3 and EXT4 partitions
+* Supports both **GUI and CLI operation**
 * Stores only used filesystem sectors
 * Compresses image data on the fly using Zstandard
 * Automatically creates a Base Image
-* Creates Differential Images based on the Base Image
-* Create Differential Images with one click
+* Creates Differential Images based directly on the Base Image
+* Create Differential Images with one click in the GUI
 * Differential Images can be restored independently
 * Only one Base Image is allowed per image folder
 * Image filenames are generated automatically
 * Images are stored as `.zst` files
-
+* CLI operation can be fully automated
+* CLI returns an exit code indicating success or failure
 
 ## Installation
 
 PiExt is distributed as a Debian package (`.deb`) for Raspberry Pi systems.
+
 Download the latest release from the **Releases** section of this repository and install the package with:
 
 ```bash
 sudo apt install ./piext.deb
 ```
 
-After installation, PiExt can be started from the application menu.
+After installation, PiExt can be started either from the desktop application menu using the **GUI** or from a terminal using the command:
+
+```bash
+piext
+```
+
 PiExt requires appropriate permissions to access source and target partitions.
 
+## Graphical User Interface (GUI)
+
+When PiExt is started without command-line parameters, it starts in **GUI mode**.
+
+The GUI provides functions for:
+
+* Selecting Source and Target Partitions
+* Selecting image folders
+* Creating Base Images
+* Creating Differential Images
+* Selecting images for restoration
+* Configuring the Zstandard compression level
+* Starting and cancelling image operations
+* Displaying operation progress and messages
+
+## Command-Line Interface (CLI)
+
+PiExt also provides a **command-line interface (CLI)** in the same executable.
+
+When PiExt is started with one or more command-line parameters, it automatically switches to **CLI mode**.
+
+In CLI mode:
+
+* The graphical user interface is not displayed.
+* The operation can be started automatically.
+* No GUI interaction is required.
+* PiExt exits automatically when the operation has finished.
+* Exit code `0` indicates success.
+* Exit code `1` indicates an error.
+
+The CLI is useful for scripts, automated backups and scheduled operations.
+
+### Create Image
+
+The following parameters are available for creating images:
+
+| Parameter             | Description                                                                  |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `--create`            | Automatically start image creation                                           |
+| `--sourcepartition`   | Source EXT2/EXT3/EXT4 partition                                              |
+| `--createdestination` | Destination folder for the image; the folder is created if it does not exist |
+| `--destination`       | Destination folder for the image; the folder must already exist              |
+| `--compressionlevel`  | Zstandard compression level                                                  |
+| `--lastsettings`      | Use the saved GUI settings                                                   |
+
+Example:
+
+```bash
+sudo piext --create --sourcepartition /dev/sda2 --createdestination "/media/pi/hzg2/Diff_image"
+```
+
+With a specific compression level:
+
+```bash
+sudo piext --create --sourcepartition /dev/sda2 --createdestination "/media/pi/hzg2/Diff_image" --compressionlevel 5
+```
+
+If the destination folder already exists:
+
+```bash
+sudo piext --create --sourcepartition /dev/sda2 --destination "/media/pi/hzg2/Diff_image"
+```
+
+The saved settings can also be used:
+
+```bash
+sudo piext --lastsettings --create
+```
+
+The parameters can be specified either with a space or with `=`:
+
+```bash
+sudo piext --create --sourcepartition /dev/sda2
+```
+
+or:
+
+```bash
+sudo piext --create --sourcepartition=/dev/sda2
+```
+
+### Restore Image
+
+The following parameters are available for restoring an image:
+
+| Parameter           | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| `--restore`         | Automatically start image restoration           |
+| `--sourceimage`     | Image file to restore                           |
+| `--targetpartition` | Target partition to which the image is restored |
+
+Example:
+
+```bash
+sudo piext --restore --sourceimage "/media/pi/hzg2/Diff_image/base_image_sda2_2026-09-21.zst" --targetpartition /dev/sdd2
+```
+
+A Differential Image can be restored in the same way. The corresponding Base Image must be available in the same image folder.
+
+### CLI Exit Codes
+
+| Exit code | Meaning                          |
+| --------- | -------------------------------- |
+| `0`       | Operation completed successfully |
+| `1`       | Operation failed                 |
 
 ## Source and Target Partitions
 
@@ -169,7 +284,7 @@ PiExt uses its own program-specific image format.
 
 Images created by PiExt can currently only be restored using PiExt.
 
-The `.zst` files are not standard disk images and cannot be written directly to a partition using tools such as `dd`.
+The `.zst` files are **not standard disk images** and cannot be written directly to a partition using tools such as `dd`.
 
 ## Typical Workflow
 
@@ -211,13 +326,19 @@ After the restore operation is complete, shut down the system and boot from the 
 
 ## Requirements
 
+* Raspberry Pi system
 * Linux
 * EXT2, EXT3 or EXT4 source and target partitions
 * Zstandard (ZSTD)
 * Appropriate permissions to access the source and target partitions
+* A terminal when using the CLI
 
 ## Important
 
+* PiExt supports both **GUI and CLI operation**.
+* Without CLI parameters, PiExt starts in GUI mode.
+* With CLI parameters, PiExt automatically switches to CLI mode.
+* The GUI is not displayed in CLI mode.
 * A Source Partition is required when creating an image.
 * A Target Partition is required when restoring an image.
 * Only used filesystem sectors are stored.
@@ -232,3 +353,5 @@ After the restore operation is complete, shut down the system and boot from the 
 * Image filenames are generated automatically.
 * PiExt images use the `.zst` file extension.
 * PiExt images can currently only be restored using PiExt.
+* CLI exit code `0` indicates success.
+* CLI exit code `1` indicates an error.
