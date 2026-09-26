@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -57,13 +58,14 @@ ul, ol {
 
 <h1>PiExt</h1>
 
-<p class="language"><a href="index.html">English Documentation</a></p>
+<p class="language">
+    <a href="index.html">English Documentation</a>
+</p>
 
 <p>
     PiExt erstellt und stellt komprimierte Images von <strong>Linux-
     EXT2-, EXT3- und EXT4-Partitionen auf Raspberry-Pi-Systemen</strong> wieder her.
 </p>
-
 
 <p>
     Statt die vollständige Partition zu speichern, speichert PiExt
@@ -75,6 +77,51 @@ ul, ol {
     Das erste in einem Image-Ordner erstellte Image wird automatisch als
     <strong>Basis-Image</strong> erstellt. Weitere Images werden als
     <strong>differenzielle Images</strong> direkt auf Basis des Basis-Images erstellt.
+</p>
+
+<h2>Download &amp; Installation</h2>
+
+<p>
+    Die aktuelle Version von PiExt kann von
+    <a href="https://github.com/RaspberryFpc/piext/releases">GitHub Releases</a>
+    oder
+    <a href="https://sourceforge.net/projects/piext/">SourceForge</a>
+    heruntergeladen werden.
+</p>
+
+<ul>
+    <li>
+        <a href="https://github.com/RaspberryFpc/piext/releases">
+            GitHub Releases
+        </a>
+    </li>
+    <li>
+        <a href="https://sourceforge.net/projects/piext/">
+            SourceForge
+        </a>
+    </li>
+</ul>
+
+<h3>Installation</h3>
+
+<p>
+    Die aktuelle <code>.deb</code>-Datei herunterladen und ein Terminal
+    in dem Verzeichnis öffnen, in dem sich die heruntergeladene Datei befindet.
+</p>
+
+<p>
+    PiExt mit folgendem Befehl installieren:
+</p>
+
+<pre><code>sudo apt install ./piext.deb</code></pre>
+
+<p>
+    Der Paketmanager installiert automatisch alle benötigten Abhängigkeiten.
+</p>
+
+<p>
+    Nach der Installation kann PiExt über das Desktop-Anwendungsmenü
+    gestartet werden.
 </p>
 
 <h2>Quell- und Zielpartitionen</h2>
