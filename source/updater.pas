@@ -112,9 +112,9 @@ var
   S: string;
   DownloadURL: string;
 begin
-  ForceDirectories('/var/lib/pibackup');
+  ForceDirectories('/var/lib/piext');
 
-  DownloadURL := 'https://raw.githubusercontent.com/' + REPO + '/' + RemoteVersion + '/bin/pibackup.deb';
+  DownloadURL := 'https://raw.githubusercontent.com/' + REPO + '/' + RemoteVersion + '/bin/piext.deb';
 
   S := PrexeBash('wget -O ' + NEWDEB + ' "' + DownloadURL + '"', memo);
 
