@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectSession>
     <Version Value="13"/>
-    <BuildModes Active="Default"/>
+    <BuildModes Active="Release"/>
     <Units>
       <Unit>
         <Filename Value="piext.ppr"/>
@@ -29,8 +29,8 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1286"/>
-        <CursorPos X="60" Y="1294"/>
+        <TopLine Value="76"/>
+        <CursorPos X="50" Y="88"/>
       </Unit>
       <Unit>
         <Filename Value="ext4bitmap.pas"/>
@@ -103,8 +103,8 @@
         <UsageCount Value="54"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="127"/>
-        <CursorPos X="44" Y="124"/>
+        <TopLine Value="93"/>
+        <CursorPos X="34" Y="105"/>
       </Unit>
       <Unit>
         <Filename Value="../piextdiffimager/udiskiecontrol.pas"/>
@@ -228,11 +228,7 @@
         <CursorPos X="59" Y="2421"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="28">
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="867" Column="63" TopLine="864"/>
-      </Position>
+    <JumpHistory HistoryIndex="29">
       <Position>
         <Filename Value="unit1.pas"/>
         <Caret Line="978" Column="15" TopLine="966"/>
@@ -344,6 +340,14 @@
       <Position>
         <Filename Value="unit1.pas"/>
         <Caret Line="1284" Column="8" TopLine="1278"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="124" Column="44" TopLine="127"/>
+      </Position>
+      <Position>
+        <Filename Value="updater.pas"/>
+        <Caret Line="41" Column="7" TopLine="40"/>
       </Position>
     </JumpHistory>
     <RunParams>

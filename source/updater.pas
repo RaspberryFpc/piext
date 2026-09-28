@@ -96,7 +96,7 @@ var
 begin
   P := TProcess.Create(nil);
   try
-    P.Executable := '/usr/lib/pibackup/pibackup';
+    P.Executable := 'sudo '+prog;
     P.Options := [];
     P.Execute;
   finally
