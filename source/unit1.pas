@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, Spin, ActnList, rawimage, imageutils, process,
-  inifiles, Language, unit2, updater;
+  StdCtrls, ComCtrls, ExtCtrls, Spin, ActnList, rawimage,
+  imageutils, process, inifiles, Language, unit2, updater,BaseUnix;
 
 type
   { TForm1 }
@@ -18,6 +18,9 @@ type
     Button4: TButton;
     ButtonStart: TButton;
     ButtonCancel: TButton;
+    cb_system: TCheckBox;
+    cb_boot: TCheckBox;
+    cb_mbr: TCheckBox;
     ComboBox1: TComboBox;
     EditImage: TEdit;
     Label1: TLabel;
@@ -37,12 +40,16 @@ type
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
+    procedure cb_bootChange(Sender: TObject);
+    procedure cb_mbrChange(Sender: TObject);
+    procedure cb_systemChange(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure EditImageChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure RadioRestoreChange(Sender: TObject);
-    function RestoreImg: Boolean;
-    function CreateImg: Boolean;
+    function RestoreImg: boolean;
+    function RestoreMBRImage:boolean;
+    function CreateImg(const device: string): boolean;
     procedure ButtonStartClick(Sender: TObject);
     procedure ComboBox1DropDown(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -54,24 +61,25 @@ type
   public
     procedure StartCLI;
   private
-    FLastSpeedBytes: Int64;
-    FCliMode: Boolean;
-    FCliHide: Boolean;
-    FCliStart: Boolean;
-    FCliCreate: Boolean;
-    FCliRestore: Boolean;
-    FCliCreateDestination: Boolean;
-    FCliDestinationSpecified: Boolean;
-    procedure Progress(Sender: TObject; BPosition, Total: Int64);
+    FLastSpeedBytes: int64;
+    FCliMode: boolean;
+    FCliHide: boolean;
+    FCliStart: boolean;
+    FCliCreate: boolean;
+    FCliRestore: boolean;
+    FCliCreateDestination: boolean;
+    FCliDestinationSpecified: boolean;
+    procedure Progress(Sender: TObject; BPosition, Total: int64);
     procedure Log(Sender: TObject; const Msg: string);
     procedure ProcessCommandLine;
+    procedure GetImageSourcePartitions(ComboBox: TComboBox);
   end;
 
 var
   Form1: TForm1;
 
 const
-  version = 'v1.2.1';
+  version = 'v2.0.0';
 
 implementation
 
@@ -84,8 +92,8 @@ const
 
 var
   LastProgressTime: QWord;
-  LastProgressPosition: Int64;
-  SmoothedETASeconds: Int64;
+  LastProgressPosition: int64;
+  SmoothedETASeconds: int64;
   restoredevice, restorefilename, createdevice, createfolder: string;
 
 procedure TForm1.StartCLI;
@@ -94,22 +102,14 @@ begin
     ButtonStartClick(ButtonStart);
 end;
 
-procedure TForm1.Progress(Sender: TObject; BPosition, Total: Int64);
+procedure TForm1.Progress(Sender: TObject; BPosition, Total: int64);
 var
-  Tick: QWord;
-  DeltaTick: QWord;
-  DeltaBytes: Int64;
-  Speed: Double;
-  Remaining: Int64;
-  ETASeconds: Double;
-  Hours: Int64;
-  Minutes: Int64;
-  Seconds: Int64;
-  SpeedText: string;
-  ETAText: string;
+  Tick, DeltaTick: QWord;
+  DeltaBytes, Remaining, Hours, Minutes, Seconds: int64;
+  Speed, ETASeconds: double;
+  SpeedText, ETAText: string;
 begin
   Tick := GetTickCount64;
-
   if LastProgressTime = 0 then
   begin
     LastProgressTime := Tick;
@@ -119,53 +119,43 @@ begin
   else
   begin
     DeltaTick := Tick - LastProgressTime;
-
     if DeltaTick >= 5000 then
     begin
       DeltaBytes := BPosition - LastProgressPosition;
-
       if DeltaTick > 0 then
       begin
         Speed := DeltaBytes * 1000.0 / DeltaTick;
-
         if Speed >= 1024 * 1024 then
           SpeedText := FormatFloat('0.0 MiB/s', Speed / (1024 * 1024))
         else if Speed >= 1024 then
           SpeedText := FormatFloat('0.0 KiB/s', Speed / 1024)
         else
           SpeedText := FormatFloat('0 B/s', Speed);
-
         if (Total > BPosition) and (Speed > 0) then
         begin
           Remaining := Total - BPosition;
           ETASeconds := Remaining / Speed;
           SmoothedETASeconds := Round((SmoothedETASeconds * 3 + ETASeconds) / 4);
-
           Hours := SmoothedETASeconds div 3600;
           Minutes := (SmoothedETASeconds mod 3600) div 60;
           Seconds := SmoothedETASeconds mod 60;
-
           if Hours > 0 then
             ETAText := Format(_(TXT_ETA_HOURS), [Hours, Minutes, Seconds])
           else
             ETAText := Format(_(TXT_ETA_MINUTES), [Minutes, Seconds]);
-
           Button4.Caption := SpeedText + '  ' + ETAText;
         end
         else
           Button4.Caption := SpeedText;
       end;
-
       LastProgressTime := Tick;
       LastProgressPosition := BPosition;
     end;
   end;
-
   if Total > 0 then
     ProgressBar1.Position := Round(BPosition * 100.0 / Total)
   else
     ProgressBar1.Position := 0;
-
   Application.ProcessMessages;
 end;
 
@@ -178,25 +168,63 @@ end;
 
 function extractdevice(s: string): string;
 var
-  p: Integer;
+  p: integer;
 begin
   s := Trim(s);
-
   if s = '' then
   begin
     Result := '';
     Exit;
   end;
-
   p := Pos(' ', s);
-
   if p > 0 then
     s := Copy(s, 1, p - 1);
-
   if Pos('/dev/', s) <> 1 then
     s := '/dev/' + s;
-
   Result := s;
+end;
+
+function GetDeviceType(const Device: string): string;
+var
+  S: string;
+begin
+  Result := '';
+  if Device = '' then
+    Exit;
+  RunCommand('lsblk -dnbo TYPE ' + Device, S);
+  Result := Trim(S);
+end;
+
+function IsWholeDisk(const Device: string): boolean;
+begin
+  Result := SameText(GetDeviceType(Device), 'disk');
+end;
+
+function GetParentDisk(const Device: string): string;
+var
+  Name: string;
+begin
+  Name := ExtractFileName(extractdevice(Device));
+  if Name = '' then
+    Exit('');
+
+  if (Pos('nvme', Name) = 1) or (Pos('mmcblk', Name) = 1) then
+  begin
+    while (Length(Name) > 0) and CharInSet(Name[Length(Name)], ['0'..'9']) do
+      Delete(Name, Length(Name), 1);
+    if (Length(Name) > 0) and (Name[Length(Name)] = 'p') then
+      Delete(Name, Length(Name), 1);
+  end
+  else
+  begin
+    while (Length(Name) > 0) and CharInSet(Name[Length(Name)], ['0'..'9']) do
+      Delete(Name, Length(Name), 1);
+  end;
+
+  if Name = '' then
+    Result := ''
+  else
+    Result := '/dev/' + Name;
 end;
 
 function createBasedestname: string;
@@ -204,167 +232,186 @@ var
   device, dir: string;
 begin
   Result := '';
-
   device := Trim(extractdevice(Form1.ComboBox1.Text));
   device := Copy(device, 6, MaxInt);
-
   if device = '' then
   begin
-    Form1.Log(Form1, _(TXT_PARTITION_NOT_SELECTED));
+    Form1.Log(Form1, _(TXT_DRIVE_NOT_SELECTED));
     Exit;
   end;
-
   dir := IncludeTrailingPathDelimiter(Form1.EditImage.Text);
-
-  Result := IncludeTrailingPathDelimiter(dir) +
-    prefixbaseimage + device + '_' +
-    FormatDateTime('yyyy-mm-dd', Date) + '.zst';
+  Result := IncludeTrailingPathDelimiter(dir) + prefixbaseimage + device + '_' + FormatDateTime('yyyy-mm-dd', Date) + '.zst';
 end;
 
-procedure GetImageSourcePartitions(ComboBox: TComboBox);
+
+procedure TForm1.GetImageSourcePartitions(ComboBox: TComboBox);
 var
-  S, Line: string;
-  Lines: TStringList;
-  P: TStringList;
-  I: Integer;
-  Target, MountPoint: string;
-  Size: Int64;
+  S, Line, DeviceName, DeviceType, FSType, SizeStr: string;
+  RootSource, RootDisk, ParentDisk: string;
+  SL, Fields: TStringList;
+  I: integer;
+  Size: int64;
 begin
-  ComboBox.Clear;
+  ComboBox.Items.Clear;
 
-  RunCommand('lsblk -rnbo NAME,TYPE,FSTYPE,SIZE,MOUNTPOINT', S);
+  RootSource := '';
+  RootDisk := '';
 
-  Lines := TStringList.Create;
-  P := TStringList.Create;
+  if RadioRestore.Checked then
+  begin
+    RunCommand('findmnt -no SOURCE /', RootSource);
+    RootSource := Trim(RootSource);
 
-  try
-    Lines.Text := S;
-
-    for I := 0 to Lines.Count - 1 do
+    if RootSource <> '' then
     begin
-      Line := Trim(Lines[I]);
+      RunCommand('lsblk -no PKNAME ' + RootSource, RootDisk);
+      RootDisk := Trim(RootDisk);
+
+      if RootDisk = '' then
+        RootDisk := ExtractFileName(RootSource);
+    end;
+  end;
+
+  RunCommand('lsblk -rnbo NAME,TYPE,SIZE,FSTYPE', S);
+
+  SL := TStringList.Create;
+  try
+    SL.Text := S;
+
+    for I := 0 to SL.Count - 1 do
+    begin
+      Line := Trim(SL[I]);
 
       if Line = '' then
         Continue;
 
-      P.Clear;
-      P.Delimiter := ' ';
-      P.StrictDelimiter := False;
-      P.DelimitedText := Line;
+      Fields := TStringList.Create;
+      try
+        ExtractStrings([' ', #9], [], PChar(Line), Fields);
 
-      if P.Count < 4 then
-        Continue;
+        if Fields.Count < 3 then
+          Continue;
 
-      if P[1] <> 'part' then
-        Continue;
+        DeviceName := Fields[0];
+        DeviceType := Fields[1];
+        SizeStr := Fields[2];
 
-      if not ((P[2] = 'ext2') or (P[2] = 'ext3') or (P[2] = 'ext4')) then
-        Continue;
+        FSType := '';
 
-      Target := P[0];
-      Size := StrToInt64Def(P[3], 0);
+        if Fields.Count >= 4 then
+          FSType := LowerCase(Fields[3]);
 
-      if Size <= 0 then
-        Continue;
+        if (Pos('loop', LowerCase(DeviceName)) = 1) or
+           (Pos('zram', LowerCase(DeviceName)) = 1) then
+          Continue;
 
-      if P.Count >= 5 then
-        MountPoint := P[4]
-      else
-        MountPoint := '-';
+        { Aktives Systemlaufwerk beim Restore komplett ausschließen }
+        if RadioRestore.Checked and (RootDisk <> '') then
+        begin
+          ParentDisk := '';
 
-      if MountPoint = '' then
-        MountPoint := '-';
+          if DeviceType = 'disk' then
+            ParentDisk := DeviceName
+          else if DeviceType = 'part' then
+            RunCommand('lsblk -no PKNAME /dev/' + DeviceName, ParentDisk);
 
-      ComboBox.Items.Add(Target + '  ' +
-        FormatFloat('0.0', Size / 1024 / 1024 / 1024) +
-        ' GiB  ' + MountPoint);
+          ParentDisk := Trim(ParentDisk);
+
+          if (DeviceName = RootDisk) or
+             (ParentDisk = RootDisk) then
+            Continue;
+        end;
+        if (DeviceType <> 'disk') then continue;
+
+         Size := StrToInt64Def(SizeStr, 0);
+
+        if Size <= 0 then
+          Continue;
+
+        if DeviceType = 'disk' then
+          ComboBox.Items.Add('/dev/' + DeviceName + '  ' +
+            FormatFloat('0.0', Size / 1024 / 1024 / 1024) +
+            ' GiB  disk')
+        else
+        begin
+          if FSType = '' then
+            FSType := 'unknown';
+
+          ComboBox.Items.Add('/dev/' + DeviceName + '  ' +
+            FormatFloat('0.0', Size / 1024 / 1024 / 1024) +
+            ' GiB  ' + FSType);
+        end;
+
+      finally
+        Fields.Free;
+      end;
     end;
+
   finally
-    P.Free;
-    Lines.Free;
+    SL.Free;
   end;
 end;
+
+
 
 function FileExistsWildcard(const Filename: string): string;
 var
   SR: TSearchRec;
 begin
   Result := '';
-
   if FindFirst(Filename + '*', faAnyFile, SR) = 0 then
-    Result := ExtractFilePath(Filename) + SR.Name;
-
-  FindClose(SR);
-end;
-
-function GetmaxDiffFile(const Dir: string): Integer;
-var
-  SR: TSearchRec;
-  n, p: Integer;
-  s: string;
-begin
-  Result := 0;
-
-  if FindFirst(IncludeTrailingPathDelimiter(Dir) +
-    prefixdiffimage + '*', faAnyFile, SR) = 0 then
   begin
-    repeat
-      if (SR.Name <> '.') and (SR.Name <> '..') and
-        ((SR.Attr and faDirectory) = 0) then
-      begin
-        s := SR.Name;
-
-        Delete(s, 1, Length(prefixdiffimage));
-
-        p := Pos('.', s);
-        if p > 0 then
-          Delete(s, p, MaxInt);
-
-        p := Pos('_', s);
-
-        if p > 0 then
-          s := Copy(s, p + 1, MaxInt)
-        else
-          s := '';
-
-        if not TryStrToInt(s, n) then
-          n := 0;
-
-        if n > Result then
-          Result := n;
-      end;
-    until FindNext(SR) <> 0;
-
+    Result := ExtractFilePath(Filename) + SR.Name;
     FindClose(SR);
   end;
 end;
 
-function creatediff(dir, existingbasefile: string): Boolean;
+function GetmaxDiffFile(const Dir: string): integer;
 var
-  n: Integer;
+  SR: TSearchRec;
+  n, p: integer;
+  s: string;
+begin
+  Result := 0;
+  if FindFirst(IncludeTrailingPathDelimiter(Dir) + prefixdiffimage + '*', faAnyFile, SR) = 0 then
+  begin
+    repeat
+      if (SR.Name <> '.') and (SR.Name <> '..') and ((SR.Attr and faDirectory) = 0) then
+      begin
+        s := SR.Name;
+        Delete(s, 1, Length(prefixdiffimage));
+        p := Pos('.', s);
+        if p > 0 then
+          Delete(s, p, MaxInt);
+        p := Pos('_', s);
+        if p > 0 then
+          s := Copy(s, p + 1, MaxInt)
+        else
+          s := '';
+        if not TryStrToInt(s, n) then
+          n := 0;
+        if n > Result then
+          Result := n;
+      end;
+    until FindNext(SR) <> 0;
+    FindClose(SR);
+  end;
+end;
+
+
+function creatediff(dir, existingbasefile, systemdevice: string): boolean;
+var
+  n: integer;
   Dateiname: string;
 begin
   Result := False;
-
   n := GetmaxDiffFile(Dir);
-
-  Dateiname := IncludeTrailingPathDelimiter(dir) +
-    prefixdiffimage + FormatDateTime('yyyy-mm-dd', Date) + '_' +
-    IntToStr(n + 1) + '.zst';
-
+  Dateiname := IncludeTrailingPathDelimiter(dir) + prefixdiffimage + FormatDateTime('yyyy-mm-dd', Date) + '_' + IntToStr(n + 1) + '.zst';
   Form1.Memo1.Clear;
-
-  Form1.Log(Form1,
-    Format(_(TXT_CREATING_DIFF_IMAGE), [Dateiname]));
-
+  Form1.Log(Form1, Format(_(TXT_CREATING_DIFF_IMAGE), [Dateiname]));
   Form1.ProgressBar1.Position := 0;
-
-  if CreateDiffBitmap(
-    Trim(extractdevice(Form1.ComboBox1.Text)),
-    existingbasefile,
-    Dateiname,
-    @Form1.Progress,
-    @Form1.Log) then
+  Form1.Log(Form1, 'Differential source: ' + systemdevice);
+  if CreateDiffBitmap(systemdevice, existingbasefile, Dateiname, @Form1.Progress, @Form1.Log) then
   begin
     Form1.Log(Form1, _(TXT_DIFF_IMAGE_CREATED));
     Result := True;
@@ -373,12 +420,13 @@ begin
     Form1.Log(Form1, _(TXT_DIFF_IMAGE_ERROR));
 end;
 
-function TForm1.CreateImg: Boolean;
+
+function TForm1.CreateImg(const device: string): boolean;
 var
-  destname, existingbasefilename, f_ext, device, dir: string;
+  destname, existingbasefilename, bootimagename, mbrimagename: string;
+  f_ext, disk, bootdevice, systemdevice, dir, Timestamp: string;
 begin
   Result := False;
-
   Memo1.Clear;
   ProgressBar1.Position := 0;
   FLastSpeedBytes := 0;
@@ -393,8 +441,7 @@ begin
       Exit;
     end;
 
-    if FCliMode and FCliDestinationSpecified and
-      not FCliCreateDestination and not DirectoryExists(dir) then
+    if FCliMode and FCliDestinationSpecified and not FCliCreateDestination and not DirectoryExists(dir) then
     begin
       Log(Self, 'Destination folder does not exist: ' + dir);
       Exit;
@@ -409,49 +456,125 @@ begin
       end;
     end;
 
-    existingbasefilename :=
-      FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) +
-      prefixbaseimage);
+    disk := Trim(ExtractDevice(device));
 
+    if disk = '' then
+    begin
+      Log(Self, 'No device specified.');
+      Exit;
+    end;
+
+    if not IsWholeDisk(disk) then
+    begin
+      Log(Self, 'The selected device is not a complete disk: ' + disk);
+      Exit;
+    end;
+
+    Log(Self, 'Source drive: ' + disk);
+
+    { Second partition = system partition }
+    if Pos('mmcblk', ExtractFileName(disk)) = 1 then
+      systemdevice := disk + 'p2'
+    else if Pos('nvme', ExtractFileName(disk)) = 1 then
+      systemdevice := disk + 'p2'
+    else
+      systemdevice := disk + '2';
+
+    if not DirectoryExists('/sys/class/block/' + ExtractFileName(systemdevice)) then
+    begin
+      Log(Self, 'System partition not found: ' + systemdevice);
+      Exit;
+    end;
+
+    Log(Self, 'System partition: ' + systemdevice);
+
+    existingbasefilename := FileExistsWildcard(IncludeTrailingPathDelimiter(dir) + prefixbaseimage);
     f_ext := ExtractFileExt(existingbasefilename);
 
+    { Existing base image -> create differential image }
     if f_ext = '.zst' then
     begin
-      Result := creatediff(dir, existingbasefilename);
+      Log(Self, 'Base image already exists.');
+      Log(Self, 'Creating differential image...');
+
+      Result := creatediff(dir, existingbasefilename, systemdevice);
       Exit;
     end;
 
-    device := Trim(extractdevice(ComboBox1.Text));
+    Timestamp := FormatDateTime('yyyy-mm-dd', Now);
 
-    if device = '' then
+    { MBR }
+    mbrimagename := IncludeTrailingPathDelimiter(dir) + 'mbr_image_' + Timestamp + '.img';
+
+    Log(Self, 'Creating MBR image...');
+
+    if not CreateMBRImage(disk, mbrimagename, @Progress, @Log) then
     begin
-      Log(Self, _(TXT_PARTITION_NOT_SELECTED));
+      Log(Self, 'MBR image creation failed.');
       Exit;
     end;
 
-    destname := createBasedestname;
+    Log(Self, 'MBR image created: ' + mbrimagename);
+
+    { First partition = boot partition }
+    if Pos('mmcblk', ExtractFileName(disk)) = 1 then
+      bootdevice := disk + 'p1'
+    else if Pos('nvme', ExtractFileName(disk)) = 1 then
+      bootdevice := disk + 'p1'
+    else
+      bootdevice := disk + '1';
+
+    if not DirectoryExists('/sys/class/block/' + ExtractFileName(bootdevice)) then
+    begin
+      Log(Self, 'Boot partition not found: ' + bootdevice);
+      Exit;
+    end;
+
+    Log(Self, 'Boot partition: ' + bootdevice);
+
+    bootimagename := IncludeTrailingPathDelimiter(dir) + 'boot_image_' + Timestamp + '.zst';
+
+    Log(Self, 'Creating full boot image...');
+
+    if not CreateFullCompressedImage(bootdevice, bootimagename, @Progress, @Log) then
+    begin
+      Log(Self, 'Boot image creation failed.');
+      Exit;
+    end;
+
+    Log(Self, 'Boot image created: ' + bootimagename);
+
+    destname := CreateBaseDestName;
 
     if destname = '' then
       Exit;
 
-    if CreateRawImage(device, Destname, @Progress, @Log) then
+    Log(Self, 'Creating system base image...');
+
+    if not CreateRawImage(systemdevice, destname, @Progress, @Log) then
     begin
-      Log(Self, _(TXT_BASE_IMAGE_CREATED));
-      Result := True;
-    end
-    else
       Log(Self, _(TXT_BASE_IMAGE_ERROR));
+      Exit;
+    end;
+
+    Log(Self, _(TXT_BASE_IMAGE_CREATED));
+
+    Result := True;
   finally
     Button4.Caption := '0.0 MB/s';
   end;
+
+  if Result then
+    Log(Self, 'All images created successfully.');
 end;
+
+
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   if RadioCreate.Checked then
   begin
     SelectDirectoryDialog1.FileName := createfolder;
-
     if SelectDirectoryDialog1.Execute then
       EditImage.Text := SelectDirectoryDialog1.FileName;
   end;
@@ -460,7 +583,6 @@ begin
   begin
     OpenDialog1.Filter := _(TXT_ZSTD_FILES) + ' (*.zst)|*.zst';
     OpenDialog1.InitialDir := createfolder;
-
     if OpenDialog1.Execute then
       EditImage.Text := OpenDialog1.FileName;
   end;
@@ -474,15 +596,15 @@ begin
     Button2.Caption := 'EN';
     ButtonCancel.Caption := 'abbrechen';
     Button3.Caption := 'Hilfe';
-    Buttonstart.Caption := _(TXT_CREATE_IMAGE);
+    ButtonStart.Caption := _(TXT_CREATE_IMAGE);
   end
   else
   begin
     CurrentLanguage := LANG_ENGLISH;
     Button2.Caption := 'DE';
-    ButtonCancel.Caption := 'cancel';
+    Button2.Caption := 'DE';
     Button3.Caption := 'help';
-    Buttonstart.Caption := _(TXT_CREATE_IMAGE);
+    ButtonStart.Caption := _(TXT_CREATE_IMAGE);
   end;
 end;
 
@@ -496,14 +618,139 @@ begin
   cancelrequested := True;
 end;
 
+procedure TForm1.cb_bootChange(Sender: TObject);
+begin
+  if cb_boot.Checked then
+  begin
+    combobox1.Text := '';
+    GetImageSourcePartitions(ComboBox1);
+  end;
+end;
+
+
+
+procedure TForm1.cb_mbrChange(Sender: TObject);
+begin
+  combobox1.Text := '';
+  GetImageSourcePartitions(combobox1);
+  if cb_mbr.Checked then
+  begin
+    GetImageSourcePartitions(ComboBox1);
+  end;
+end;
+
+procedure TForm1.cb_systemChange(Sender: TObject);
+begin
+  if cb_system.Checked then
+  begin
+    combobox1.Text := '';
+    GetImageSourcePartitions(ComboBox1);
+  end;
+
+end;
+
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   SaveIni;
 end;
 
+//procedure TForm1.ButtonStartClick(Sender: TObject);
+//var
+//  Success, AnySelected: boolean;
+//  SystemSuccess, BootSuccess, MBRSuccess: boolean;
+//  s:string;
+//
+//begin
+//  cancelrequested := False;
+//  ButtonStart.Enabled := False;
+//  LastProgressTime := 0;
+//  Success := False;
+//
+//
+//  try
+//    if RadioCreate.Checked then
+//      Success := CreateImg(combobox1.Text);
+//
+//    if RadioRestore.Checked then
+//begin
+//  AnySelected := cb_mbr.Checked or cb_boot.Checked or cb_system.Checked;
+//
+//   if not AnySelected then
+//  begin
+//    Log(Self, 'Please select at least one restore option.');
+//    Exit;
+//  end;
+//
+//    if not AnySelected then
+//  begin
+//    Log(Self, 'Please select at least one restore option.');
+//    Exit;
+//  end;
+//
+//  S := 'Sicherheitsabfrage' + LineEnding + LineEnding +
+//       'Folgende Daten werden auf ' + extractdevice(ComboBox1.Text) +
+//       ' geschrieben:' + LineEnding + LineEnding;
+//
+//  if cb_mbr.Checked then
+//    S := S + '• MBR' + LineEnding;
+//
+//  if cb_boot.Checked then
+//    S := S + '• Boot-Partition' + LineEnding;
+//
+//  if cb_system.Checked then
+//    S := S + '• System-Partition' + LineEnding;
+//
+//  S := S + LineEnding +
+//       'Dabei werden die vorhandenen Daten auf den ausgewählten' + LineEnding +
+//       'Bereichen unwiderruflich überschrieben.' + LineEnding + LineEnding +
+//       'Möchten Sie wirklich fortfahren?';
+//
+//  if MessageDlg('Sicherheitsabfrage', S, mtWarning, [mbYes, mbNo], 0) <> mrYes then
+//    Exit;
+//
+//
+//
+//  Success := RestoreImg;
+//end;
+//
+//
+//
+//
+//  except
+//    on E: Exception do
+//    begin
+//      if not cancelrequested then
+//        Log(Self, E.Message);
+//      Success := False;
+//    end;
+//  end;
+//
+//  if cancelrequested then
+//  begin
+//    Log(Self, _(TXT_CANCELLED));
+//    ProgressBar1.Position := 0;
+//  end;
+//
+//  Button4.Caption := '';
+//  ButtonStart.Enabled := True;
+//
+//  if FCliMode then
+//  begin
+//    if Success then
+//      ExitCode := 0
+//    else
+//      ExitCode := 1;
+//    Application.Terminate;
+//  end;
+//
+//  cancelrequested := False;
+//end;
+
+
 procedure TForm1.ButtonStartClick(Sender: TObject);
 var
-  Success: Boolean;
+  Success, AnySelected: boolean;
+  S, TargetDevice: string;
 begin
   cancelrequested := False;
   ButtonStart.Enabled := False;
@@ -512,16 +759,64 @@ begin
 
   try
     if RadioCreate.Checked then
-      Success := CreateImg;
+      Success := CreateImg(ComboBox1.Text);
 
     if RadioRestore.Checked then
+    begin
+      AnySelected := cb_mbr.Checked or cb_boot.Checked or cb_system.Checked;
+
+      if not AnySelected then
+      begin
+        Log(Self, 'Please select at least one restore option.');
+        Exit;
+      end;
+
+      TargetDevice := ExtractDevice(ComboBox1.Text);
+
+      if TargetDevice = '' then
+      begin
+        Log(Self, 'Laufwerk nicht ausgewählt.');
+        Exit;
+      end;
+
+      S := 'Sicherheitsabfrage' + LineEnding + LineEnding +
+           'ACHTUNG!' + LineEnding + LineEnding +
+           'Ziellaufwerk:' + LineEnding +
+           '  ' + TargetDevice + LineEnding + LineEnding +
+           'Folgende Daten werden auf dieses Laufwerk geschrieben:' +
+           LineEnding + LineEnding;
+
+      if cb_mbr.Checked then
+        S := S + '  • MBR' + LineEnding;
+
+      if cb_boot.Checked then
+        S := S + '  • Boot-Partition' + LineEnding;
+
+      if cb_system.Checked then
+        S := S + '  • System-Partition' + LineEnding;
+
+      S := S + LineEnding +
+           'Die vorhandenen Daten in den ausgewählten Bereichen' + LineEnding +
+           'werden dabei unwiderruflich überschrieben.' + LineEnding + LineEnding +
+           'Möchten Sie wirklich fortfahren?';
+
+      if MessageDlg(
+           'Sicherheitsabfrage',
+           S,
+           mtWarning,
+           [mbYes, mbNo],
+           0
+         ) <> mrYes then
+        Exit;
+
       Success := RestoreImg;
+    end;
+
   except
     on E: Exception do
     begin
       if not cancelrequested then
         Log(Self, E.Message);
-
       Success := False;
     end;
   end;
@@ -543,98 +838,285 @@ begin
       ExitCode := 1;
     Application.Terminate;
   end;
-  cancelrequested := False;
 
+  cancelrequested := False;
 end;
 
 
 
 
-function TForm1.RestoreImg: Boolean;
+function TForm1.RestoreImg: boolean;
 var
-  TargetDevice: string;
-  MountPoint, S: string;
-  BaseFilename, DiffFilename, Dir: string;
-  SourceFile: string;
+  TargetDevice, Disk, BootDevice, SystemDevice, MountPoint, S: string;
+  BaseFilename, DiffFilename, Dir, SourceFile: string;
+  MBRFilename, BootFilename: string;
 begin
   Result := False;
-
   MountPoint := '';
+
   TargetDevice := Trim(extractdevice(ComboBox1.Text));
 
   if TargetDevice = '' then
   begin
-    Log(Self, _(TXT_PARTITION_NOT_SELECTED));
+    Log(Self, _(TXT_DRIVE_NOT_SELECTED));
     Exit;
   end;
 
-  if not DirectoryExists('/sys/class/block/' +
-    ExtractFileName(TargetDevice)) then
+  if not IsWholeDisk(TargetDevice) then
   begin
-    Log(Self, TargetDevice + ' ' +
-      _(TXT_DOES_NOT_EXIST_RESTORE_SUSPENDED));
+    Log(Self, 'Please select a complete disk for restore.');
     Exit;
   end;
 
-  RunCommand('findmnt -n -o TARGET ' + TargetDevice, MountPoint);
-  MountPoint := Trim(MountPoint);
+  Disk := TargetDevice;
 
-  if MountPoint = '/' then
+  if not DirectoryExists('/sys/class/block/' + ExtractFileName(Disk)) then
   begin
-    Log(Self, TargetDevice + ' ' +
-      _(TXT_ROOT_RESTORE_SUSPENDED));
+    Log(Self, Disk + ' ' + _(TXT_DOES_NOT_EXIST_RESTORE_SUSPENDED));
     Exit;
   end;
 
-  if MountPoint > '' then
+  { Determine first and second partition }
+  if Pos('mmcblk', ExtractFileName(Disk)) = 1 then
   begin
-    RunCommand('umount ' + MountPoint, S);
-    RunCommand('umount ' + TargetDevice, S);
+    BootDevice := Disk + 'p1';
+    SystemDevice := Disk + 'p2';
+  end
+  else if Pos('nvme', ExtractFileName(Disk)) = 1 then
+  begin
+    BootDevice := Disk + 'p1';
+    SystemDevice := Disk + 'p2';
+  end
+  else
+  begin
+    BootDevice := Disk + '1';
+    SystemDevice := Disk + '2';
   end;
 
-  if not FileExists(Trim(EditImage.Text)) then
-  begin
-    Log(Self, 'Image file does not exist: ' +
-      Trim(EditImage.Text));
-    Exit;
-  end;
-
-  SourceFile := ExtractFileName(Trim(EditImage.Text));
-
-  if not FCliHide then
-    if MessageDlg(
-      TargetDevice + ' ' + _(TXT_WILL_BE_RESTORED) +
-      LineEnding + SourceFile + LineEnding +
-      _(TXT_ALL_DATA_WILL_BE_LOST),
-      mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+  { Check selected partitions }
+  if Cb_Boot.Checked then
+    if not DirectoryExists('/sys/class/block/' + ExtractFileName(BootDevice)) then
+    begin
+      Log(Self, 'Boot partition not found: ' + BootDevice);
       Exit;
+    end;
 
-  Dir := ExtractFilePath(Trim(EditImage.Text));
+  if CB_System.Checked then
+    if not DirectoryExists('/sys/class/block/' + ExtractFileName(SystemDevice)) then
+    begin
+      Log(Self, 'System partition not found: ' + SystemDevice);
+      Exit;
+    end;
 
-  BaseFilename :=
-    FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) +
-    prefixbaseimage);
-
+  { Selected image must exist }
   DiffFilename := Trim(EditImage.Text);
 
+  if DiffFilename = '' then
+  begin
+    Log(Self, 'No image file selected.');
+    Exit;
+  end;
+
+  if not FileExists(DiffFilename) then
+  begin
+    Log(Self, 'Image file does not exist: ' + DiffFilename);
+    Exit;
+  end;
+
+  Dir := ExtractFilePath(DiffFilename);
+
+  if Dir = '' then
+    Dir := IncludeTrailingPathDelimiter(GetCurrentDir);
+
+  { Find base image }
+  BaseFilename := FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) + prefixbaseimage);
+
+  { ------------------------------------------------------------ }
+  { Check all required files BEFORE starting restore }
+  { ------------------------------------------------------------ }
+
+  if CB_MBR.Checked then
+  begin
+    MBRFilename := FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) + 'mbr_image_*.img');
+
+    if MBRFilename = '' then
+    begin
+      Log(Self, 'No MBR image found in: ' + Dir);
+      Exit;
+    end;
+
+    if not FileExists(MBRFilename) then
+    begin
+      Log(Self, 'MBR image does not exist: ' + MBRFilename);
+      Exit;
+    end;
+  end;
+
+  if CB_Boot.Checked then
+  begin
+    BootFilename := FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) + 'boot_image_*.zst');
+
+    if BootFilename = '' then
+    begin
+      Log(Self, 'No boot image found in: ' + Dir);
+      Exit;
+    end;
+
+    if not FileExists(BootFilename) then
+    begin
+      Log(Self, 'Boot image does not exist: ' + BootFilename);
+      Exit;
+    end;
+  end;
+
+  if CB_System.Checked then
+  begin
+    if BaseFilename = '' then
+    begin
+      Log(Self, 'No base image found in: ' + Dir);
+      Exit;
+    end;
+
+    if not FileExists(BaseFilename) then
+    begin
+      Log(Self, 'Base image does not exist: ' + BaseFilename);
+      Exit;
+    end;
+  end;
+
+  { If selected image is the base image, no differential image is needed }
   if BaseFilename = DiffFilename then
     DiffFilename := '';
 
+  SourceFile := ExtractFileName(Trim(EditImage.Text));
+
+  { ------------------------------------------------------------ }
+
+  { ------------------------------------------------------------ }
+  { Unmount system partition }
+  { ------------------------------------------------------------ }
+
+  if CB_System.Checked then
+  begin
+    RunCommand('findmnt -n -o TARGET ' + SystemDevice, MountPoint);
+    MountPoint := Trim(MountPoint);
+
+    if MountPoint = '/' then
+    begin
+      Log(Self, SystemDevice + ' ' + _(TXT_ROOT_RESTORE_SUSPENDED));
+      Exit;
+    end;
+
+    if MountPoint <> '' then
+    begin
+      Log(Self, 'Unmounting ' + SystemDevice + ' from ' + MountPoint);
+      RunCommand('umount ' + MountPoint, S);
+      RunCommand('umount ' + SystemDevice, S);
+    end;
+  end;
+
+  { ------------------------------------------------------------ }
+  { 1. MBR }
+  { ------------------------------------------------------------ }
+
+  if CB_MBR.Checked then
+  begin
+    Log(Self, 'Restoring MBR...');
+
+    if not RestoreMBRImage then
+    begin
+      Log(Self, 'MBR restore failed.');
+      Exit;
+    end;
+
+    Log(Self, 'MBR restored successfully.');
+
+    { Give the kernel a chance to reread the partition table }
+    RunCommand('partprobe ' + Disk, S);
+  end;
+
+  { ------------------------------------------------------------ }
+  { 2. Boot partition }
+  { ------------------------------------------------------------ }
+
+  if CB_Boot.Checked then
+  begin
+    Log(Self, 'Restoring boot partition: ' + BootDevice);
+
+    if not RestoreFullCompressedImage(BootFilename, BootDevice, @Progress, @Log) then
+    begin
+      Log(Self, 'Boot restore failed.');
+      Exit;
+    end;
+
+    Log(Self, 'Boot partition restored successfully.');
+  end;
+
+  { ------------------------------------------------------------ }
+  { 3. System partition }
+  { ------------------------------------------------------------ }
+
+  if CB_System.Checked then
+  begin
+    Log(Self, 'Restoring system partition: ' + SystemDevice);
+
+    if not RestoreImage(SystemDevice, BaseFilename, DiffFilename, @Progress, @Log) then
+    begin
+      Log(Self, _(TXT_RESTORE_ERROR));
+      Exit;
+    end;
+
+    Log(Self, 'System image restored successfully.');
+  end;
+
+  Result := True;
+  Log(Self, 'All selected images restored successfully.');
+end;
+
+
+
+function TForm1.RestoreMBRImage: boolean;
+var
+  TargetDevice, MBRImage, Dir: string;
+begin
+  Result := False;
+
   TargetDevice := Trim(extractdevice(ComboBox1.Text));
 
-  if RestoreImage(
-    TargetDevice,
-    BaseFilename,
-    DiffFilename,
-    @Progress,
-    @Log) then
+  if TargetDevice = '' then
   begin
-    Log(Self, _(TXT_IMAGE_RESTORED));
+    Log(Self, _(TXT_DRIVE_NOT_SELECTED ));
+    Exit;
+  end;
+
+  if not IsWholeDisk(TargetDevice) then
+  begin
+    Log(Self, 'The selected device is not a complete disk.');
+    Exit;
+  end;
+
+  Dir := ExtractFilePath(Trim(EditImage.Text));
+
+  MBRImage := FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) + 'mbr_image_');
+
+  if MBRImage = '' then
+  begin
+    Log(Self, 'MBR image not found.');
+    Exit;
+  end;
+
+  if RestoreMBR(MBRImage, TargetDevice, @Log) then
+  begin
+    Log(Self, 'MBR restored.');
     Result := True;
   end
   else
     Log(Self, _(TXT_RESTORE_ERROR));
 end;
+
+
+
+
 
 procedure TForm1.ComboBox1DropDown(Sender: TObject);
 begin
@@ -643,24 +1125,27 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+  cb_mbr.Visible := False;
+  cb_system.Visible := False;
+  cb_boot.Visible := False;
+
   Form1.Caption := f_caption + ' ' + version;
   Button4.Caption := '';
-
   RadioRestore.Checked := False;
   RadioCreate.Checked := True;
 
   FCliMode := ParamCount > 0;
 
   if FCliMode then
-begin
-  Application.ShowMainForm := False;
-  Hide;
-end;
-
-  if not FCliMode then
-    ReadIni
-  else
+  begin
+    Application.ShowMainForm := False;
+    Hide;
     ProcessCommandLine;
+  end
+  else
+  begin
+    ReadIni;
+  end;
 
   if CurrentLanguage = LANG_ENGLISH then
   begin
@@ -681,31 +1166,19 @@ end;
   Label2.Caption := _(TXT_IMAGE_FOLDER);
   Label3.Caption := _(TXT_COMPRESSION_LEVEL);
 
-  if FCliRestore then
+  if not FCliMode then
   begin
-    RadioRestore.Checked := True;
-    ComboBox1.Text := restoredevice;
-    EditImage.Text := restorefilename;
-  end
-  else
-  begin
-    RadioCreate.Checked := True;
     ComboBox1.Text := createdevice;
     EditImage.Text := createfolder;
   end;
-
-  if FCliHide then
-  begin
-    Application.ShowMainForm := False;
-    Hide;
-  end;
 end;
+
+
 
 procedure TForm1.ComboBox1Change(Sender: TObject);
 begin
   if RadioCreate.Checked then
     createdevice := ComboBox1.Text;
-
   if RadioRestore.Checked then
     restoredevice := ComboBox1.Text;
 end;
@@ -714,7 +1187,6 @@ procedure TForm1.EditImageChange(Sender: TObject);
 begin
   if RadioCreate.Checked then
     createfolder := EditImage.Text;
-
   if RadioRestore.Checked then
     restorefilename := EditImage.Text;
 end;
@@ -729,6 +1201,9 @@ begin
     SaveIni;
     EditImage.Text := createfolder;
     ComboBox1.Text := createdevice;
+    cb_mbr.Visible := False;
+    cb_boot.Visible := False;
+    cb_system.Visible := False;
   end;
 end;
 
@@ -746,6 +1221,9 @@ begin
     SaveIni;
     EditImage.Text := restorefilename;
     ComboBox1.Text := restoredevice;
+    cb_mbr.Visible := True;
+    cb_boot.Visible := True;
+    cb_system.Visible := True;
   end;
 end;
 
@@ -756,7 +1234,6 @@ var
 begin
   filename := ChangeFileExt(Application.ExeName, '.cfg');
   ini := TIniFile.Create(filename);
-
   try
     SpinEdit1.Value := ini.ReadInteger('common', 'compressionlevel', 3);
     CurrentLanguage := ini.ReadInteger('common', 'language', 0);
@@ -772,7 +1249,6 @@ end;
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
   Timer1.Enabled := False;
-
   if not FCliMode then
     CheckForUpdates(Memo1);
 end;
@@ -784,7 +1260,6 @@ var
 begin
   filename := ChangeFileExt(Application.ExeName, '.cfg');
   ini := TIniFile.Create(filename);
-
   try
     ini.WriteInteger('common', 'compressionlevel', SpinEdit1.Value);
     ini.WriteInteger('common', 'language', CurrentLanguage);
@@ -798,115 +1273,42 @@ begin
 end;
 
 procedure TForm1.ProcessCommandLine;
-var
-  I, V: Integer;
-  P, S: string;
-  LastSettings: Boolean;
-
-  function GetOptionValue(const Name: string; var Index: Integer; out Value: string): Boolean;
-  var
-    Prefix: string;
-  begin
-    Result := False;
-    Value := '';
-    Prefix := Name + '=';
-
-    if SameText(Copy(ParamStr(Index), 1, Length(Prefix)), Prefix) then
-    begin
-      Value := Copy(ParamStr(Index), Length(Prefix) + 1, MaxInt);
-      Result := True;
-      Exit;
-    end;
-
-    if SameText(ParamStr(Index), Name) and (Index < ParamCount) then
-    begin
-      Inc(Index);
-      Value := ParamStr(Index);
-      Result := True;
-    end;
-  end;
-
 begin
-  FCliHide := False;
-  FCliStart := False;
   FCliCreate := False;
   FCliRestore := False;
-  FCliCreateDestination := False;
-  FCliDestinationSpecified := False;
+  FCliStart := False;
+  FCliHide := True;
+  FCliCreateDestination := True;
+  FCliDestinationSpecified := True;
 
-  LastSettings := False;
-
-  for I := 1 to ParamCount do
-    if SameText(ParamStr(I), '--lastsettings') then
-      LastSettings := True;
-
-  if LastSettings then
-    ReadIni
-  else
+  if FPGetUID <> 0 then
   begin
-    createdevice := '';
-    createfolder := '';
-    restoredevice := '';
-    restorefilename := '';
-    SpinEdit1.Value := 3;
+    WriteLn('Error: PiExt must be started with sudo.');
+    WriteLn('Usage: sudo piext <drive> <destination-folder>');
+    Exit;
   end;
 
-  I := 1;
-
-  while I <= ParamCount do
+  if ParamCount <> 2 then
   begin
-    P := ParamStr(I);
-
-    if SameText(P, '--hide') then
-      FCliHide := True
-    else if SameText(P, '--lastsettings') then
-    begin
-    end
-    else if SameText(P, '--create') then
-    begin
-      FCliCreate := True;
-      FCliRestore := False;
-      FCliStart := True;
-    end
-    else if SameText(P, '--restore') then
-    begin
-      FCliRestore := True;
-      FCliCreate := False;
-      FCliStart := True;
-    end
-    else if GetOptionValue('--sourcepartition', I, S) then
-      createdevice := S
-    else if GetOptionValue('--createdestination', I, S) then
-    begin
-      createfolder := S;
-      FCliCreateDestination := True;
-      FCliDestinationSpecified := True;
-    end
-    else if GetOptionValue('--destination', I, S) then
-    begin
-      createfolder := S;
-      FCliCreateDestination := False;
-      FCliDestinationSpecified := True;
-    end
-    else if GetOptionValue('--compressionlevel', I, S) then
-    begin
-      V := StrToIntDef(S, -1);
-
-      if (V >= SpinEdit1.MinValue) and
-        (V <= SpinEdit1.MaxValue) then
-        SpinEdit1.Value := V
-      else
-        Log(Self, 'Invalid compression level: ' + S);
-    end
-    else if GetOptionValue('--sourceimage', I, S) then
-      restorefilename := S
-    else if GetOptionValue('--targetpartition', I, S) then
-      restoredevice := S;
-
-    Inc(I);
+    WriteLn('Usage: sudo piext <drive> <destination-folder>');
+    WriteLn('Example: sudo piext /dev/sda /backup/piext');
+    Exit;
   end;
+
+  createdevice := ParamStr(1);
+  createfolder := ParamStr(2);
+
+  ComboBox1.Text := createdevice;
+  EditImage.Text := createfolder;
+  RadioCreate.Checked := True;
+
+  FCliCreate := True;
+  FCliStart := True;
+
+  Application.ShowMainForm := False;
+  Hide;
 end;
 
+
+
 end.
-
-

@@ -127,12 +127,13 @@ const
   TXT_ZSTD_COMPRESS_ERROR = 113;
   TXT_ZSTD_SPEED_ETA_RATIO = 114;
   TXT_CANCELLED=115;
+  TXT_Drive_NOT_SELECTED = 116;
 
 
 
 
 type
-  TLanguageTexts = array[1..115,0..1] of string;
+  TLanguageTexts = array[1..116,0..1] of string;
 
 
 const
@@ -251,7 +252,8 @@ const
     ('Bitmap erfolgreich erstellt: %s','Bitmap created successfully: %s'),
     ('Komprimierungsfehler: %s','Compression error: %s'),
     ('Geschwindigkeit: %.2f MB/s  Restzeit: %s  Verhältnis: %.2f:1','Speed: %.2f MB/s  ETA: %s  Ratio: %.2f:1'),
-    ('Prozess durch Benutzer abgebrochen','Process cancelled by user')
+    ('Prozess durch Benutzer abgebrochen','Process cancelled by user'),
+    ('Kein Laufwerk ausgewählt', 'No drive selected')
   );
 
 

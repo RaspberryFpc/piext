@@ -10,7 +10,7 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the CT adLCL widgetset
-  Forms, Unit1,updater,ext4bitmap, zstd, Imageutils, language, Unit2
+  Forms, Unit1,updater,ext4bitmap, zstd, Imageutils, language, Unit2,rawimage,exebash
   { you can add units after this };
 
 {$R *.res}

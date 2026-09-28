@@ -1,234 +1,212 @@
 # PiExt
 
-PiExt is a backup and restore tool for Raspberry Pi systems that creates and restores compressed images of Linux EXT2, EXT3 and EXT4 partitions.
+**PiExt is a backup and restore tool for Raspberry Pi drives.**
 
-Instead of storing the complete partition, PiExt stores only the sectors currently used by the filesystem. The data is compressed on the fly using **Zstandard (ZSTD)**.
+PiExt can create complete drive backups containing the **MBR, boot partition and system partition**. The system partition is handled specifically for **EXT2, EXT3 and EXT4** filesystems and compressed using **Zstandard**.
 
-The first image created in an image folder automatically becomes a **Base Image**. Further images are created as **Differential Images** based directly on the Base Image.
+PiExt provides both a **graphical user interface (GUI)** and a simple **command-line mode**.
+
+![PiExt](docs/piext.png)
 
 ## Features
 
-* Supports EXT2, EXT3 and EXT4 partitions
-* Stores only used filesystem sectors
-* Compresses image data on the fly using Zstandard
-* Automatically creates a Base Image
-* Creates Differential Images based on the Base Image
-* Create Differential Images with one click
-* Differential Images can be restored independently
-* Only one Base Image is allowed per image folder
-* Image filenames are generated automatically
-* Images are stored as `.zst` files
+* Complete Raspberry Pi drive backup
+* MBR backup
+* Boot partition backup
+* EXT2 / EXT3 / EXT4 system partition backup
+* Zstandard compression
+* Base Images
+* Differential Images
+* Differential backups are based directly on the Base Image
+* Restore MBR, boot and system independently
+* Graphical user interface
+* Simple command-line operation
+* Progress display with speed and ETA
+* Automatic image filenames
+* Designed for Raspberry Pi and Linux
 
+## How it works
 
-## Installation
+PiExt works with a complete drive.
 
-PiExt is distributed as a Debian package (`.deb`) for Raspberry Pi systems.
-Download the latest release from the **Releases** section of this repository and install the package with:
+A typical Raspberry Pi drive contains:
 
-```bash
-sudo apt install ./piext.deb
+```text
+Drive
+├── MBR
+├── Partition 1 → Boot
+└── Partition 2 → System
 ```
 
-After installation, PiExt can be started from the application menu.
-PiExt requires appropriate permissions to access source and target partitions.
-
-
-## Source and Target Partitions
-
-For image creation, a **Source Partition** must be selected.
-
-The Source Partition is the EXT2, EXT3 or EXT4 partition from which the image is created.
-
-For restoring an image, a **Target Partition** must be selected.
-
-The Target Partition is the partition to which the selected image is restored.
-
-The folder used to store the image files is selected separately from the Source or Target Partition.
-
-## Image Folder
-
-PiExt uses a folder to store the image files.
-
-When creating an image, an existing image folder can be selected or a new folder can be created.
-
-When restoring an image, the folder containing the required image files must be selected.
-
-Only one **Base Image** can exist in an image folder.
-
-PiExt automatically generates the filenames for the created images.
-
-## Image Storage
-
-PiExt does not store the complete partition.
-
-Only sectors currently used by the EXT filesystem are included in the image. Unused sectors are omitted.
-
-This can significantly reduce the amount of data that has to be read, processed and stored, especially when the partition contains a large amount of free space.
-
-Image data is compressed during creation using **Zstandard (ZSTD)**.
-
-All PiExt image files use the `.zst` extension.
-
-## Base Image
-
-The first image created in an empty image folder automatically becomes the **Base Image**.
-
-The Base Image contains the initial state of the EXT partition.
+When the first backup is created, PiExt creates a Base Image together with the MBR and boot image.
 
 Example:
 
 ```text
-base_image_sda2_2026-09-21.zst
+backup/
+├── mbr_image_2026-09-28.img
+├── boot_image_2026-09-28.zst
+└── base_image_sda_2026-09-28.zst
 ```
 
-The filename contains the source partition and the creation date.
-
-Only one Base Image can exist in an image folder.
-
-## Differential Images
-
-Every additional image created in the same image folder becomes a **Differential Image**.
-
-A Differential Image contains the changes relative to the Base Image.
-
-Each Differential Image is based directly on the Base Image and does not depend on any other Differential Image.
-
-Examples:
+A later backup creates a Differential Image:
 
 ```text
-diff-image_2026-09-21_1.zst
-diff-image_2026-09-21_2.zst
-diff-image_2026-09-21_3.zst
+backup/
+├── mbr_image_2026-09-28.img
+├── boot_image_2026-09-28.zst
+├── base_image_sda_2026-09-28.zst
+└── diff-image_2026-09-29_1.zst
 ```
 
-Each Differential Image can be restored independently.
-
-## Image Structure
-
-The relationship between the Base Image and the Differential Images is:
+Further backups create additional differential images:
 
 ```text
-Base Image
-     |
-     +-- Diff Image 1
-     +-- Diff Image 2
-     +-- Diff Image 3
+diff-image_2026-09-30_2.zst
+diff-image_2026-10-01_3.zst
 ```
 
-Each Differential Image uses the same Base Image.
+Each Differential Image is based directly on the Base Image and can be restored independently together with the Base Image.
 
-The Base Image must remain available for every Differential Image that is still required.
+## Installation
 
-## Restoring Images
+Download the latest `piext.deb` package from the GitHub Releases page and install it with:
 
-Every image can be selected individually for restoration.
+```bash
+sudo apt install piext.deb
+```
 
-Restoring a Base Image requires only the Base Image itself.
+PiExt requires **root privileges** because it directly reads from and writes to complete drives and partitions.
 
-Restoring a Differential Image requires the corresponding Base Image to be present in the same image folder.
+Start the graphical interface with:
+
+```bash
+sudo piext
+```
+
+## Graphical interface
+
+The GUI allows you to select the source drive, destination folder and compression level.
+
+For restoration, MBR, boot and system can be selected independently.
+
+> **Important:** PiExt must always be started with `sudo`.
 
 For example:
 
-```text
-base_image_sda2_2026-09-21.zst
-diff-image_2026-09-21_1.zst
+```bash
+sudo piext
 ```
 
-When `diff-image_2026-09-21_1.zst` is selected for restoration, PiExt combines the Base Image and the selected Differential Image:
+### Restoring the active system
 
-```text
-Base Image + Diff Image 1
-            |
-            v
-     Restored Partition
+A running Raspberry Pi cannot restore its active root partition while it is mounted as `/`.
+
+For restoring the root partition, boot the Raspberry Pi from another Linux system, for example a separate SD card or USB drive.
+
+## Command line
+
+PiExt can also be used without the graphical interface.
+
+```bash
+sudo piext <drive> <destination-folder>
 ```
 
-Other Differential Images are not required and can be deleted if they are no longer needed.
+Example:
 
-## Independent Differential Images
-
-Differential Images do not depend on each other.
-
-For example:
-
-```text
-Base Image
-     |
-     +-- Diff Image 1
-     +-- Diff Image 2
-     +-- Diff Image 3
+```bash
+sudo piext /dev/sda /backup/piext
 ```
 
-Diff Image 3 does not require Diff Image 1 or Diff Image 2.
+Another example for an SD card:
 
-Only the Base Image and the selected Differential Image are required for restoration.
+```bash
+sudo piext /dev/mmcblk0 /backup/piext
+```
 
-## Image Compatibility
+The command-line mode:
 
-PiExt uses its own program-specific image format.
+* requires root privileges
+* does not open the GUI
+* automatically starts the backup
+* creates the destination folder if necessary
+* exits automatically when the backup is finished
 
-Images created by PiExt can currently only be restored using PiExt.
+Exit codes:
 
-The `.zst` files are not standard disk images and cannot be written directly to a partition using tools such as `dd`.
+```text
+0 = successful
+1 = error
+```
 
-## Typical Workflow
+## Restore
 
-### Creating Images
+PiExt can restore the individual parts of a backup:
 
-1. Select the **Source Partition**.
-2. Select or create an **Image Folder**.
-3. Create the first image.
-4. The first image automatically becomes the **Base Image**.
-5. Make changes to the system or partition.
-6. Create another image.
-7. The new image becomes a **Differential Image**.
-8. Repeat the process as required.
-9. Delete Differential Images that are no longer needed.
+* **MBR**
+* **Boot partition**
+* **System partition**
 
-### Restoring an Image
+This allows, for example, only the system partition to be restored without overwriting the MBR or boot partition.
 
-1. Select the **Target Partition**.
-2. Select the **Image Folder**.
-3. Select the desired image.
-4. Start the restore operation.
-5. If a Differential Image is selected, the corresponding Base Image must also be present.
+For a system restore, the corresponding Base Image is required. A Differential Image can optionally be selected to restore the state represented by that differential backup.
 
-The selected image is restored directly to the Target Partition.
+## Image types
 
-## Restoring the Active Root Partition
+### MBR
 
-The currently running root partition cannot be restored while the system is running from that partition.
+The MBR is stored separately as an uncompressed `.img` file.
 
-To restore the active system partition, boot the Raspberry Pi from another system or boot medium first.
+Example:
 
-A separate SD card or USB drive with a minimal Linux system, a minimal desktop environment and PiExt installed can be used for this purpose.
+```text
+mbr_image_2026-09-28.img
+```
 
-After booting from the separate system, the original system partition is no longer the active root partition and can be restored.
+The MBR is intentionally stored without compression because it is very small.
 
-The PiExt image files can be stored on another USB drive, network storage or another accessible storage device.
+### Boot
 
-After the restore operation is complete, shut down the system and boot from the restored partition.
+The boot partition is stored as a complete compressed image:
+
+```text
+boot_image_2026-09-28.zst
+```
+
+### System
+
+The system partition is stored using PiExt's filesystem-aware image format and compressed with Zstandard.
+
+Base and Differential Images use:
+
+```text
+base_image_*.zst
+diff-image_*.zst
+```
 
 ## Requirements
 
+PiExt is designed for:
+
+* Raspberry Pi
 * Linux
-* EXT2, EXT3 or EXT4 source and target partitions
-* Zstandard (ZSTD)
-* Appropriate permissions to access the source and target partitions
+* EXT2
+* EXT3
+* EXT4
+* Zstandard
+
+**Root privileges are required.**
 
 ## Important
 
-* A Source Partition is required when creating an image.
-* A Target Partition is required when restoring an image.
-* Only used filesystem sectors are stored.
-* Image data is compressed on the fly using Zstandard.
-* The first image in an empty folder automatically becomes the Base Image.
-* Only one Base Image can exist per image folder.
-* All subsequent images are Differential Images.
-* Differential Images are based directly on the Base Image.
-* A Differential Image requires its Base Image for restoration.
-* The Base Image must remain available as long as required Differential Images are needed.
-* Differential Images can be deleted individually when they are no longer required.
-* Image filenames are generated automatically.
-* PiExt images use the `.zst` file extension.
-* PiExt images can currently only be restored using PiExt.
+**Always verify the selected source and target drive before starting a backup or restore.**
+
+Restoring an image writes data directly to the selected drive or partition and can overwrite existing data.
+
+## Project
+
+PiExt is developed by **RaspberryFpc** for Raspberry Pi and Linux.
+
+## License
+
+See the repository for license information.

@@ -5,7 +5,7 @@ unit exebash;
 interface
 
 uses
-  Classes, SysUtils, Process, BaseUnix, Unix, LazUTF8, FileUtil, DateUtils,
+  Classes, SysUtils, Process, Unix, LazUTF8, FileUtil, DateUtils,
   StdCtrls, Forms, Dialogs, ExtCtrls, ComCtrls;
 
 function PrexeBash(Command: ansistring; Memo: TMemo): ansistring;

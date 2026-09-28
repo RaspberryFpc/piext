@@ -5,9 +5,7 @@ unit Imageutils;
 interface
 
 uses
-  Classes, SysUtils,unix,baseunix;
-
-
+  Classes, SysUtils,unix,baseunix,process;
 type
   TExt4Info = record
     BlockSize: UInt32;
@@ -18,6 +16,8 @@ type
     DescSize: UInt16;
     Is64Bit: Boolean;
   end;
+
+
 
 type
   TProgressEvent = procedure(Sender: TObject; Position, Total: Int64) of object;
@@ -47,27 +47,56 @@ begin
     OnLog(nil, Msg);
 end;
 
-
-
-function GetDeviceSize(const Device: string; out Size: Int64): Boolean;
-const
-  BLKGETSIZE64 = $80081272;
+function GetDeviceSize(const Device: string; out Size: int64): boolean;
 var
-  FD: Integer;
+  S, Line, Name, DeviceName, DeviceType, SizeStr: string;
+  SL, Fields: TStringList;
+  I: integer;
 begin
   Result := False;
   Size := 0;
+  DeviceName := ExtractFileName(Device);
 
-  FD := fpOpen(PChar(Device), O_RDONLY);
-  if FD < 0 then Exit;
+  S := '';
+  RunCommand('lsblk -rnbo NAME,TYPE,SIZE', S);
 
+  SL := TStringList.Create;
+  Fields := TStringList.Create;
   try
-    if fpIOCtl(FD, BLKGETSIZE64, @Size) = 0 then
-      Result := Size > 0;
+    SL.Text := S;
+    for I := 0 to SL.Count - 1 do
+    begin
+      Line := Trim(SL[I]);
+      if Line = '' then Continue;
+
+      Fields.Clear;
+      Fields.Delimiter := ' ';
+      Fields.StrictDelimiter := False;
+      Fields.DelimitedText := Line;
+
+      if Fields.Count < 3 then Continue;
+
+      Name := Fields[0];
+      DeviceType := Fields[1];
+      SizeStr := Fields[2];
+
+      if Name <> DeviceName then Continue;
+      if (DeviceType <> 'disk') and (DeviceType <> 'part') then Continue;
+
+      if TryStrToInt64(SizeStr, Size) then
+      begin
+        Result := Size > 0;
+        Exit;
+      end;
+    end;
   finally
-    fpClose(FD);
+    Fields.Free;
+    SL.Free;
   end;
 end;
+
+
+
 
 function GetFileSize64(const FileName: string; out Size: Int64): Boolean;
 var

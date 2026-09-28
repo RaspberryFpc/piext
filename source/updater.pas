@@ -25,7 +25,6 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
-   // procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
   end;
 
 var
@@ -109,14 +108,14 @@ end;
 
 procedure InstallUpdate(memo: Tmemo);
 var
-  S: string;
-  DownloadURL: string;
+   DownloadURL: string;
 begin
-  ForceDirectories('/var/lib/piext');
+  ForceDirectories('/var/lib/'+prog);
 
-  DownloadURL := 'https://raw.githubusercontent.com/' + REPO + '/' + RemoteVersion + '/bin/piext.deb';
+  DownloadURL := 'https://raw.githubusercontent.com/' + REPO + '/' + RemoteVersion + '/bin/'+prog+'.deb';
 
-  S := PrexeBash('wget -O ' + NEWDEB + ' "' + DownloadURL + '"', memo);
+  //S :=
+  PrexeBash('wget -O ' + NEWDEB + ' "' + DownloadURL + '"', memo);
 
   if not FileExists(NEWDEB) then
   begin
@@ -124,7 +123,8 @@ begin
     Exit;
   end;
 
-  S := PrexeBash('bash -c "sudo env DEBIAN_FRONTEND=noninteractive apt install -y ' + NEWDEB + '"', form1.Memo1);
+  //S :=
+  PrexeBash('bash -c "sudo env DEBIAN_FRONTEND=noninteractive apt install -y ' + NEWDEB + '"', form1.Memo1);
 
   if LastExitCode = 0 then
   begin

@@ -53,9 +53,9 @@ object Form1: TForm1
   object SpinEdit1: TSpinEdit
     AnchorSideTop.Control = ButtonStart
     AnchorSideTop.Side = asrCenter
-    Left = 272
+    Left = 433
     Height = 26
-    Top = 96
+    Top = 94
     Width = 40
     Anchors = []
     MaxValue = 19
@@ -150,9 +150,9 @@ object Form1: TForm1
   object Label3: TLabel
     AnchorSideTop.Control = ButtonStart
     AnchorSideTop.Side = asrCenter
-    Left = 152
+    Left = 320
     Height = 17
-    Top = 103
+    Top = 100
     Width = 106
     Anchors = []
     Caption = 'Compression Level'
@@ -201,6 +201,35 @@ object Form1: TForm1
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Button4'
     TabOrder = 12
+  end
+  object cb_system: TCheckBox
+    Left = 192
+    Height = 23
+    Top = 97
+    Width = 84
+    Caption = 'cb_system'
+    Checked = True
+    State = cbChecked
+    TabOrder = 13
+    OnChange = cb_systemChange
+  end
+  object cb_boot: TCheckBox
+    Left = 104
+    Height = 23
+    Top = 97
+    Width = 71
+    Caption = 'cb_boot'
+    TabOrder = 14
+    OnChange = cb_bootChange
+  end
+  object cb_mbr: TCheckBox
+    Left = 16
+    Height = 23
+    Top = 97
+    Width = 67
+    Caption = 'cb_mbr'
+    TabOrder = 15
+    OnChange = cb_mbrChange
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Left = 120

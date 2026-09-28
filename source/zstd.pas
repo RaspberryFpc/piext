@@ -105,7 +105,8 @@ var
   startTime, lastUpdateTime: TDateTime;
   elapsedSecs, etaSecs, speedMBs: double;
   compressionRatio: double;
-  s: string;
+  s:string;
+
 
   procedure Compressblock(endMode: cardinal);
   begin
