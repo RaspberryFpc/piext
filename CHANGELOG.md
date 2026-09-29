@@ -1,6 +1,12 @@
 # Changelog
 
 All notable changes to this project are documented in this file.
+ 
+## [v2.0.2] – 2026-09-29
+
+- Fixed missing update notifications.
+- Fixed an issue where the wrong application was restarted after an update.
+
 
 ## [v2.0.0] – 2026-09-28
 
