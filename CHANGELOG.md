@@ -1,6 +1,12 @@
 # Changelog
 
 All notable changes to this project are documented in this file.
+
+## [v2.0.3] – 2026-09-30
+
+- improved update notifications.
+- more translations
+
  
 ## [v2.0.2] – 2026-09-29
 

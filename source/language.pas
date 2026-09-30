@@ -28,8 +28,8 @@ const
   TXT_RESTORE_ERROR = 15;
   TXT_CREATE_IMAGE = 16;
   TXT_RESTORE_IMAGE = 17;
-  TXT_SOURCE_PARTITION = 18;
-  TXT_TARGET_PARTITION = 19;
+  TXT_SOURCE_partition= 18;
+  TXT_TARGET_partition = 19;
   TXT_IMAGE_FOLDER = 20;
   TXT_IMAGE_FILE = 21;
   TXT_COMPRESSION_LEVEL = 22;
@@ -87,7 +87,7 @@ const
   TXT_COMPRESSED_DIFF_DATA = 73;
   TXT_PARTITION_TARGET_ERROR = 74;
   TXT_RESTORE_TARGET_PARTITION = 75;
-  TXT_TARGET_DRIVE = 76;
+  TXT_TARGET_drive = 76;
   TXT_PARTITION_START = 77;
   TXT_PARTITION_SIZE_INFO = 78;
   TXT_TARGET_PARTITION_SIZE_ERROR = 79;
@@ -128,12 +128,72 @@ const
   TXT_ZSTD_SPEED_ETA_RATIO = 114;
   TXT_CANCELLED=115;
   TXT_Drive_NOT_SELECTED = 116;
-
-
-
-
+  TXT_abort = 117;
+  TXT_lang = 118;
+  TXT_lang_create = 119;
+  TXT_lang_restore = 120;
+  txt_sourcedrive=121;
+  txt_targetdrive=122;
+  txt_imagefolder=123;
+  txt_help=124;
+    TXT_NO_DESTINATION_FOLDER = 125;
+  TXT_DESTINATION_NOT_EXIST = 126;
+  TXT_DESTINATION_CREATE_ERROR = 127;
+  TXT_NO_DEVICE_SPECIFIED = 128;
+  TXT_NOT_COMPLETE_DISK = 129;
+  TXT_SOURCE_DRIVE = 130;
+  TXT_SYSTEM_PARTITION = 131;
+  TXT_SYSTEM_PARTITION_NOT_FOUND = 132;
+  TXT_BASE_IMAGE_EXISTS = 133;
+  TXT_CREATING_DIFFERENTIAL = 134;
+  TXT_MBR_CREATING = 135;
+  TXT_MBR_CREATE_ERROR = 136;
+  TXT_MBR_CREATED = 137;
+  TXT_BOOT_PARTITION = 138;
+  TXT_BOOT_PARTITION_NOT_FOUND = 139;
+  TXT_CREATING_FULL_BOOT_IMAGE = 140;
+  TXT_BOOT_IMAGE_CREATE_ERROR = 141;
+  TXT_BOOT_IMAGE_CREATED = 142;
+  TXT_ALL_IMAGES_CREATED = 143;
+  TXT_PLEASE_SELECT_RESTORE_OPTION = 144;
+  TXT_SECURITY_QUERY = 145;
+  TXT_WARNING = 146;
+  TXT_TARGET_DRIVE_INFO = 147;
+  TXT_DATA_WRITTEN_TO_DRIVE = 148;
+  TXT_MBR = 149;
+  TXT_BOOT_PARTITION_NAME = 150;
+  TXT_SYSTEM_PARTITION_NAME = 151;
+  TXT_EXISTING_DATA_OVERWRITTEN = 152;
+  TXT_CONFIRM_CONTINUE = 153;
+  TXT_COMPLETE_DISK_RESTORE = 154;
+  TXT_IMAGE_FILE_NOT_SELECTED = 155;
+  TXT_IMAGE_FILE_NOT_EXIST = 156;
+  TXT_NO_MBR_IMAGE = 157;
+  TXT_MBR_IMAGE_NOT_EXIST = 158;
+  TXT_NO_BOOT_IMAGE = 159;
+  TXT_BOOT_IMAGE_NOT_EXIST = 160;
+  TXT_NO_BASE_IMAGE = 161;
+  TXT_BASE_IMAGE_NOT_EXIST = 162;
+  TXT_UNMOUNTING = 163;
+  TXT_RESTORING_MBR = 164;
+  TXT_MBR_RESTORE_ERROR = 165;
+  TXT_MBR_RESTORED = 166;
+  TXT_RESTORING_BOOT = 167;
+  TXT_BOOT_RESTORE_ERROR = 168;
+  TXT_BOOT_RESTORED = 169;
+  TXT_RESTORING_SYSTEM = 170;
+  TXT_SYSTEM_RESTORE_SUCCESS = 171;
+  TXT_ALL_SELECTED_RESTORED = 172;
+  TXT_MBR_NOT_FOUND = 173;
+  TXT_MBR_RESTORE_SUCCESS = 174;
+  TXT_DEVICE_NOT_COMPLETE_DISK = 175;
+  TXT_NO_BASE_IMAGE_RESTORE = 176;
+  TXT_ALL_IMAGES_SUCCESS = 177;
+  TXT_DESTINATION_FOLDER = 178;
+  TXT_SYSTEM_IMAGE = 179;
 type
-  TLanguageTexts = array[1..116,0..1] of string;
+  TLanguageTexts = array[1..179,0..1] of string;
+
 
 
 const
@@ -154,9 +214,9 @@ const
     ('Image erfolgreich wiederhergestellt.','Image restored successfully.'),
     ('Fehler bei der Wiederherstellung des Images.','Error restoring image.'),
     ('Image erstellen','Create image'),
-    ('Image wiederherstellen','Restore image'),
-    ('Quellpartition','Source partition'),
-    ('Zielpartition','Target partition'),
+    ('Wiederherstellung','Restore image'),
+    ('Quelllaufwerk','Source drive'),
+    ('Ziellaufwerk','Target drive'),
     ('Image-Ordner','Image folder'),
     ('Image-Datei','Image file'),
     ('Kompressionsstufe','Compression level'),
@@ -253,7 +313,70 @@ const
     ('Komprimierungsfehler: %s','Compression error: %s'),
     ('Geschwindigkeit: %.2f MB/s  Restzeit: %s  Verhältnis: %.2f:1','Speed: %.2f MB/s  ETA: %s  Ratio: %.2f:1'),
     ('Prozess durch Benutzer abgebrochen','Process cancelled by user'),
-    ('Kein Laufwerk ausgewählt', 'No drive selected')
+    ('Kein Laufwerk ausgewählt', 'No drive selected'),
+    ('abbrechen', 'abort'),
+    ('EN', 'DE'),
+    ('Image erstellen', 'create image'),
+    ('Wiederherstellung', 'restore target'),
+     ('Quelllaufwerk', 'source drive'),
+     ('Ziellaufwerk', 'target drive'),
+     ('Image-Ordner', 'image folder'),
+     ('Hilfe', 'help'),
+         ('Kein Zielordner angegeben.','No destination folder specified.'),
+    ('Zielordner existiert nicht: %s','Destination folder does not exist: %s'),
+    ('Zielordner konnte nicht erstellt werden: %s','Could not create destination folder: %s'),
+    ('Kein Laufwerk angegeben.','No device specified.'),
+    ('Das ausgewählte Laufwerk ist kein vollständiges Laufwerk: %s','The selected device is not a complete disk: %s'),
+    ('Quelllaufwerk: %s','Source drive: %s'),
+    ('Systempartition: %s','System partition: %s'),
+    ('Systempartition nicht gefunden: %s','System partition not found: %s'),
+    ('Basisimage existiert bereits.','Base image already exists.'),
+    ('Erstelle Differenzimage...','Creating differential image...'),
+    ('Erstelle MBR-Image...','Creating MBR image...'),
+    ('Erstellen des MBR-Images fehlgeschlagen.','MBR image creation failed.'),
+    ('MBR-Image erstellt: %s','MBR image created: %s'),
+    ('Bootpartition: %s','Boot partition: %s'),
+    ('Erstelle vollständiges Bootimage...','Creating full boot image...'),
+    ('Erstellen des Bootimages fehlgeschlagen.','Boot image creation failed.'),
+    ('Bootimage erstellt: %s','Boot image created: %s'),
+    ('Alle Images erfolgreich erstellt.','All images created successfully.'),
+    ('Bitte mindestens eine Wiederherstellungsoption auswählen.','Please select at least one restore option.'),
+    ('Sicherheitsabfrage','Security confirmation'),
+    ('ACHTUNG!','WARNING!'),
+    ('Ziellaufwerk:','Target drive:'),
+    ('Folgende Daten werden auf dieses Laufwerk geschrieben:','The following data will be written to this drive:'),
+    ('MBR','MBR'),
+    ('Boot-Partition','Boot partition'),
+    ('System-Partition','System partition'),
+    ('Die vorhandenen Daten in den ausgewählten Bereichen','The existing data in the selected areas'),
+    ('werden dabei unwiderruflich überschrieben.','will be irreversibly overwritten.'),
+    ('Möchten Sie wirklich fortfahren?','Do you really want to continue?'),
+    ('Bitte ein vollständiges Laufwerk für die Wiederherstellung auswählen.','Please select a complete disk for restore.'),
+    ('Keine Image-Datei ausgewählt.','No image file selected.'),
+    ('Image-Datei existiert nicht: %s','Image file does not exist: %s'),
+    ('Kein MBR-Image gefunden in: %s','No MBR image found in: %s'),
+    ('MBR-Image existiert nicht: %s','MBR image does not exist: %s'),
+    ('Kein Bootimage gefunden in: %s','No boot image found in: %s'),
+    ('Bootimage existiert nicht: %s','Boot image does not exist: %s'),
+    ('Kein Basisimage gefunden in: %s','No base image found in: %s'),
+    ('Basisimage existiert nicht: %s','Base image does not exist: %s'),
+    ('Trenne %s von %s...','Unmounting %s from %s...'),
+    ('Stelle MBR wieder her...','Restoring MBR...'),
+    ('Wiederherstellung des MBR fehlgeschlagen.','MBR restore failed.'),
+    ('MBR erfolgreich wiederhergestellt.','MBR restored successfully.'),
+    ('Stelle Bootpartition wieder her: %s','Restoring boot partition: %s'),
+    ('Wiederherstellung des Bootimages fehlgeschlagen.','Boot restore failed.'),
+    ('Bootpartition erfolgreich wiederhergestellt.','Boot partition restored successfully.'),
+    ('Stelle Systempartition wieder her: %s','Restoring system partition: %s'),
+    ('Systemimage erfolgreich wiederhergestellt.','System image restored successfully.'),
+    ('Alle ausgewählten Images erfolgreich wiederhergestellt.','All selected images restored successfully.'),
+    ('Kein MBR-Image gefunden.','MBR image not found.'),
+    ('MBR erfolgreich wiederhergestellt.','MBR restored.'),
+    ('Das ausgewählte Laufwerk ist kein vollständiges Laufwerk.','The selected device is not a complete disk.'),
+    ('Kein Basisimage für die Wiederherstellung gefunden.','No base image found for restore.'),
+    ('Alle Images erfolgreich erstellt.','All images created successfully.'),
+    ('Zielordner','Destination folder'),
+    ('Systemimage','System image')
   );
 
 
@@ -273,3 +396,8 @@ begin
 end;
 
 end.
+
+
+
+
+

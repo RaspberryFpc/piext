@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Process, exebash, fileutil;
+  Process, fileutil,exethread;
 
 procedure CheckForUpdates(memo: Tmemo);
 
@@ -97,6 +97,8 @@ begin
   Application.MainForm.Close;
 end;
 
+
+
 procedure InstallUpdate(memo: Tmemo);
 var
   DownloadURL: string;
@@ -106,10 +108,11 @@ begin
   DownloadURL := 'https://raw.githubusercontent.com/' + REPO +
     '/' + RemoteVersion + '/bin/' + PROG + '.deb';
 
-  PrexeBash(
-    'wget -O "' + NEWDEB + '" "' + DownloadURL + '"',
-    memo
-  );
+//  PrexeThreadedBash('wget -O "' + NEWDEB + '" "' + DownloadURL + '"', memo);
+PrexeThreadedBash(
+  'wget --progress=dot:mega -O "' + NEWDEB + '" "' + DownloadURL + '"',
+  memo
+);
 
   if not FileExists(NEWDEB) then
   begin
@@ -123,10 +126,7 @@ begin
     Exit;
   end;
 
-  PrexeBash(
-    'sudo env DEBIAN_FRONTEND=noninteractive apt install -y "' + NEWDEB + '"',
-    memo
-  );
+  PrexeThreadedBash('sudo env DEBIAN_FRONTEND=noninteractive apt install -y "' + NEWDEB + '"',memo);
 
   if LastExitCode = 0 then
   begin

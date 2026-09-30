@@ -1,13 +1,13 @@
 object Form1: TForm1
   Left = 199
-  Height = 367
+  Height = 360
   Top = 101
-  Width = 489
+  Width = 695
   AlphaBlend = True
   Anchors = [akTop]
   Caption = 'PiExt'
-  ClientHeight = 367
-  ClientWidth = 489
+  ClientHeight = 360
+  ClientWidth = 695
   Color = 16777168
   Font.Height = -12
   Position = poDesktopCenter
@@ -21,7 +21,7 @@ object Form1: TForm1
     Left = 16
     Height = 20
     Top = 154
-    Width = 457
+    Width = 664
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
   end
@@ -29,11 +29,12 @@ object Form1: TForm1
     Left = 16
     Height = 176
     Top = 176
-    Width = 457
+    Width = 664
     Lines.Strings = (
       ''
     )
     TabOrder = 1
+    WantReturns = False
   end
   object EditImage: TEdit
     AnchorSideLeft.Control = Label2
@@ -43,7 +44,7 @@ object Form1: TForm1
     Left = 120
     Height = 25
     Top = 65
-    Width = 333
+    Width = 540
     Anchors = [akTop, akRight]
     BorderSpacing.Left = 5
     BorderSpacing.Right = 20
@@ -53,15 +54,14 @@ object Form1: TForm1
   object SpinEdit1: TSpinEdit
     AnchorSideTop.Control = ButtonStart
     AnchorSideTop.Side = asrCenter
-    Left = 433
+    Left = 544
     Height = 26
-    Top = 94
+    Top = 91
     Width = 40
     Anchors = []
     MaxValue = 19
     TabOrder = 3
     Value = 4
-    OnChange = SpinEdit1Change
   end
   object ComboBox1: TComboBox
     AnchorSideLeft.Control = EditImage
@@ -70,7 +70,7 @@ object Form1: TForm1
     Left = 120
     Height = 25
     Top = 40
-    Width = 353
+    Width = 560
     Anchors = [akTop, akRight]
     ItemHeight = 17
     TabOrder = 4
@@ -101,8 +101,8 @@ object Form1: TForm1
     AnchorSideLeft.Control = Memo1
     Left = 16
     Height = 25
-    Top = 125
-    Width = 152
+    Top = 120
+    Width = 204
     Anchors = [akTop]
     TabOrder = 7
     OnClick = ButtonStartClick
@@ -115,7 +115,7 @@ object Form1: TForm1
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = EditImage
     AnchorSideBottom.Side = asrBottom
-    Left = 452
+    Left = 659
     Height = 25
     Top = 65
     Width = 21
@@ -148,28 +148,28 @@ object Form1: TForm1
     Caption = 'Target Folder'
   end
   object Label3: TLabel
-    AnchorSideTop.Control = ButtonStart
+    AnchorSideTop.Control = SpinEdit1
     AnchorSideTop.Side = asrCenter
-    Left = 320
+    Left = 408
     Height = 17
-    Top = 100
+    Top = 96
     Width = 106
-    Anchors = []
+    Anchors = [akTop]
     Caption = 'Compression Level'
   end
   object Button2: TButton
-    Left = 440
+    Left = 520
     Height = 25
-    Top = 8
+    Top = 6
     Width = 32
     Caption = 'Button2'
     TabOrder = 9
     OnClick = Button2Click
   end
   object Button3: TButton
-    Left = 376
+    Left = 456
     Height = 25
-    Top = 8
+    Top = 6
     Width = 58
     Caption = 'help'
     TabOrder = 10
@@ -180,10 +180,10 @@ object Form1: TForm1
     AnchorSideTop.Control = ButtonStart
     AnchorSideBottom.Control = ButtonStart
     AnchorSideBottom.Side = asrBottom
-    Left = 168
+    Left = 236
     Height = 25
-    Top = 125
-    Width = 152
+    Top = 120
+    Width = 204
     Anchors = [akTop, akBottom]
     TabOrder = 11
     OnClick = ButtonCancelClick
@@ -194,40 +194,46 @@ object Form1: TForm1
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonStart
     AnchorSideBottom.Side = asrBottom
-    Left = 320
+    Left = 453
     Height = 25
-    Top = 125
-    Width = 153
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Top = 120
+    Width = 227
+    Anchors = [akTop, akBottom]
     Caption = 'Button4'
     TabOrder = 12
   end
   object cb_system: TCheckBox
-    Left = 192
+    AnchorSideTop.Control = SpinEdit1
+    AnchorSideTop.Side = asrCenter
+    Left = 296
     Height = 23
-    Top = 97
-    Width = 84
-    Caption = 'cb_system'
+    Top = 93
+    Width = 70
+    Caption = 'SYSTEM'
     Checked = True
     State = cbChecked
     TabOrder = 13
     OnChange = cb_systemChange
   end
   object cb_boot: TCheckBox
-    Left = 104
+    AnchorSideTop.Control = SpinEdit1
+    AnchorSideTop.Side = asrCenter
+    Left = 176
     Height = 23
-    Top = 97
-    Width = 71
-    Caption = 'cb_boot'
+    Top = 93
+    Width = 58
+    Caption = 'BOOT'
     TabOrder = 14
     OnChange = cb_bootChange
   end
   object cb_mbr: TCheckBox
-    Left = 16
+    AnchorSideTop.Control = SpinEdit1
+    AnchorSideTop.Side = asrCenter
+    Left = 64
     Height = 23
-    Top = 97
-    Width = 67
-    Caption = 'cb_mbr'
+    Top = 93
+    Width = 53
+    Caption = 'MBR'
     TabOrder = 15
     OnChange = cb_mbrChange
   end

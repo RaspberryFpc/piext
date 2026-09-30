@@ -5,7 +5,7 @@ object Form5: TForm5
   Width = 306
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
-  Caption = 'pibackup updater'
+  Caption = 'piext updater'
   ClientHeight = 138
   ClientWidth = 306
   Position = poMainFormCenter
