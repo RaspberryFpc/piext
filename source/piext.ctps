@@ -29,8 +29,8 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="61"/>
-        <CursorPos X="60" Y="85"/>
+        <TopLine Value="13"/>
+        <CursorPos X="21" Y="81"/>
       </Unit>
       <Unit>
         <Filename Value="ext4bitmap.pas"/>
