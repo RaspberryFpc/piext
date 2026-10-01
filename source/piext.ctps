@@ -26,11 +26,10 @@
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
         <UsageCount Value="200"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1150"/>
-        <CursorPos X="44" Y="1165"/>
+        <TopLine Value="176"/>
+        <CursorPos X="51" Y="545"/>
       </Unit>
       <Unit>
         <Filename Value="ext4bitmap.pas"/>
@@ -47,7 +46,7 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Zstd"/>
         <Loaded Value="True"/>
-        <UsageCount Value="198"/>
+        <UsageCount Value="200"/>
         <EditorIndex Value="13"/>
         <WindowIndex Value="0"/>
         <CursorPos Y="111"/>
@@ -57,7 +56,7 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Imageutils"/>
         <Loaded Value="True"/>
-        <UsageCount Value="195"/>
+        <UsageCount Value="198"/>
         <EditorIndex Value="12"/>
         <WindowIndex Value="0"/>
         <TopLine Value="303"/>
@@ -68,11 +67,12 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Language"/>
         <Loaded Value="True"/>
-        <UsageCount Value="109"/>
+        <UsageCount Value="112"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="11"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="215"/>
-        <CursorPos X="21" Y="221"/>
+        <TopLine Value="5"/>
+        <CursorPos X="50" Y="23"/>
       </Unit>
       <Unit>
         <Filename Value="unit2.pas"/>
@@ -84,7 +84,7 @@
         <UnitName Value="Unit2"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-        <UsageCount Value="104"/>
+        <UsageCount Value="107"/>
         <EditorIndex Value="8"/>
         <WindowIndex Value="0"/>
         <TopLine Value="28"/>
@@ -99,7 +99,7 @@
         <ResourceBaseClass Value="Form"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-        <UsageCount Value="88"/>
+        <UsageCount Value="91"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="268"/>
@@ -118,11 +118,11 @@
         <Filename Value="rawimage.pas"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="96"/>
+        <UsageCount Value="98"/>
         <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1792"/>
-        <CursorPos X="37" Y="439"/>
+        <TopLine Value="22"/>
+        <CursorPos X="24" Y="39"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/local/codetyphon/typhon/lcl/include/control.inc"/>
@@ -172,7 +172,7 @@
         <Filename Value="piext_de.html"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="49"/>
+        <UsageCount Value="51"/>
         <EditorIndex Value="10"/>
         <WindowIndex Value="0"/>
         <TopLine Value="385"/>
@@ -182,7 +182,7 @@
         <Filename Value="piext_en.html"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="49"/>
+        <UsageCount Value="51"/>
         <EditorIndex Value="9"/>
         <WindowIndex Value="0"/>
         <CursorPos X="15" Y="2"/>
@@ -201,7 +201,7 @@
         <Filename Value="updater.frm"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="42"/>
         <EditorIndex Value="7"/>
         <WindowIndex Value="0"/>
         <CursorPos X="20" Y="5"/>
@@ -219,7 +219,7 @@
         <FRMtype Value="0"/>
         <UnitName Value="Forms"/>
         <Loaded Value="True"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="926"/>
@@ -229,7 +229,7 @@
         <Filename Value="exethread.pas"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="26"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
         <TopLine Value="454"/>
@@ -239,7 +239,7 @@
         <Filename Value="rkutils.pas"/>
         <FRMtype Value="0"/>
         <Loaded Value="True"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="26"/>
         <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
         <TopLine Value="7"/>
@@ -259,7 +259,7 @@
         <FRMtype Value="0"/>
         <UnitName Value="StdCtrls"/>
         <Loaded Value="True"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="162"/>
@@ -275,35 +275,7 @@
         <CursorPos Y="7580"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="25">
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="261" Column="13" TopLine="244"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="309" Column="19" TopLine="292"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="570" Column="13" TopLine="553"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="577" Column="13" TopLine="560"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="593" Column="15" TopLine="576"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="608" Column="12" TopLine="591"/>
-      </Position>
-      <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="609" Column="12" TopLine="592"/>
-      </Position>
+    <JumpHistory HistoryIndex="28">
       <Position>
         <Filename Value="unit1.pas"/>
         <Caret Line="682" Column="15" TopLine="665"/>
@@ -381,16 +353,48 @@
         <Caret Line="2291" Column="13" TopLine="2278"/>
       </Position>
       <Position>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="1267" Column="50" TopLine="1259"/>
+        <Filename Value="language.pas"/>
+        <Caret Line="222" Column="36" TopLine="215"/>
       </Position>
       <Position>
-        <Filename Value="rawimage.pas"/>
-        <Caret Line="439" Column="37" TopLine="429"/>
+        <Filename Value="language.pas"/>
+        <Caret Line="152" Column="11" TopLine="142"/>
+      </Position>
+      <Position>
+        <Filename Value="language.pas"/>
+        <Caret Line="153" Column="11" TopLine="142"/>
+      </Position>
+      <Position>
+        <Filename Value="language.pas"/>
+        <Caret Line="154" Column="25" TopLine="142"/>
+      </Position>
+      <Position>
+        <Filename Value="language.pas"/>
+        <Caret Line="155" Column="30" TopLine="142"/>
       </Position>
       <Position>
         <Filename Value="unit1.pas"/>
-        <Caret Line="1267" Column="50" TopLine="1210"/>
+        <Caret Line="1123" Column="27" TopLine="1111"/>
+      </Position>
+      <Position>
+        <Filename Value="language.pas"/>
+        <Caret Line="376" Column="5" TopLine="356"/>
+      </Position>
+      <Position>
+        <Filename Value="language.pas"/>
+        <Caret Line="378" Column="77" TopLine="362"/>
+      </Position>
+      <Position>
+        <Filename Value="language.pas"/>
+        <Caret Line="13" Column="66" TopLine="223"/>
+      </Position>
+      <Position>
+        <Filename Value="language.pas"/>
+        <Caret Line="12" Column="19" TopLine="5"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="545" Column="51" TopLine="176"/>
       </Position>
     </JumpHistory>
     <RunParams>

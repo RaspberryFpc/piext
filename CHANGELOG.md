@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [v2.0.4] – 2026-10-02
+
+- fix error message text number assignments
+
+
+
 ## [v2.0.3] – 2026-09-30
 
 - improved update notifications.
