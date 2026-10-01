@@ -14,6 +14,8 @@ When creating a complete Raspberry Pi image, PiExt saves:
 
 The first system image created in an image folder automatically becomes the **Base Image**. Further system images created in the same folder are **Differential Images** based directly on the Base Image.
 
+![PiExt graphical user interface](docs/piext.png)
+
 ## Features
 
 * Designed for Raspberry Pi systems
