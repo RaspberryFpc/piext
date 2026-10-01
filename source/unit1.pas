@@ -78,7 +78,7 @@ var
   Form1: TForm1;
 
 const
-  version = 'v2.0.3';
+  version = 'v2.0.4';
   f_caption = 'PiExt';
   prefixbaseimage = 'base_image_';
   prefixdiffimage = 'diff-image_';
