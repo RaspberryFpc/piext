@@ -308,6 +308,7 @@ const
 var
   DevFD, ImgFD, ErrorCode: integer;
   MBR: array[0..MBR_SIZE - 1] of byte;
+  s:string;
 begin
   Result := False;
   DevFD := -1;
@@ -362,6 +363,9 @@ begin
     fpClose(ImgFD);
   if DevFD >= 0 then
     fpClose(DevFD);
+
+  RunCommand('partprobe ' + Device, S);
+  sleep(1000);
 end;
 
 

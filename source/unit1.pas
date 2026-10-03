@@ -5,9 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, Spin, ActnList, rawimage,
-  imageutils, process, inifiles, Language, unit2, updater, BaseUnix;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,StdCtrls, ComCtrls, ExtCtrls, Spin, ActnList, rawimage,
+  imageutils, process, inifiles, Language, unit2, updater,BaseUnix,rkutils;
 
 type
   { TForm1 }
@@ -78,7 +77,7 @@ var
   Form1: TForm1;
 
 const
-  version = 'v2.0.4';
+  version = 'v2.0.5';  // verzeichnisrechte
   f_caption = 'PiExt';
   prefixbaseimage = 'base_image_';
   prefixdiffimage = 'diff-image_';
@@ -389,7 +388,7 @@ end;
 function creatediff(dir, existingbasefile, systemdevice: string): boolean;
 var
   n: integer;
-  Dateiname: string;
+  Dateiname,s: string;
 begin
   Result := False;
   n := GetmaxDiffFile(Dir);
@@ -400,6 +399,8 @@ begin
   Form1.Log(Form1, 'Differential source: ' + systemdevice);
   if CreateDiffBitmap(systemdevice, existingbasefile, Dateiname, @Form1.Progress, @Form1.Log) then
   begin
+    Form1.Log(Form1, _(TXT_SYNCING));
+    RunCommand('sync',s);
     Form1.Log(Form1, _(TXT_DIFF_IMAGE_CREATED));
     Result := True;
   end
@@ -410,7 +411,7 @@ end;
 function TForm1.CreateImg(const device: string): boolean;
 var
   destname, existingbasefilename, bootimagename, mbrimagename: string;
-  f_ext, disk, bootdevice, systemdevice, dir, Timestamp: string;
+  f_ext, disk, bootdevice, systemdevice, dir, Timestamp,s: string;
 begin
   Result := False;
   Memo1.Clear;
@@ -441,6 +442,11 @@ begin
         Exit;
       end;
     end;
+
+    // verzeichnisrechte setzen damit images vom user ohne sudo gelöscht werden können
+
+    fpChmod(PChar(Dir), &0777);
+
 
     disk := Trim(ExtractDevice(device));
 
@@ -484,6 +490,10 @@ begin
       Log(Self, _(TXT_CREATING_DIFFERENTIAL));
 
       Result := creatediff(dir, existingbasefilename, systemdevice);
+
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
       Exit;
     end;
 
@@ -550,9 +560,19 @@ begin
     Button4.Caption := '0.0 MB/s';
   end;
 
+//  if Result then
+//    Log(Self, _(TXT_ALL_IMAGES_SUCCESS));
+//  end;
+
   if Result then
+  begin
+    Log(Self, _(TXT_SYNCING));
+    RunCommand('sync',s);
     Log(Self, _(TXT_ALL_IMAGES_SUCCESS));
+  end;
 end;
+
+
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -650,93 +670,148 @@ begin
   SaveIni;
 end;
 
+
+
 procedure TForm1.ButtonStartClick(Sender: TObject);
 var
-  Success, AnySelected: boolean;
-  S, TargetDevice: string;
+Success, AnySelected, InvalidPartition: boolean;
+S, TargetDevice, MBRFilename, Dir, ErrorMsg, InvalidPartitions: string;
+MBR: TMbr;
+DiskSectors, EndLBA: DWord;
+I: integer;
 begin
-  cancelrequested := False;
-  ButtonStart.Enabled := False;
-  LastProgressTime := 0;
-  Success := False;
+cancelrequested := False;
+ButtonStart.Enabled := False;
+LastProgressTime := 0;
+Success := False;
 
-  try
-    if RadioCreate.Checked then
-      Success := CreateImg(ComboBox1.Text);
+try
+if RadioCreate.Checked then
+Success := CreateImg(ComboBox1.Text);
 
-    if RadioRestore.Checked then
-    begin
-      AnySelected := cb_mbr.Checked or cb_boot.Checked or cb_system.Checked;
+if RadioRestore.Checked then
+begin
+  AnySelected := cb_mbr.Checked or cb_boot.Checked or cb_system.Checked;
 
-      if not AnySelected then
-      begin
-        Log(Self, _(TXT_PLEASE_SELECT_RESTORE_OPTION));
-        Exit;
-      end;
-
-      TargetDevice := ExtractDevice(ComboBox1.Text);
-
-      if TargetDevice = '' then
-      begin
-        Log(Self, _(TXT_DRIVE_NOT_SELECTED));
-        Exit;
-      end;
-
-      S := _(TXT_SECURITY_QUERY) + LineEnding + LineEnding + _(TXT_WARNING) + LineEnding + LineEnding + _(TXT_TARGET_DRIVE_INFO) + LineEnding + '  ' + TargetDevice +
-        LineEnding + LineEnding + _(TXT_DATA_WRITTEN_TO_DRIVE) + LineEnding + LineEnding;
-
-      if cb_mbr.Checked then
-        S := S + '  • ' + _(TXT_MBR) + LineEnding;
-
-      if cb_boot.Checked then
-        S := S + '  • ' + _(TXT_BOOT_PARTITION_NAME) + LineEnding;
-
-      if cb_system.Checked then
-        S := S + '  • ' + _(TXT_SYSTEM_PARTITION_NAME) + LineEnding;
-
-      S := S + LineEnding + _(TXT_EXISTING_DATA_OVERWRITTEN) + LineEnding + _(TXT_CONFIRM_CONTINUE);
-
-      if MessageDlg(_(TXT_SECURITY_QUERY), S, mtWarning, [mbYes, mbNo], 0) <> mrYes then
-        Exit;
-
-      Success := RestoreImg;
-    end;
-
-  except
-    on E: Exception do
-    begin
-      if not cancelrequested then
-        Log(Self, E.Message);
-      Success := False;
-    end;
-  end;
-
-  if cancelrequested then
+  if not AnySelected then
   begin
-    Log(Self, _(TXT_CANCELLED));
-    ProgressBar1.Position := 0;
+    Log(Self, _(TXT_PLEASE_SELECT_RESTORE_OPTION));
+    Exit;
   end;
 
-  Button4.Caption := '';
-  ButtonStart.Enabled := True;
+  TargetDevice := ExtractDevice(ComboBox1.Text);
 
-  if FCliMode then
+  if TargetDevice = '' then
   begin
-    if Success then
-      ExitCode := 0
-    else
-      ExitCode := 1;
-    Application.Terminate;
+    Log(Self, _(TXT_DRIVE_NOT_SELECTED));
+    Exit;
   end;
 
-  cancelrequested := False;
+  S := _(TXT_SECURITY_QUERY) + LineEnding + LineEnding + _(TXT_WARNING) + LineEnding + LineEnding + _(TXT_TARGET_DRIVE_INFO) + LineEnding + '  ' + TargetDevice +
+    LineEnding + LineEnding + _(TXT_DATA_WRITTEN_TO_DRIVE) + LineEnding + LineEnding;
+
+  if cb_mbr.Checked then
+    S := S + '  • ' + _(TXT_MBR) + LineEnding;
+
+  if cb_boot.Checked then
+    S := S + '  • ' + _(TXT_BOOT_PARTITION_NAME) + LineEnding;
+
+  if cb_system.Checked then
+    S := S + '  • ' + _(TXT_SYSTEM_PARTITION_NAME) + LineEnding;
+
+
+
+    { Check whether invalid partitions will be removed from the MBR }
+  InvalidPartitions := '';
+
+  if cb_mbr.Checked and IsWholeDisk(TargetDevice) then
+  begin
+    Dir := ExtractFilePath(Trim(EditImage.Text));
+    MBRFilename := FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) + 'mbr_image_*.img');
+
+    if (MBRFilename <> '') and FileExists(MBRFilename) then
+    begin
+      if Read_MBR(MBRFilename, ErrorMsg, MBR) then
+      begin
+        if RunCommand('blockdev --getsz ' + TargetDevice, S) and
+           TryStrToDWord(Trim(S), DiskSectors) then
+        begin
+          for I := 1 to 4 do
+          begin
+            if MBR.PartitionEntries[I].PartitionSize > 0 then
+            begin
+              EndLBA := MBR.PartitionEntries[I].FirstLBA +
+                MBR.PartitionEntries[I].PartitionSize;
+
+              if EndLBA > DiskSectors then
+                           InvalidPartitions := InvalidPartitions + 'Partition '+ IntToStr(I)+LineEnding;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+
+  if InvalidPartitions <> '' then
+  begin
+    S := S + LineEnding + LineEnding + 'WARNING:' + LineEnding +
+      _(txt_invalid_part_detected)+ LineEnding +
+      InvalidPartitions +
+      _(txt_invalid_remove)+
+      LineEnding;
+  end;
+
+
+  S := S + LineEnding + _(TXT_EXISTING_DATA_OVERWRITTEN) + LineEnding + _(TXT_CONFIRM_CONTINUE);
+
+  if MessageDlg(_(TXT_SECURITY_QUERY), S, mtWarning, [mbYes, mbNo], 0) <> mrYes then
+    Exit;
+
+  Success := RestoreImg;
 end;
+
+
+except
+on E: Exception do
+begin
+if not cancelrequested then
+Log(Self, E.Message);
+Success := False;
+end;
+end;
+
+if cancelrequested then
+begin
+Log(Self, _(TXT_CANCELLED));
+ProgressBar1.Position := 0;
+end;
+
+Button4.Caption := '';
+ButtonStart.Enabled := True;
+
+if FCliMode then
+begin
+if Success then
+ExitCode := 0
+else
+ExitCode := 1;
+Application.Terminate;
+end;
+
+cancelrequested := False;
+end;
+
+
+
+
+
 
 function TForm1.RestoreImg: boolean;
 var
   TargetDevice, Disk, BootDevice, SystemDevice, MountPoint, S: string;
   BaseFilename, DiffFilename, Dir, SourceFile: string;
   MBRFilename, BootFilename: string;
+  I:integer;
 begin
   Result := False;
   MountPoint := '';
@@ -780,21 +855,6 @@ begin
     SystemDevice := Disk + '2';
   end;
 
-  { Check selected partitions }
-  if Cb_Boot.Checked then
-    if not DirectoryExists('/sys/class/block/' + ExtractFileName(BootDevice)) then
-    begin
-      Log(Self, Format(_(TXT_BOOT_PARTITION_NOT_FOUND), [BootDevice]));
-      Exit;
-    end;
-
-  if CB_System.Checked then
-    if not DirectoryExists('/sys/class/block/' + ExtractFileName(SystemDevice)) then
-    begin
-      Log(Self, Format(_(TXT_SYSTEM_PARTITION_NOT_FOUND), [SystemDevice]));
-      Exit;
-    end;
-
   { Selected image must exist }
   DiffFilename := Trim(EditImage.Text);
 
@@ -819,7 +879,7 @@ begin
   BaseFilename := FileExistsWildcard(IncludeTrailingPathDelimiter(Dir) + prefixbaseimage);
 
   { ------------------------------------------------------------ }
-  { Check all required files BEFORE starting restore }
+  { Check all required image files BEFORE starting restore }
   { ------------------------------------------------------------ }
 
   if CB_MBR.Checked then
@@ -918,6 +978,56 @@ begin
 
     { Give the kernel a chance to reread the partition table }
     RunCommand('partprobe ' + Disk, S);
+    RunCommand('udevadm settle', S);
+
+    { Wait up to 5 seconds for the selected partitions }
+for I := 1 to 50 do
+begin
+  if (not CB_Boot.Checked or
+      DirectoryExists('/sys/class/block/' + ExtractFileName(BootDevice))) and
+     (not CB_System.Checked or
+      DirectoryExists('/sys/class/block/' + ExtractFileName(SystemDevice))) then
+    Break;
+
+  Sleep(100);
+  Application.ProcessMessages;
+end;
+
+
+
+
+
+    { Check selected partitions after MBR restore }
+    if CB_Boot.Checked then
+      if not DirectoryExists('/sys/class/block/' + ExtractFileName(BootDevice)) then
+      begin
+        Log(Self, Format(_(TXT_BOOT_PARTITION_NOT_FOUND), [BootDevice]));
+        Exit;
+      end;
+
+    if CB_System.Checked then
+      if not DirectoryExists('/sys/class/block/' + ExtractFileName(SystemDevice)) then
+      begin
+        Log(Self, Format(_(TXT_SYSTEM_PARTITION_NOT_FOUND), [SystemDevice]));
+        Exit;
+      end;
+  end
+  else
+  begin
+    { No MBR restore: partitions must already exist }
+    if CB_Boot.Checked then
+      if not DirectoryExists('/sys/class/block/' + ExtractFileName(BootDevice)) then
+      begin
+        Log(Self, Format(_(TXT_BOOT_PARTITION_NOT_FOUND), [BootDevice]));
+        Exit;
+      end;
+
+    if CB_System.Checked then
+      if not DirectoryExists('/sys/class/block/' + ExtractFileName(SystemDevice)) then
+      begin
+        Log(Self, Format(_(TXT_SYSTEM_PARTITION_NOT_FOUND), [SystemDevice]));
+        Exit;
+      end;
   end;
 
   { ------------------------------------------------------------ }
@@ -958,9 +1068,16 @@ begin
   Log(Self, _(TXT_ALL_SELECTED_RESTORED));
 end;
 
+
+
 function TForm1.RestoreMBRImage: boolean;
 var
-  TargetDevice, MBRImage, Dir: string;
+  TargetDevice, MBRImage, Dir, ErrorMsg, S: string;
+  MBR: TMbr;
+  DiskSectors: DWord;
+  I: integer;
+  EndLBA:DWord;
+  modified: boolean;
 begin
   Result := False;
 
@@ -988,14 +1105,67 @@ begin
     Exit;
   end;
 
-  if RestoreMBR(MBRImage, TargetDevice, @Log) then
+  { MBR-Image in den Speicher lesen }
+  if not Read_MBR(MBRImage, ErrorMsg, MBR) then
   begin
-    Log(Self, _(TXT_MBR_RESTORE_SUCCESS));
-    Result := True;
-  end
-  else
-    Log(Self, _(TXT_RESTORE_ERROR));
+    Log(Self, ErrorMsg);
+    Exit;
+  end;
+
+  { Größe des Ziellaufwerks in Sektoren ermitteln }
+  if not RunCommand('blockdev --getsz ' + TargetDevice, S) then
+  begin
+    Log(Self, 'Could not determine target drive size.');
+    Exit;
+  end;
+
+  if not TryStrToDWord(Trim(S), DiskSectors) then
+  begin
+    Log(Self, 'Could not determine target drive size.');
+    Exit;
+  end;
+
+  modified := False;
+
+  { Partitionseinträge prüfen }
+  for I := 1 to 4 do
+  begin
+
+    EndLBA := MBR.PartitionEntries[I].FirstLBA+MBR.PartitionEntries[I].PartitionSize;
+    if EndLBA > DiskSectors then
+    begin
+      Log(Self, Format('Removing invalid partition %d from MBR.', [I]));
+      FillChar(MBR.PartitionEntries[I], SizeOf(MBR.PartitionEntries[i]), 0);
+      modified := True;
+    end;
+  end;
+
+  { Korrigierten MBR aus dem Speicher direkt schreiben }
+  try
+    Write_MBR(MBR, TargetDevice);
+  except
+    on E: Exception do
+    begin
+      Log(Self, E.Message);
+      Exit;
+    end;
+  end;
+
+  RunCommand('sync', S);
+
+  { Kernel soll die korrigierte Partitionstabelle einlesen }
+  RunCommand('partprobe ' + TargetDevice, S);
+
+  if modified then
+    Log(Self, 'Invalid partitions were removed from MBR.');
+
+  Log(Self, _(TXT_MBR_RESTORE_SUCCESS));
+  Result := True;
 end;
+
+
+
+
 
 procedure TForm1.ComboBox1DropDown(Sender: TObject);
 begin

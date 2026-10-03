@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [v2.0.5] – 2026-10-02
+* Restore: Images can now also be restored to completely empty drives without an existing partition table.
+* Restore: Invalid partitions that extend beyond the target drive are now detected and shown before the restore starts. These partition entries are automatically removed from the restored MBR.
+* Changed image directory permissions so images can be deleted without `sudo`.
+
+
 ## [v2.0.4] – 2026-10-02
 
 - fix error message text number assignments

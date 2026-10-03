@@ -91,7 +91,7 @@ function readlosetup: string;
 function TryUnmount(const Mp: string): boolean;
 function IsMountedExact(const Mp: string): boolean;
 procedure ParseMountLine(const L: string; out Device, Mp: string);
-procedure ClonePart(Source, Destination: string; box: TListBox);
+//  procedure ClonePart(Source, Destination: string; box: TListBox);
 function CreateDeviceUUID:longword; //Dword;
 function DecodeDeviceUUID(Value: DWORD): QWORD;
 
@@ -2123,165 +2123,165 @@ begin
 end;
 
 
-procedure ClonePart(Source, Destination: string; box: TListBox);
-
-var
-  fsource: TFileStream = nil;
-  fdest: TFileStream = nil;
-
-
-  Done: int64;
-  TotalSize: int64;
-  totalsec:int64;
-  Remaining: int64;
-  ToRead: int64;
-
-  ReadCount: int64;
-  WrittenCount: int64;
-
-  LastUpdate: QWord;
-  NowTick: QWord;
-  Speed: int64;
-  EtaSecs: double;
-
-  EtaStr: string;
-  Status: string;
-  St,errormsg,s: string;
-
-  RingBuffer: rngbuffer;
-  s_MBR,d_mbr,f_mbr: TMbr;
-begin
-
-  Form1.ProgressBar1.Max := 1000;
-  Form1.ProgressBar1.Position := 0;
-
-  //MBR := Read_MBR(Source);
-  if not  Read_MBR(source,errormsg,s_mbr) then
-           raise exception.Create('failed reading mbr from sourcedrive');
-
-  TotalSec := s_MBR.PartitionEntries[2].FirstLBA + s_MBR.PartitionEntries[2].PartitionSize  - 1;
-  TotalSize:=totalsec * 512 ;
-
-  if not Read_MBR(destination, errormsg, d_mbr) then
-                    raise Exception.Create('failed reading mbr from destination drive');
-
-
-   fillchar(d_mbr.PartitionEntries[1],32,0);
-
-  if form1.clonedeleteP3 then
-  fillchar(d_mbr.PartitionEntries[3],16,0);
-
-  if form1.clonedeleteP4 then
-  fillchar(d_mbr.PartitionEntries[4],16,0);
-
-
-  write_mbr(d_mbr,destination);
-  RunCommand('sync', s);
-  runcommand('partprobe ' + destination,s);
-
-  try
-  fsource := TFileStream.Create(Source, fmOpenRead or fmShareDenyNone);
-  fdest := TFileStream.Create(Destination, fmOpenWrite or fmShareDenyNone);
-  fsource.Position:=512;
-  fdest.position:=512;
-
-  SetLength(buffer, BufferSize);
-
-    fsource.Position := 512;
-    fdest.Position := 512;
-    Remaining := TotalSize -512;
-
-    Done := 0;
-    Speed := 0;
-
-    NowTick := GetTickCount64;
-    InitRingBuffer(RingBuffer, 48, NowTick, 0);
-
-    LastUpdate := NowTick;
-
-    ListBoxAddScroll(Box, '');
-
-    repeat
-      if Remaining > BufferSize then
-        ToRead := BufferSize
-      else
-        ToRead := Remaining;
-
-      ReadCount := fsource.Read(buffer, ToRead);
-
-      if ReadCount <= 0 then
-        Break;
-
-      WrittenCount := fdest.Write(buffer, ReadCount);
-
-      if WrittenCount <> ReadCount then
-        raise Exception.Create('Write error: Bytes written do not match bytes read.');
-
-      Inc(Done, WrittenCount);
-      Dec(Remaining, WrittenCount);
-
-      NowTick := GetTickCount64;
-
-      if (NowTick - LastUpdate) >= 5000 then
-      begin
-        LastUpdate := NowTick;
-
-        Speed := AddRingBuffer(RingBuffer, NowTick, Done);
-
-        if Speed > 0 then
-          EtaSecs := Remaining / Speed
-        else
-          EtaSecs := 0;
-
-        EtaStr := MsToStr(EtaSecs);
-
-        Status := Format('%.1f MiB  %.2f MB/s  ETA: %s', [Done / 1048576, Speed / 1048576, EtaStr]);
-
-        ListBoxUpdate(Box, Status);
-      end;
-
-      Form1.ProgressBar1.Position := Done * 1000 div TotalSize;
-
-    //  Application.ProcessMessages;
-
-    until (Remaining = 0) or Terminate_All;
-
-    Speed := AddRingBuffer(RingBuffer, GetTickCount64, Done);
-
-    if not Terminate_All then
-    begin
-      Status := Format('%.1f MiB  %.2f MB/s', [Done / 1048576, Speed / 1048576]);
-      ListBoxUpdate(Box, Status);
-      listboxaddscroll(box,'writing buffers to device');
-
-    end;
-
-    if Terminate_All then
-      raise Exception.Create('Writing to device: process terminated.');
-
-
-  f_mbr:=s_mbr;
-
-
-  f_mbr.PartitionEntries[3]:=  d_mbr.PartitionEntries[3];
-  f_mbr.PartitionEntries[4]:=  d_mbr.PartitionEntries[4];
-  write_mbr(f_mbr,destination);
-
-
-
-  finally
-    if Assigned(fdest) then
-      FpFsync(fdest.Handle);
-
-    FreeAndNil(fdest);
-    FreeAndNil(fsource);
-
-    RunCommand('sync', St);
-    RunCommand('partprobe ' + Destination, st);
-  end;
-
-end;
-
+//procedure ClonePart(Source, Destination: string; box: TListBox);
+//
+//var
+//  fsource: TFileStream = nil;
+//  fdest: TFileStream = nil;
+//
+//
+//  Done: int64;
+//  TotalSize: int64;
+//  totalsec:int64;
+//  Remaining: int64;
+//  ToRead: int64;
+//
+//  ReadCount: int64;
+//  WrittenCount: int64;
+//
+//  LastUpdate: QWord;
+//  NowTick: QWord;
+//  Speed: int64;
+//  EtaSecs: double;
+//
+//  EtaStr: string;
+//  Status: string;
+//  St,errormsg,s: string;
+//
+//  RingBuffer: rngbuffer;
+//  s_MBR,d_mbr,f_mbr: TMbr;
+//begin
+//
+//  Form1.ProgressBar1.Max := 1000;
+//  Form1.ProgressBar1.Position := 0;
+//
+//  //MBR := Read_MBR(Source);
+//  if not  Read_MBR(source,errormsg,s_mbr) then
+//           raise exception.Create('failed reading mbr from sourcedrive');
+//
+//  TotalSec := s_MBR.PartitionEntries[2].FirstLBA + s_MBR.PartitionEntries[2].PartitionSize  - 1;
+//  TotalSize:=totalsec * 512 ;
+//
+//  if not Read_MBR(destination, errormsg, d_mbr) then
+//                    raise Exception.Create('failed reading mbr from destination drive');
+//
+//
+//   fillchar(d_mbr.PartitionEntries[1],32,0);
+//
+//  if form1.clonedeleteP3 then
+//  fillchar(d_mbr.PartitionEntries[3],16,0);
+//
+//  if form1.clonedeleteP4 then
+//  fillchar(d_mbr.PartitionEntries[4],16,0);
+//
+//
+//  write_mbr(d_mbr,destination);
+//  RunCommand('sync', s);
+//  runcommand('partprobe ' + destination,s);
+//
+//  try
+//  fsource := TFileStream.Create(Source, fmOpenRead or fmShareDenyNone);
+//  fdest := TFileStream.Create(Destination, fmOpenWrite or fmShareDenyNone);
+//  fsource.Position:=512;
+//  fdest.position:=512;
+//
+//  SetLength(buffer, BufferSize);
+//
+//    fsource.Position := 512;
+//    fdest.Position := 512;
+//    Remaining := TotalSize -512;
+//
+//    Done := 0;
+//    Speed := 0;
+//
+//    NowTick := GetTickCount64;
+//    InitRingBuffer(RingBuffer, 48, NowTick, 0);
+//
+//    LastUpdate := NowTick;
+//
+//    ListBoxAddScroll(Box, '');
+//
+//    repeat
+//      if Remaining > BufferSize then
+//        ToRead := BufferSize
+//      else
+//        ToRead := Remaining;
+//
+//      ReadCount := fsource.Read(buffer, ToRead);
+//
+//      if ReadCount <= 0 then
+//        Break;
+//
+//      WrittenCount := fdest.Write(buffer, ReadCount);
+//
+//      if WrittenCount <> ReadCount then
+//        raise Exception.Create('Write error: Bytes written do not match bytes read.');
+//
+//      Inc(Done, WrittenCount);
+//      Dec(Remaining, WrittenCount);
+//
+//      NowTick := GetTickCount64;
+//
+//      if (NowTick - LastUpdate) >= 5000 then
+//      begin
+//        LastUpdate := NowTick;
+//
+//        Speed := AddRingBuffer(RingBuffer, NowTick, Done);
+//
+//        if Speed > 0 then
+//          EtaSecs := Remaining / Speed
+//        else
+//          EtaSecs := 0;
+//
+//        EtaStr := MsToStr(EtaSecs);
+//
+//        Status := Format('%.1f MiB  %.2f MB/s  ETA: %s', [Done / 1048576, Speed / 1048576, EtaStr]);
+//
+//        ListBoxUpdate(Box, Status);
+//      end;
+//
+//      Form1.ProgressBar1.Position := Done * 1000 div TotalSize;
+//
+//    //  Application.ProcessMessages;
+//
+//    until (Remaining = 0) or Terminate_All;
+//
+//    Speed := AddRingBuffer(RingBuffer, GetTickCount64, Done);
+//
+//    if not Terminate_All then
+//    begin
+//      Status := Format('%.1f MiB  %.2f MB/s', [Done / 1048576, Speed / 1048576]);
+//      ListBoxUpdate(Box, Status);
+//      listboxaddscroll(box,'writing buffers to device');
+//
+//    end;
+//
+//    if Terminate_All then
+//      raise Exception.Create('Writing to device: process terminated.');
+//
+//
+//  f_mbr:=s_mbr;
+//
+//
+//  f_mbr.PartitionEntries[3]:=  d_mbr.PartitionEntries[3];
+//  f_mbr.PartitionEntries[4]:=  d_mbr.PartitionEntries[4];
+//  write_mbr(f_mbr,destination);
+//
+//
+//
+//  finally
+//    if Assigned(fdest) then
+//      FpFsync(fdest.Handle);
+//
+//    FreeAndNil(fdest);
+//    FreeAndNil(fsource);
+//
+//    RunCommand('sync', St);
+//    RunCommand('partprobe ' + Destination, st);
+//  end;
+//
+//end;
+//
 
 
 

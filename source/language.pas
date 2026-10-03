@@ -191,9 +191,12 @@ const
   TXT_ALL_IMAGES_SUCCESS = 177;
   TXT_DESTINATION_FOLDER = 178;
   TXT_SYSTEM_IMAGE = 179;
+  TXT_SYNCING=180;
+  txt_invalid_part_detected=181;
+  txt_invalid_remove=182;
 
 type
-  TLanguageTexts = array[1..179, 0..1] of string;
+  TLanguageTexts = array[1..182, 0..1] of string;
 
 const
   LanguageTexts: TLanguageTexts = (
@@ -360,14 +363,9 @@ const
     ('Bootimage existiert nicht: %s', 'Boot image does not exist: %s'), // 161 TXT_NO_BASE_IMAGE
     ('Kein Basisimage gefunden in: %s', 'No base image found in: %s'), // 162 TXT_BASE_IMAGE_NOT_EXIST
     ('Basisimage existiert nicht: %s', 'Base image does not exist: %s'), // 163 TXT_UNMOUNTING
-
-
-  //  ('Trenne %s von %s...', 'Unmounting %s from %s...'),
-
     ('Stelle MBR wieder her...', 'Restoring MBR...'), // 164 TXT_RESTORING_MBR
     ('Wiederherstellung des MBR fehlgeschlagen.', 'MBR restore failed.'),  // 165 TXT_MBR_RESTORE_ERROR
-       ('MBR erfolgreich wiederhergestellt.', 'MBR restored successfully.'),  // 166 TXT_MBR_RESTORED
-
+    ('MBR erfolgreich wiederhergestellt.', 'MBR restored successfully.'),  // 166 TXT_MBR_RESTORED
     ('Stelle Bootpartition wieder her: %s', 'Restoring boot partition: %s'), // 167 TXT_RESTORING_BOOT
     ('Wiederherstellung des Bootimages fehlgeschlagen.', 'Boot restore failed.'), // 168 TXT_BOOT_RESTORE_ERROR
     ('Bootpartition erfolgreich wiederhergestellt.', 'Boot partition restored successfully.'), // 169 TXT_BOOT_RESTORED
@@ -380,7 +378,10 @@ const
     ('Kein Basisimage für die Wiederherstellung gefunden.', 'No base image found for restore.'),// 176 TXT_NO_BASE_IMAGE_RESTORE
     ('Alle Images erfolgreich erstellt.', 'All images created successfully.'),// 177 TXT_ALL_IMAGES_SUCCESS
     ('Zielordner', 'Destination folder'),   // 178 TXT_DESTINATION_FOLDER
-    ('Systemimage', 'System image') // 179 TXT_SYSTEM_IMAGE
+    ('Systemimage', 'System image'), // 179 TXT_SYSTEM_IMAGE
+    ('Bitte warten, bis alle Daten auf das Laufwerk geschrieben wurden...','Please wait until all data has been written to the drive...'),
+    ('The following partitions extend beyond the end of the target drive:', 'Die folgenden Partitionen reichen über das Ziellaufwerk hinaus'),
+    ('These invalid partition entries will be removed from the MBR before it is restored.', 'Diese ungültigen Partitionseinträge werden vor der Wiederherstellung aus dem MBR entfernt.')
   );
 
 
