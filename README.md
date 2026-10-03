@@ -1,5 +1,4 @@
 # PiExt
-
 PiExt is a backup and restore tool for **Raspberry Pi systems**. It creates and restores images of Linux **EXT2, EXT3 and EXT4 partitions** and can also save and restore the **MBR** and the **boot partition** of a complete drive.
 
 PiExt can be used through its **graphical user interface (GUI)** or from the **command line (CLI)**.
