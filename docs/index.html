@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 
 <html lang="en">
@@ -6,533 +5,376 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>PiExt – Raspberry Pi Backup and Restore Tool</title>
+```
+<title>PiExt – Raspberry Pi Backup and Restore Tool</title>
 
-    <meta name="description"
-          content="PiExt is a backup and restore tool for Raspberry Pi systems. It creates and restores complete drive backups including MBR, boot and EXT2, EXT3 or EXT4 system partitions.">
+<meta name="description" content="PiExt is a backup and restore tool for Raspberry Pi systems. It creates and restores complete drive backups including MBR, boot and EXT2, EXT3 or EXT4 system partitions.">
 
-    <link rel="canonical" href="https://raspberryfpc.github.io/piext/">
+<link rel="canonical" href="https://raspberryfpc.github.io/piext/">
+<link rel="alternate" hreflang="en" href="https://raspberryfpc.github.io/piext/">
+<link rel="alternate" hreflang="de" href="https://raspberryfpc.github.io/piext/index-de.html">
+<link rel="alternate" hreflang="x-default" href="https://raspberryfpc.github.io/piext/">
 
-    <link rel="alternate" hreflang="en"
-          href="https://raspberryfpc.github.io/piext/">
-    <link rel="alternate" hreflang="de"
-          href="https://raspberryfpc.github.io/piext/index-de.html">
-    <link rel="alternate" hreflang="x-default"
-          href="https://raspberryfpc.github.io/piext/">
+<link rel="icon" type="image/png" href="piext.png">
 
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            line-height: 1.6;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 30px;
-            color: #222;
-            background: #fff;
-        }
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "PiExt",
+    "description": "Backup and restore tool for Raspberry Pi systems. PiExt creates and restores complete drive backups including the MBR, boot partition and EXT2, EXT3 or EXT4 system partitions.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Linux",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+    }
+}
+</script>
 
-        h1 {
-            border-bottom: 2px solid #444;
-            padding-bottom: 10px;
-        }
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.6;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        color: #222;
+    }
 
-        h2 {
-            margin-top: 35px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
-        }
+    h1, h2, h3 {
+        color: #333;
+    }
 
-        h3 {
-            margin-top: 25px;
-        }
+    h1 {
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 10px;
+    }
 
-        code {
-            font-family: Consolas, "Liberation Mono", monospace;
-            background: #f2f2f2;
-            padding: 2px 5px;
-            border-radius: 3px;
-        }
+    h2 {
+        margin-top: 35px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 5px;
+    }
 
-        pre {
-            background: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            overflow-x: auto;
-        }
+    h3 {
+        margin-top: 25px;
+    }
 
-        ul, ol {
-            margin-top: 8px;
-        }
+    code {
+        background: #f2f2f2;
+        padding: 2px 5px;
+        border-radius: 3px;
+    }
 
-        .important {
-            background: #fff8dc;
-            border-left: 4px solid #e0b000;
-            padding: 12px 15px;
-            margin: 20px 0;
-        }
+    pre {
+        background: #f2f2f2;
+        padding: 12px;
+        overflow-x: auto;
+        border-radius: 4px;
+    }
 
-        .language {
-            margin-bottom: 25px;
-        }
-    </style>
+    .important {
+        background: #fff4cc;
+        border-left: 5px solid #e0b000;
+        padding: 10px 15px;
+        margin: 20px 0;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    nav {
+        margin-bottom: 25px;
+    }
+
+    nav a {
+        margin-right: 15px;
+    }
+</style>
+```
 
 </head>
 
 <body>
 
-<h1>PiExt</h1>
+<nav>
+    <a href="index-de.html">Deutsch</a>
+</nav>
 
-<p class="language">
-    <a href="index-de.html">Deutsche Dokumentation</a>
+<h1>PiExt – Raspberry Pi Backup and Restore Tool</h1>
+
+<p>
+    <strong>PiExt</strong> is a backup and restore tool for
+    <strong>Raspberry Pi systems</strong>. It can create and restore
+    complete drive backups including the MBR, boot partition and
+    EXT2, EXT3 or EXT4 system partitions.
 </p>
 
 <p>
-    PiExt is a <strong>backup and restore application for Raspberry Pi
-    systems</strong>.
-    It can be used through its <strong>graphical user interface (GUI)</strong>
-    or directly from the <strong>command line (CLI)</strong>.
+    PiExt can be used through its <strong>graphical user interface (GUI)</strong>
+    or from the <strong>command line (CLI)</strong>.
 </p>
 
 <p>
-    PiExt works with <strong>complete drives</strong> and creates a backup
-    consisting of the <strong>MBR, boot partition and system partition</strong>.
+    For the system partition, PiExt stores only the sectors currently used
+    by the filesystem. The image is compressed using
+    <strong>Zstandard (ZSTD)</strong>, which significantly reduces the required
+    backup space.
+</p>
+
+<h2>Download and Installation</h2>
+
+<p>
+    PiExt is available from GitHub and SourceForge.
 </p>
 
 <p>
-    The system partition is designed for Linux
-    <strong>EXT2, EXT3 and EXT4</strong> filesystems.
-    PiExt stores the filesystem data required for the image and compresses
-    it during creation using <strong>Zstandard (ZSTD)</strong>.
+    <a href="https://github.com/RaspberryFpc/piext/releases">
+        Download PiExt from GitHub
+    </a>
 </p>
 
 <p>
-    The first image created in an image folder becomes the
-    <strong>Base Image</strong>. Further backups can be created as
-    <strong>Differential Images</strong> directly based on the Base Image.
+    <a href="https://sourceforge.net/projects/piext/">
+        PiExt on SourceForge
+    </a>
 </p>
 
-<div style="text-align: center; margin: 30px 0;">
-    <img src="piext.png"
-         alt="PiExt graphical user interface"
-         style="max-width: 100%; height: auto;">
+<p>
+    Download the Debian package and install it on your Raspberry Pi.
+    PiExt is intended for Linux systems running on Raspberry Pi hardware.
+</p>
+
+<div class="important">
+    <strong>Important:</strong>
+    PiExt must be started with root privileges because backup and restore
+    operations directly access drives and partitions.
 </div>
-
-<h2>Download &amp; Installation</h2>
-
-<p>
-    The latest version of PiExt can be downloaded from
-    <a href="https://github.com/RaspberryFpc/piext/releases">GitHub Releases</a>
-    or
-    <a href="https://sourceforge.net/projects/piext/">SourceForge</a>.
-</p>
-
-<ul>
-    <li>
-        <a href="https://github.com/RaspberryFpc/piext/releases">
-            GitHub Releases
-        </a>
-    </li>
-    <li>
-        <a href="https://sourceforge.net/projects/piext/">
-            SourceForge
-        </a>
-    </li>
-</ul>
-
-<h3>Installation</h3>
-
-<p>
-    Download the latest <code>.deb</code> package and open a terminal in
-    the directory containing the downloaded file.
-</p>
-
-<p>
-    Install PiExt using:
-</p>
-
-<pre><code>sudo apt install ./piext.deb</code></pre>
-
-<p>
-    The package manager automatically installs any required dependencies.
-</p>
-
-<p>
-    <strong>PiExt requires root privileges.</strong>
-    Therefore PiExt must always be started using <code>sudo</code>.
-</p>
-
-<p>
-    Start the graphical interface with:
-</p>
 
 <pre><code>sudo piext</code></pre>
 
-<h2>Graphical User Interface (GUI)</h2>
+<h2>Graphical User Interface</h2>
 
 <p>
-    When PiExt is started without command-line parameters, it starts in
-    <strong>GUI mode</strong>.
+    The graphical interface allows you to select the source drive for a
+    backup and the target drive for a restore.
 </p>
 
 <p>
-    The GUI allows you to select a complete source drive and an image folder.
-    PiExt automatically determines the boot and system partitions of the
-    selected drive.
+    PiExt works with complete drives rather than requiring the user to
+    manually select individual partitions for a complete backup.
 </p>
 
-<p>
-    The GUI can be used to create backups and restore individual parts of
-    a backup.
-</p>
+<img src="piext.png" alt="PiExt Raspberry Pi backup and restore tool">
 
 <h2>Drive Structure</h2>
 
 <p>
-    PiExt works with a complete drive rather than selecting a single
-    source partition for backup.
+    A typical Raspberry Pi system drive contains a boot partition and a
+    Linux system partition. PiExt can back up the complete drive structure,
+    including the MBR, boot partition and system partition.
 </p>
 
 <p>
-    A typical Raspberry Pi drive contains:
+    Depending on the device, partition names can differ. For example,
+    normal drives use names such as <code>/dev/sda1</code> and
+    <code>/dev/sda2</code>, while devices such as SD cards and NVMe drives
+    may use names such as <code>/dev/mmcblk0p1</code> or
+    <code>/dev/nvme0n1p1</code>.
 </p>
-
-<pre><code>Drive
-├── MBR
-├── Partition 1 → Boot
-└── Partition 2 → System</code></pre>
-
-<p>
-    PiExt handles these parts separately:
-</p>
-
-<ul>
-    <li><strong>MBR</strong> – stored as a separate image file</li>
-    <li><strong>Boot partition</strong> – stored as a complete compressed image</li>
-    <li><strong>System partition</strong> – stored using PiExt's filesystem-aware image format</li>
-</ul>
 
 <h2>Creating a Backup</h2>
 
 <p>
-    Select a complete drive in the GUI and select the folder in which the
-    images should be stored.
+    Select the complete source drive in PiExt and specify the directory
+    where the images should be stored.
 </p>
 
 <p>
-    When the first backup is created, PiExt creates the MBR image, the boot
-    image and the Base Image of the system partition.
+    A complete Raspberry Pi backup consists of separate image components:
 </p>
 
-<p>
-    Example:
-</p>
-
-<pre><code>backup/
-├── mbr_image_2026-09-28.img
-├── boot_image_2026-09-28.zst
-└── base_image_sda_2026-09-28.zst</code></pre>
+<ul>
+    <li>MBR image</li>
+    <li>compressed boot partition image</li>
+    <li>compressed EXT2, EXT3 or EXT4 system image</li>
+</ul>
 
 <p>
-    The file names are assigned automatically by PiExt.
+    The system image contains only the sectors currently used by the
+    filesystem. This makes the image considerably smaller than a raw image
+    of the complete partition.
 </p>
 
 <h2>Base Image</h2>
 
 <p>
-    The first system image created in an image folder automatically becomes
-    the <strong>Base Image</strong>.
-</p>
-
-<pre><code>base_image_sda_2026-09-28.zst</code></pre>
-
-<p>
-    Only one Base Image is allowed in an image folder.
+    The first system backup stored in an image directory becomes the
+    <strong>Base Image</strong>.
 </p>
 
 <p>
-    The Base Image is the reference for all subsequent Differential Images
-    in that folder.
+    The Base Image contains the complete used filesystem data required to
+    restore the system partition.
 </p>
 
 <h2>Differential Images</h2>
 
 <p>
-    When a Base Image already exists in the image folder, a subsequent
-    backup creates a <strong>Differential Image</strong>.
-</p>
-
-<pre><code>base_image_sda_2026-09-28.zst
-diff-image_2026-09-29_1.zst
-diff-image_2026-09-30_2.zst
-diff-image_2026-10-01_3.zst</code></pre>
-
-<p>
-    Every Differential Image is based directly on the Base Image.
-    Differential Images do not form a chain.
-</p>
-
-<pre><code>Base Image
-    ├── Diff Image 1
-    ├── Diff Image 2
-    └── Diff Image 3</code></pre>
-
-<p>
-    This means that a Differential Image does not depend on any other
-    Differential Image.
+    Subsequent backups can be stored as <strong>Differential Images</strong>.
+    A Differential Image is created directly from the Base Image and contains
+    the differences from that Base Image.
 </p>
 
 <p>
-    The Base Image must remain available as long as its Differential Images
-    are needed for restoration.
+    Differential Images are not chained together. Each Differential Image
+    therefore remains directly associated with the Base Image.
 </p>
 
 <h2>Image Types</h2>
 
-<h3>MBR</h3>
-
 <p>
-    The MBR is stored separately as an uncompressed <code>.img</code> file.
+    PiExt uses different image formats for the different parts of a drive:
 </p>
 
-<pre><code>mbr_image_2026-09-28.img</code></pre>
+<ul>
+    <li><strong>MBR image:</strong> contains the drive's partition table and boot information.</li>
+    <li><strong>Boot image:</strong> compressed image of the boot partition.</li>
+    <li><strong>System image:</strong> filesystem-aware compressed image of an EXT2, EXT3 or EXT4 system partition.</li>
+</ul>
 
 <p>
-    The MBR is intentionally not compressed because it is very small.
-</p>
-
-<h3>Boot Partition</h3>
-
-<p>
-    The boot partition is stored as a complete compressed image.
-</p>
-
-<pre><code>boot_image_2026-09-28.zst</code></pre>
-
-<h3>System Partition</h3>
-
-<p>
-    The system partition is handled using PiExt's filesystem-aware image
-    format for EXT2, EXT3 and EXT4.
-</p>
-
-<p>
-    The image data is compressed during creation using Zstandard.
-    The resulting files use the <code>.zst</code> extension.
+    System and boot images use <strong>Zstandard (ZSTD)</strong> compression.
 </p>
 
 <h2>Restoring a Backup</h2>
 
 <p>
-    PiExt can restore the individual parts of a backup independently:
-</p>
-
-<ul>
-    <li><strong>MBR</strong></li>
-    <li><strong>Boot partition</strong></li>
-    <li><strong>System partition</strong></li>
-</ul>
-
-<p>
-    This makes it possible, for example, to restore only the system
-    partition without overwriting the MBR or boot partition.
+    PiExt allows the MBR, boot partition and system partition to be selected
+    independently during a restore.
 </p>
 
 <p>
-    When restoring a Differential Image, the corresponding Base Image must
-    also be available in the same image folder.
+    This makes it possible to restore only the required part of a backup or
+    to restore a complete Raspberry Pi system.
 </p>
 
 <p>
-    The selected Differential Image is combined with the Base Image during
-    the restore process.
-</p>
-
-<h3>Restoring the Base Image</h3>
-
-<p>
-    To restore the Base Image, the Base Image itself is required.
-</p>
-
-<pre><code>base_image_sda_2026-09-28.zst</code></pre>
-
-<h3>Restoring a Differential Image</h3>
-
-<p>
-    To restore a Differential Image, the Base Image and the selected
-    Differential Image must be available.
-</p>
-
-<pre><code>base_image_sda_2026-09-28.zst
-diff-image_2026-09-29_1.zst</code></pre>
-
-<p>
-    Other Differential Images are not required.
-</p>
-
-<h2>Command-Line Interface (CLI)</h2>
-
-<p>
-    PiExt can also be operated without displaying the graphical interface.
+    PiExt can also restore an image to a <strong>completely empty drive</strong>.
+    The drive does not have to contain existing partitions before the restore.
 </p>
 
 <p>
-    The CLI has been deliberately kept simple. It requires only the
-    <strong>source drive</strong> and the <strong>destination folder</strong>.
+    When restoring the MBR, PiExt recreates the partition structure required
+    by the image. The boot and system data can then be restored to the
+    corresponding partitions.
 </p>
 
-<pre><code>sudo piext &lt;drive&gt; &lt;destination-folder&gt;</code></pre>
+<h2>Command Line Interface</h2>
 
 <p>
-    Example:
+    PiExt can also be used without the graphical interface.
+    This is useful for scripts, automated backups and systems where a GUI
+    is not required.
 </p>
+
+<p>For example:</p>
 
 <pre><code>sudo piext /dev/sda /backup/piext</code></pre>
 
 <p>
-    For an SD card:
+    An SD card can be specified in the same way:
 </p>
 
 <pre><code>sudo piext /dev/mmcblk0 /backup/piext</code></pre>
 
 <p>
-    The destination folder is created automatically if it does not exist.
+    The command line interface supports backup and restore operations as
+    well as options for unattended operation.
+</p>
+
+<h2>Active Root Partition</h2>
+
+<p>
+    PiExt takes special care when the currently running system is involved.
+    The active root partition is not offered as a normal restore target.
 </p>
 
 <p>
-    In CLI mode:
+    This prevents accidental attempts to overwrite the filesystem from which
+    the running operating system is currently operating.
 </p>
 
-<ul>
-    <li>PiExt requires root privileges.</li>
-    <li>The graphical interface is not displayed.</li>
-    <li>The backup starts automatically.</li>
-    <li>The destination folder is created automatically if necessary.</li>
-    <li>PiExt exits automatically after the operation has completed.</li>
-</ul>
-
-<h3>CLI Exit Codes</h3>
-
-<ul>
-    <li><code>0</code> = backup completed successfully</li>
-    <li><code>1</code> = error during the backup</li>
-</ul>
-
-<h2>Restoring the Active Root Partition</h2>
+<h2>Compatibility</h2>
 
 <p>
-    The currently running Root Partition cannot be restored while it is
-    mounted as <code>/</code>.
+    PiExt is designed for Raspberry Pi systems running Linux.
+    It supports common Raspberry Pi storage devices including SD cards,
+    USB drives and NVMe drives.
 </p>
 
 <p>
-    To restore the active system partition, the Raspberry Pi must first
-    be booted from another Linux system or another boot medium.
+    EXT2, EXT3 and EXT4 system partitions are supported for filesystem-aware
+    system backups.
 </p>
-
-<p>
-    A practical solution is a separate SD card or USB drive containing a
-    minimal Linux system and a minimal desktop environment with PiExt
-    installed.
-</p>
-
-<p>
-    Boot the Raspberry Pi from this separate system and start PiExt with:
-</p>
-
-<pre><code>sudo piext</code></pre>
-
-<p>
-    The original system partition is then no longer the active Root
-    Partition and can be restored.
-</p>
-
-<p>
-    After the restoration has completed, shut down the Raspberry Pi and
-    boot it again from the restored drive.
-</p>
-
-<h2>Image Compatibility</h2>
-
-<p>
-    PiExt uses its own application-specific image format.
-</p>
-
-<p>
-    PiExt images can currently only be restored using <strong>PiExt</strong>.
-</p>
-
-<p>
-    The <code>.zst</code> files are not standard complete disk images and
-    cannot simply be written to a drive using tools such as
-    <code>dd</code>.
-</p>
-
-<h2>Important</h2>
-
-<div class="important">
-    <ul>
-        <li>PiExt must always be started with <code>sudo</code>.</li>
-        <li>PiExt works with complete drives.</li>
-        <li>The first backup in an image folder creates the Base Image.</li>
-        <li>Only one Base Image is allowed per image folder.</li>
-        <li>Subsequent backups create Differential Images.</li>
-        <li>Differential Images are based directly on the Base Image.</li>
-        <li>The Base Image must remain available for Differential Image restoration.</li>
-        <li>The MBR is stored separately as an uncompressed image.</li>
-        <li>The boot partition is stored as a complete compressed image.</li>
-        <li>The system partition uses PiExt's filesystem-aware image format.</li>
-        <li>Images can currently only be restored using PiExt.</li>
-        <li>Always verify the selected source and target drive before starting a backup or restore.</li>
-        <li>Restoring data can overwrite existing data on the target drive.</li>
-    </ul>
-</div>
 
 <h2>Typical Backup Workflow</h2>
 
 <ol>
-    <li>Start PiExt with <code>sudo piext</code>.</li>
+    <li>Start PiExt with <code>sudo</code>.</li>
     <li>Select the complete source drive.</li>
-    <li>Select or create the image folder.</li>
-    <li>Create the first backup.</li>
-    <li>The first backup becomes the Base Image.</li>
-    <li>Make changes to the Raspberry Pi system.</li>
-    <li>Create another backup.</li>
-    <li>PiExt automatically creates a Differential Image.</li>
-    <li>Repeat the process as required.</li>
+    <li>Select the image directory.</li>
+    <li>Create the backup.</li>
+    <li>The first system image becomes the Base Image.</li>
+    <li>Later backups can be stored as Differential Images.</li>
 </ol>
 
 <h2>Typical Restore Workflow</h2>
 
 <ol>
-    <li>Start PiExt with <code>sudo piext</code>.</li>
+    <li>Start PiExt with <code>sudo</code>.</li>
     <li>Select the target drive.</li>
-    <li>Select the image folder.</li>
-    <li>Select the required image.</li>
-    <li>Select which parts should be restored: MBR, Boot and/or System.</li>
-    <li>Confirm the restore operation.</li>
-    <li>PiExt restores the selected parts.</li>
+    <li>Select the required MBR, boot and system images.</li>
+    <li>Restore the selected components.</li>
+    <li>Reboot the Raspberry Pi after the restore is complete.</li>
 </ol>
 
 <h2>Requirements</h2>
 
 <ul>
-    <li>Linux</li>
-    <li>Raspberry Pi</li>
-    <li>EXT2, EXT3 or EXT4 system partitions</li>
-    <li>Zstandard (ZSTD)</li>
-    <li>Root privileges</li>
-    <li>A graphical desktop environment for using the GUI</li>
-    <li>A terminal for using the CLI</li>
+    <li>Raspberry Pi system running Linux</li>
+    <li>Root privileges for drive access</li>
+    <li>Storage device containing the backup images</li>
+    <li>EXT2, EXT3 or EXT4 for filesystem-aware system images</li>
 </ul>
 
 <h2>Project</h2>
 
 <p>
-    PiExt is developed by <strong>RaspberryFpc</strong> for Raspberry Pi
-    and Linux.
+    PiExt is an open-source project developed by RaspberryFpc.
+</p>
+
+<p>
+    <a href="https://github.com/RaspberryFpc/piext">
+        PiExt source code on GitHub
+    </a>
+</p>
+
+<p>
+    <a href="https://github.com/RaspberryFpc/piext/releases">
+        PiExt releases
+    </a>
+</p>
+
+<p>
+    <a href="https://sourceforge.net/projects/piext/">
+        PiExt on SourceForge
+    </a>
 </p>
 
 </body>
 </html>
-```
