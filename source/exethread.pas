@@ -24,7 +24,6 @@ type
     FExitCode: integer;
     FDebugFile: TFileStream;
     FDebugOffset: int64;
-    currentline: string;
 
     procedure MemoAddtoline;
     procedure MemoAddLine;
@@ -262,9 +261,6 @@ var
   BytesRead: integer;
   I: integer;
   StartCount: integer;
-  XPos: integer;
-  SU: string;
-  SM: string;
   ch: char;
 
   procedure ProcessOutput(const Data: pchar; DataSize: integer; memo: TMemo);

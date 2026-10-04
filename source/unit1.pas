@@ -77,7 +77,7 @@ var
   Form1: TForm1;
 
 const
-  version = 'v2.0.5';  // verzeichnisrechte
+  version = 'v2.0.6';  // verzeichnisrechte
   f_caption = 'PiExt';
   prefixbaseimage = 'base_image_';
   prefixdiffimage = 'diff-image_';
@@ -674,7 +674,7 @@ end;
 
 procedure TForm1.ButtonStartClick(Sender: TObject);
 var
-Success, AnySelected, InvalidPartition: boolean;
+Success, AnySelected: boolean;
 S, TargetDevice, MBRFilename, Dir, ErrorMsg, InvalidPartitions: string;
 MBR: TMbr;
 DiskSectors, EndLBA: DWord;
@@ -809,7 +809,7 @@ end;
 function TForm1.RestoreImg: boolean;
 var
   TargetDevice, Disk, BootDevice, SystemDevice, MountPoint, S: string;
-  BaseFilename, DiffFilename, Dir, SourceFile: string;
+  BaseFilename, DiffFilename, Dir: string;         //  , SourceFile
   MBRFilename, BootFilename: string;
   I:integer;
 begin
@@ -935,7 +935,7 @@ begin
   if BaseFilename = DiffFilename then
     DiffFilename := '';
 
-  SourceFile := ExtractFileName(Trim(EditImage.Text));
+//  SourceFile := ExtractFileName(Trim(EditImage.Text));
 
   { ------------------------------------------------------------ }
   { Unmount system partition }

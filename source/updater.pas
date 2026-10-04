@@ -54,10 +54,7 @@ var
 begin
   Result := '';
 
-  if not RunCommand(
-    'curl -L -s --fail https://api.github.com/repos/' + REPO + '/releases/latest',
-    S
-  ) then
+  if not RunCommand('curl -L -s --fail https://api.github.com/repos/' + REPO + '/releases/latest',S) then
     Exit;
 
   try
@@ -103,6 +100,9 @@ procedure InstallUpdate(memo: Tmemo);
 var
   DownloadURL: string;
 begin
+  form5.Hide;
+
+
   ForceDirectories('/var/lib/' + PROG);
 
   DownloadURL := 'https://raw.githubusercontent.com/' + REPO +
