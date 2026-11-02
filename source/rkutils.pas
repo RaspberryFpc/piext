@@ -91,7 +91,6 @@ function readlosetup: string;
 function TryUnmount(const Mp: string): boolean;
 function IsMountedExact(const Mp: string): boolean;
 procedure ParseMountLine(const L: string; out Device, Mp: string);
-//  procedure ClonePart(Source, Destination: string; box: TListBox);
 function CreateDeviceUUID:longword; //Dword;
 function DecodeDeviceUUID(Value: DWORD): QWORD;
 
