@@ -369,9 +369,6 @@ begin
 end;
 
 
-
-
-
 function CreateRawImage(const Device, ImageFile: string; OnProgress: TProgressEvent; OnLog: TLogEvent): boolean;
 var
   DevFD, ImgFD, ErrorCode: integer;

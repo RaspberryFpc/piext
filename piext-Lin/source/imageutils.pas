@@ -30,6 +30,7 @@ function WriteExact(FD: Integer; var Buffer; Count: SizeInt; out ErrorCode: Inte
 function GetCPUCount: Integer;
 function CreateUsedBitmap(const Device, BitmapFile: string;OnProgress: TProgressEvent;OnLog: TLogEvent): Boolean;
 procedure LogMsg(const Msg: string; OnLog: TLogEvent);
+function PartitionName(const DriveName: string; Partition: Integer): string;
 
 var
   RawImageBytesProcessed: Int64 = 0;
@@ -39,6 +40,22 @@ implementation
 
 uses
   ext4bitmap, Language,unit1;
+
+
+function PartitionName(const DriveName: string; Partition: Integer): string;
+var
+  LastChar: Char;
+begin
+  if DriveName = '' then
+    Exit('');
+
+  LastChar := DriveName[Length(DriveName)];
+
+  if LastChar in ['0'..'9'] then
+    Result := DriveName + 'p' + IntToStr(Partition)
+  else
+    Result := DriveName + IntToStr(Partition);
+end;
 
 
 procedure LogMsg(const Msg: string; OnLog: TLogEvent);

@@ -1,5 +1,20 @@
-source/piext.dbg
+# Projektdateien
 source/piext.cfg
 piext_pkg/
-source/lib/
-build_deb.sh
+
+# Backup-Verzeichnisse überall
+**/backup/
+
+# Compiler- und Bibliotheksverzeichnisse
+**/lib/
+
+# Lazarus / Free Pascal Build-Dateien
+*.o
+*.ppu
+*.compiled
+*.dbg
+
+# Temporäre Dateien
+*.bak
+*.tmp
+*~

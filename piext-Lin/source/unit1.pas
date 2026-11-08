@@ -77,7 +77,7 @@ var
   Form1: TForm1;
 
 const
-  version = 'v2.0.6';  // verzeichnisrechte
+  version = 'v2.1.0';  // verzeichnisrechte
   f_caption = 'PiExt';
   prefixbaseimage = 'base_image_';
   prefixdiffimage = 'diff-image_';
@@ -161,6 +161,30 @@ begin
   Memo1.SelStart := Length(Memo1.Text);
   Application.ProcessMessages;
 end;
+
+
+procedure DeleteOldImages(const Dir, Mask: string);
+var
+  SR: TSearchRec;
+  Filename: string;
+begin
+  if FindFirst(IncludeTrailingPathDelimiter(Dir) + Mask,
+    faAnyFile, SR) = 0 then
+  begin
+    repeat
+      if (SR.Name <> '.') and (SR.Name <> '..') and
+         ((SR.Attr and faDirectory) = 0) then
+      begin
+        Filename := IncludeTrailingPathDelimiter(Dir) + SR.Name;
+        if not DeleteFile(Filename) then
+          raise Exception.Create('Cannot delete old image: ' + Filename);
+      end;
+    until FindNext(SR) <> 0;
+    FindClose(SR);
+  end;
+end;
+
+
 
 function extractdevice(s: string): string;
 var
@@ -393,7 +417,6 @@ begin
   Result := False;
   n := GetmaxDiffFile(Dir);
   Dateiname := IncludeTrailingPathDelimiter(dir) + prefixdiffimage + FormatDateTime('yyyy-mm-dd', Date) + '_' + IntToStr(n + 1) + '.zst';
-  Form1.Memo1.Clear;
   Form1.Log(Form1, Format(_(TXT_CREATING_DIFF_IMAGE), [Dateiname]));
   Form1.ProgressBar1.Position := 0;
   Form1.Log(Form1, 'Differential source: ' + systemdevice);
@@ -408,10 +431,13 @@ begin
     Form1.Log(Form1, _(TXT_DIFF_IMAGE_ERROR));
 end;
 
+
+
+
 function TForm1.CreateImg(const device: string): boolean;
 var
   destname, existingbasefilename, bootimagename, mbrimagename: string;
-  f_ext, disk, bootdevice, systemdevice, dir, Timestamp,s: string;
+  f_ext, disk, bootdevice, systemdevice, dir, Timestamp, s: string;
 begin
   Result := False;
   Memo1.Clear;
@@ -428,7 +454,8 @@ begin
       Exit;
     end;
 
-    if FCliMode and FCliDestinationSpecified and not FCliCreateDestination and not DirectoryExists(dir) then
+    if FCliMode and FCliDestinationSpecified and
+       not FCliCreateDestination and not DirectoryExists(dir) then
     begin
       Log(Self, Format(_(TXT_DESTINATION_NOT_EXIST), [dir]));
       Exit;
@@ -443,10 +470,8 @@ begin
       end;
     end;
 
-    // verzeichnisrechte setzen damit images vom user ohne sudo gelöscht werden können
-
+    // Verzeichnisrechte setzen, damit Images vom User ohne sudo gelöscht werden können
     fpChmod(PChar(Dir), &0777);
-
 
     disk := Trim(ExtractDevice(device));
 
@@ -464,13 +489,7 @@ begin
 
     Log(Self, Format(_(TXT_SOURCE_DRIVE), [disk]));
 
-    { Second partition = system partition }
-    if Pos('mmcblk', ExtractFileName(disk)) = 1 then
-      systemdevice := disk + 'p2'
-    else if Pos('nvme', ExtractFileName(disk)) = 1 then
-      systemdevice := disk + 'p2'
-    else
-      systemdevice := disk + '2';
+    systemdevice:=partitionname(disk,2);
 
     if not DirectoryExists('/sys/class/block/' + ExtractFileName(systemdevice)) then
     begin
@@ -480,26 +499,21 @@ begin
 
     Log(Self, Format(_(TXT_SYSTEM_PARTITION), [systemdevice]));
 
-    existingbasefilename := FileExistsWildcard(IncludeTrailingPathDelimiter(dir) + prefixbaseimage);
-    f_ext := ExtractFileExt(existingbasefilename);
-
-    { Existing base image -> create differential image }
-    if f_ext = '.zst' then
-    begin
-      Log(Self, _(TXT_BASE_IMAGE_EXISTS));
-      Log(Self, _(TXT_CREATING_DIFFERENTIAL));
-
-      Result := creatediff(dir, existingbasefilename, systemdevice);
-
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-      Exit;
-    end;
-
     Timestamp := FormatDateTime('yyyy-mm-dd', Now);
 
-    { MBR }
+
+     forcedirectories(dir);
+    if not directoryexists(dir) then Log(Self, 'Destinationfolder does not exist');
+
+
+    { ------------------------------------------------------------ }
+    { MBR immer erzeugen bzw. aktualisieren }
+    { ------------------------------------------------------------ }
+
+
+
+    DeleteOldImages(dir, 'mbr_image_*.img');
+
     mbrimagename := IncludeTrailingPathDelimiter(dir) + 'mbr_image_' + Timestamp + '.img';
 
     Log(Self, _(TXT_MBR_CREATING));
@@ -512,13 +526,13 @@ begin
 
     Log(Self, Format(_(TXT_MBR_CREATED), [mbrimagename]));
 
-    { First partition = boot partition }
-    if Pos('mmcblk', ExtractFileName(disk)) = 1 then
-      bootdevice := disk + 'p1'
-    else if Pos('nvme', ExtractFileName(disk)) = 1 then
-      bootdevice := disk + 'p1'
-    else
-      bootdevice := disk + '1';
+    { ------------------------------------------------------------ }
+    { Bootpartition bestimmen }
+    { ------------------------------------------------------------ }
+
+    DeleteOldImages(dir, 'boot_image_*.zst');
+
+    bootdevice:=partitionname(disk,1);
 
     if not DirectoryExists('/sys/class/block/' + ExtractFileName(bootdevice)) then
     begin
@@ -528,17 +542,45 @@ begin
 
     Log(Self, Format(_(TXT_BOOT_PARTITION), [bootdevice]));
 
+    { ------------------------------------------------------------ }
+    { Bootimage immer erzeugen bzw. aktualisieren }
+    { ------------------------------------------------------------ }
+
     bootimagename := IncludeTrailingPathDelimiter(dir) + 'boot_image_' + Timestamp + '.zst';
 
     Log(Self, _(TXT_CREATING_FULL_BOOT_IMAGE));
 
-    if not CreateFullCompressedImage(bootdevice, bootimagename, @Progress, @Log) then
+    if not CreateFullCompressedImage(bootdevice, bootimagename,
+      @Progress, @Log) then
     begin
       Log(Self, _(TXT_BOOT_IMAGE_CREATE_ERROR));
       Exit;
     end;
 
     Log(Self, Format(_(TXT_BOOT_IMAGE_CREATED), [bootimagename]));
+
+    { ------------------------------------------------------------ }
+    { Vorhandenes Basisimage prüfen }
+    { ------------------------------------------------------------ }
+
+    existingbasefilename :=
+      FileExistsWildcard(IncludeTrailingPathDelimiter(dir) + prefixbaseimage);
+
+    f_ext := ExtractFileExt(existingbasefilename);
+
+    { Existing base image -> create differential image }
+    if f_ext = '.zst' then
+    begin
+      Log(Self, _(TXT_BASE_IMAGE_EXISTS));
+      Log(Self, _(TXT_CREATING_DIFFERENTIAL));
+
+      Result := creatediff(dir, existingbasefilename, systemdevice);
+      Exit;
+    end;
+
+    { ------------------------------------------------------------ }
+    { Kein Basisimage vorhanden -> Basisimage erstellen }
+    { ------------------------------------------------------------ }
 
     destname := CreateBaseDestName;
 
@@ -556,21 +598,22 @@ begin
     Log(Self, _(TXT_BASE_IMAGE_CREATED));
 
     Result := True;
+
   finally
     Button4.Caption := '0.0 MB/s';
   end;
 
-//  if Result then
-//    Log(Self, _(TXT_ALL_IMAGES_SUCCESS));
-//  end;
-
   if Result then
   begin
     Log(Self, _(TXT_SYNCING));
-    RunCommand('sync',s);
+    RunCommand('sync', s);
     Log(Self, _(TXT_ALL_IMAGES_SUCCESS));
   end;
 end;
+
+
+
+
 
 
 
@@ -686,6 +729,8 @@ LastProgressTime := 0;
 Success := False;
 
 try
+   Form1.Memo1.Clear;
+
 if RadioCreate.Checked then
 Success := CreateImg(ComboBox1.Text);
 
@@ -839,21 +884,26 @@ begin
   end;
 
   { Determine first and second partition }
-  if Pos('mmcblk', ExtractFileName(Disk)) = 1 then
-  begin
-    BootDevice := Disk + 'p1';
-    SystemDevice := Disk + 'p2';
-  end
-  else if Pos('nvme', ExtractFileName(Disk)) = 1 then
-  begin
-    BootDevice := Disk + 'p1';
-    SystemDevice := Disk + 'p2';
-  end
-  else
-  begin
-    BootDevice := Disk + '1';
-    SystemDevice := Disk + '2';
-  end;
+  //if Pos('mmcblk', ExtractFileName(Disk)) = 1 then
+  //begin
+  //  BootDevice := Disk + 'p1';
+  //  SystemDevice := Disk + 'p2';
+  //end
+  //else if Pos('nvme', ExtractFileName(Disk)) = 1 then
+  //begin
+  //  BootDevice := Disk + 'p1';
+  //  SystemDevice := Disk + 'p2';
+  //end
+  //else
+  //begin
+  //  BootDevice := Disk + '1';
+  //  SystemDevice := Disk + '2';
+  //end;
+  //
+
+   bootdevice:=partitionname(disk,1);
+   systemdevice:=partitionname(disk,2);
+
 
   { Selected image must exist }
   DiffFilename := Trim(EditImage.Text);
@@ -1185,7 +1235,7 @@ begin
 
   FCliMode := ParamCount > 0;
 
-  if FCliMode then
+  if FCliMode then                 ///////////////////////////////7
   begin
     Application.ShowMainForm := False;
     Hide;
@@ -1202,6 +1252,7 @@ begin
     ComboBox1.Text := createdevice;
     EditImage.Text := createfolder;
   end;
+   Timer1.Enabled := true;
 end;
 
 procedure TForm1.ComboBox1Change(Sender: TObject);

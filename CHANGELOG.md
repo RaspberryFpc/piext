@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented in this file.
 
+## [v2.1.0] – 2026-11-08
+* Added **PiExtRestorer** for restoring  PiExt images under Windows.
+* Minor improvements to PiExt.
+
+## [v2.0.5] – 2026-10-02
+
+* Restore: Images can now also be restored to completely empty drives without an existing partition table.
+* Restore: Invalid partition entries that extend beyond the target drive are now detected and displayed before the restore starts. These entries are automatically removed from the restored MBR.
+* Changed image directory permissions to allow images to be deleted without `sudo`.
+
+* added PiExtRestorer for restoration under windows
+* minor changes to PiExt 
+
+
 ## [v2.0.5] – 2026-10-02
 
 * Restore: Images can now also be restored to completely empty drives without an existing partition table.

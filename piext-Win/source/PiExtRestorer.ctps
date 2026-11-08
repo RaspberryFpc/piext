@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="12"/>
+    <BuildModes Active="Release"/>
+    <Units>
+      <Unit>
+        <Filename Value="PiExtRestorer.ppr"/>
+        <FRMtype Value="0"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="6"/>
+        <CursorPos Y="28"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unit1.pas"/>
+        <FRMtype Value="200"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="694"/>
+        <CursorPos Y="363"/>
+        <UsageCount Value="200"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="zstd.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Zstd"/>
+        <EditorIndex Value="7"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="143"/>
+        <CursorPos X="3" Y="63"/>
+        <UsageCount Value="77"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="imageutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ImageUtils"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="940"/>
+        <CursorPos X="5" Y="960"/>
+        <UsageCount Value="200"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="language.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Language"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="6" Y="7"/>
+        <UsageCount Value="78"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="htmlshow.pas"/>
+        <FRMtype Value="200"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Htmlshow"/>
+        <EditorIndex Value="9"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="99" Y="20"/>
+        <UsageCount Value="89"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ext4bitmap.pas"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="196"/>
+        <CursorPos X="17" Y="204"/>
+        <UsageCount Value="200"/>
+      </Unit>
+      <Unit>
+        <Filename Value="updater.pas"/>
+        <FRMtype Value="200"/>
+        <ComponentName Value="Form5"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="127"/>
+        <CursorPos X="44" Y="124"/>
+        <UsageCount Value="34"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../piextdiffimager/udiskiecontrol.pas"/>
+        <UnitName Value="UdiskieControl"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="111"/>
+        <CursorPos X="5" Y="128"/>
+        <UsageCount Value="52"/>
+      </Unit>
+      <Unit>
+        <Filename Value="rawimage.pas"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="3" Y="756"/>
+        <UsageCount Value="100"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/include/control.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <CursorPos Y="3660"/>
+        <UsageCount Value="1"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/controls.pp"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="Controls"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3656"/>
+        <CursorPos X="66" Y="3664"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../piextdiffimager/qtfix.pas"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="10"/>
+        <CursorPos X="72" Y="25"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="help.txt"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="145"/>
+        <CursorPos X="89" Y="189"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="piext.dehtml"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <UsageCount Value="4"/>
+      </Unit>
+      <Unit>
+        <Filename Value="piext_de.html"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="232"/>
+        <CursorPos X="53" Y="399"/>
+        <UsageCount Value="57"/>
+      </Unit>
+      <Unit>
+        <Filename Value="piext_en.html"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="28" Y="13"/>
+        <UsageCount Value="57"/>
+      </Unit>
+      <Unit>
+        <Filename Value="exebash.pas"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="106" Y="15"/>
+        <UsageCount Value="15"/>
+        <Bookmarks Count="1">
+          <Item0 Left="1" Top="1" ID="6"/>
+        </Bookmarks>
+      </Unit>
+      <Unit>
+        <Filename Value="updater.frm"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <UsageCount Value="13"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/include/customform.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="76"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/forms.pp"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2410"/>
+        <CursorPos X="59" Y="2421"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/include/control.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/controls.pp"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="Controls"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="4645"/>
+        <CursorPos Y="4668"/>
+        <UsageCount Value="12"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/include/application.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2304"/>
+        <CursorPos Y="2315"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/forms.pp"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2272"/>
+        <CursorPos Y="2285"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/interfaces/win32/win32object.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="750"/>
+        <CursorPos X="68" Y="743"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/interfaces/win32/win32int.pp"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="Win32Int"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="622"/>
+        <CursorPos Y="645"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/interfaces/win32/win32winapi.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3636"/>
+        <CursorPos Y="3649"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/components/BaseUtils/winlazutf8.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="12"/>
+        <CursorPos Y="24"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/components/BaseUtils/lazutf8.pas"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="LazUTF8"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="4001"/>
+        <CursorPos Y="4016"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/components/BaseUtils/lazfileutils.pas"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="LazFileUtils"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="554"/>
+        <CursorPos Y="574"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/interfaces/win32/win32proc.pp"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="Win32Proc"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="819"/>
+        <CursorPos Y="836"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/fpcsrc/rtl/win/wininc/defines.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <UsageCount Value="7"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/fpcsrc/rtl/win64/windows.pp"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="64"/>
+        <CursorPos X="10" Y="76"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/fpcsrc/rtl/win/wininc/func.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="173"/>
+        <CursorPos X="10" Y="185"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="backup/unit1.pas;2"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="749"/>
+        <CursorPos X="61" Y="767"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="piext.cfg"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="22" Y="6"/>
+        <UsageCount Value="11"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/include/customform.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3212"/>
+        <CursorPos Y="3228"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:/codetyphon/typhon/lcl/include/wincontrol.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="7996"/>
+        <CursorPos Y="8008"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="de.html"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="212"/>
+        <CursorPos X="7" Y="225"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="en.html"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="200"/>
+        <CursorPos X="10" Y="211"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="htmlview.pas"/>
+        <FRMtype Value="0"/>
+        <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Htmlview"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="56" Y="8"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unit2.pas"/>
+        <FRMtype Value="0"/>
+        <ComponentName Value="Form2"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Html"/>
+        <EditorIndex Value="8"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="84" Y="8"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="PiExtRestorer.ctpr"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="0"/>
+        <CursorPos X="55" Y="10"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="PiExtRestorer_de.html"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="432"/>
+        <CursorPos X="8" Y="452"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="PiExtRestorer_en.html"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <CursorPos Y="451"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit>
+    </Units>
+    <JumpHistory HistoryIndex="29">
+      <Position>
+        <Filename Value="rawimage.pas"/>
+        <Caret Line="756" Column="3" TopLine="746"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer.ppr"/>
+        <Caret Line="28" TopLine="18"/>
+      </Position>
+      <Position>
+        <Filename Value="zstd.pas"/>
+        <Caret Line="63" Column="3" TopLine="53"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer.ppr"/>
+        <Caret Line="17" Column="70" TopLine="9"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer.ppr"/>
+        <Caret Line="21" Column="98" TopLine="9"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer.ppr"/>
+        <Caret Line="19" Column="58" TopLine="6"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="180" TopLine="169"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="186" TopLine="176"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="190" TopLine="176"/>
+      </Position>
+      <Position>
+        <Filename Value="imageutils.pas"/>
+        <Caret Line="67" TopLine="52"/>
+      </Position>
+      <Position>
+        <Filename Value="imageutils.pas"/>
+        <Caret Line="836" Column="56" TopLine="822"/>
+      </Position>
+      <Position>
+        <Filename Value="imageutils.pas"/>
+        <Caret Line="7" Column="57"/>
+      </Position>
+      <Position>
+        <Filename Value="imageutils.pas"/>
+        <Caret Line="832" Column="10" TopLine="822"/>
+      </Position>
+      <Position>
+        <Filename Value="imageutils.pas"/>
+        <Caret Line="961" Column="5" TopLine="942"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="205" Column="91" TopLine="192"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="307" Column="13" TopLine="305"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="66" Column="35" TopLine="57"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="150" Column="20" TopLine="144"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="195" Column="14" TopLine="181"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="158" TopLine="148"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="194" TopLine="184"/>
+      </Position>
+      <Position>
+        <Filename Value="unit1.pas"/>
+        <Caret Line="92" Column="39" TopLine="76"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer_de.html"/>
+        <Caret Line="417" Column="52" TopLine="415"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer_de.html"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer.ppr"/>
+        <Caret Line="28" TopLine="18"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer_de.html"/>
+        <Caret Line="444" Column="12" TopLine="424"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer_de.html"/>
+        <Caret Line="442" Column="40" TopLine="428"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer_en.html"/>
+        <Caret Line="13" Column="42"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer_en.html"/>
+        <Caret Line="8" Column="23"/>
+      </Position>
+      <Position>
+        <Filename Value="PiExtRestorer_en.html"/>
+        <Caret Line="451"/>
+      </Position>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes ActiveMode="default">
+        <Mode Name="default"/>
+      </Modes>
+    </RunParams>
+    <HistoryLists>
+      <List Name="LaunchingApplication" Type="File" Count="4">
+        <Item1 Value="${CmdExe} ${TargetCmdLine}"/>
+        <Item2 Value="&quot;$(Pas2JSBrowser)&quot; &quot;$(Pas2JSProjectURL)&quot;"/>
+        <Item3 Value="$(Pas2JSBrowser) &quot;$(Pas2JSProjectURL)&quot;"/>
+        <Item4 Value="/usr/bin/xterm -T &apos;Typhon Run Output&apos; -e $(TargetCmdLine)"/>
+      </List>
+      <List Name="CommandLineParameters" Count="1">
+        <Item1 Value="--create --sourcepartition /dev/sda2 --createdestination &quot;/media/pi/hzg2/Diff_image&quot;"/>
+      </List>
+    </HistoryLists>
+  </ProjectSession>
+</CONFIG>
