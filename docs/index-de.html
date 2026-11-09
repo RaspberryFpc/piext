@@ -1,140 +1,199 @@
 <!DOCTYPE html>
-
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiExt – Raspberry-Pi-Backup für Linux und Windows</title>
 
-```
-<title>PiExt – Backup- und Wiederherstellungstool für Raspberry Pi</title>
+    <meta name="description" content="PiExt erstellt komprimierte Backups von Raspberry-Pi-Laufwerken unter Linux. Mit PiExtRestorer können diese Images auch unter Windows wiederhergestellt werden.">
+    <link rel="canonical" href="https://raspberryfpc.github.io/piext/index-de.html">
+    <link rel="alternate" hreflang="en" href="https://raspberryfpc.github.io/piext/">
+    <link rel="alternate" hreflang="de" href="https://raspberryfpc.github.io/piext/index-de.html">
+    <link rel="alternate" hreflang="x-default" href="https://raspberryfpc.github.io/piext/">
 
-<meta name="description" content="PiExt ist ein Backup- und Wiederherstellungstool für Raspberry Pi. Es erstellt und stellt vollständige Laufwerk-Backups einschließlich MBR, Boot- und EXT2-, EXT3- oder EXT4-Systempartitionen wieder her.">
-
-<link rel="canonical" href="https://raspberryfpc.github.io/piext/index-de.html">
-<link rel="alternate" hreflang="en" href="https://raspberryfpc.github.io/piext/">
-<link rel="alternate" hreflang="de" href="https://raspberryfpc.github.io/piext/index-de.html">
-<link rel="alternate" hreflang="x-default" href="https://raspberryfpc.github.io/piext/">
-
-<link rel="icon" type="image/png" href="piext.png">
-
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "PiExt",
-    "description": "Backup- und Wiederherstellungstool für Raspberry Pi Systeme. PiExt erstellt und stellt vollständige Laufwerk-Backups einschließlich MBR, Bootpartition und EXT2-, EXT3- oder EXT4-Systempartitionen wieder her.",
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "Linux",
-    "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "EUR"
+    <link rel="icon" type="image/png" href="piext.png">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PiExt und PiExtRestorer",
+        "description": "Backup- und Wiederherstellungslösung für Raspberry-Pi-Systeme. PiExt erstellt und stellt Images unter Linux wieder her. PiExtRestorer stellt PiExt-Images unter Windows wieder her.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Linux, Windows",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR"
+        }
     }
-}
-</script>
+    </script>
 
-<style>
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-        line-height: 1.6;
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 20px;
-        color: #222;
-    }
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #222;
+        }
 
-    h1, h2, h3 {
-        color: #333;
-    }
+        h1, h2, h3 {
+            color: #333;
+        }
 
-    h1 {
-        border-bottom: 2px solid #ccc;
-        padding-bottom: 10px;
-    }
+        h1 {
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
 
-    h2 {
-        margin-top: 35px;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 5px;
-    }
+        h2 {
+            margin-top: 35px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
 
-    h3 {
-        margin-top: 25px;
-    }
+        h3 {
+            margin-top: 25px;
+        }
 
-    code {
-        background: #f2f2f2;
-        padding: 2px 5px;
-        border-radius: 3px;
-    }
+        code {
+            background: #f2f2f2;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
 
-    pre {
-        background: #f2f2f2;
-        padding: 12px;
-        overflow-x: auto;
-        border-radius: 4px;
-    }
+        pre {
+            background: #f2f2f2;
+            padding: 12px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
 
-    .important {
-        background: #fff4cc;
-        border-left: 5px solid #e0b000;
-        padding: 10px 15px;
-        margin: 20px 0;
-    }
+        .important {
+            background: #fff4cc;
+            border-left: 5px solid #e0b000;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
 
-    img {
-        max-width: 100%;
-        height: auto;
-    }
+        .platforms {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin: 20px 0;
+        }
 
-    nav {
-        margin-bottom: 25px;
-    }
+        .platform {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 16px 18px;
+            background: #fafafa;
+        }
 
-    nav a {
-        margin-right: 15px;
-    }
-</style>
-```
+        .platform h3 {
+            margin-top: 0;
+        }
 
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        nav {
+            margin-bottom: 25px;
+        }
+
+        nav a {
+            margin-right: 15px;
+        }
+
+        @media (max-width: 650px) {
+            body { padding: 14px; }
+            .platforms { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 
 <body>
 
-<nav>
+<nav aria-label="Sprachauswahl">
     <a href="index.html">English</a>
 </nav>
 
 <h1>PiExt – Backup- und Wiederherstellungstool für Raspberry Pi</h1>
 
 <p>
-    <strong>PiExt</strong> ist ein Backup- und Wiederherstellungstool für
-    <strong>Raspberry Pi Systeme</strong>. Es kann vollständige Laufwerk-Backups
-    einschließlich MBR, Bootpartition und EXT2-, EXT3- oder
-    EXT4-Systempartition erstellen und wiederherstellen.
+    <strong>PiExt</strong> ist eine Backup- und Wiederherstellungslösung für
+    <strong>Raspberry-Pi-Systeme</strong>. Sie besteht aus zwei Programmen für
+    unterschiedliche Betriebssysteme:
+</p>
+
+<div class="platforms">
+    <section class="platform">
+        <h3>PiExt – Linux</h3>
+        <p>
+            PiExt erstellt komprimierte Images von Linux-
+            <strong>EXT2-, EXT3- und EXT4-Systempartitionen</strong> und stellt
+            diese wieder her. Zusätzlich werden der <strong>MBR</strong> und die
+            <strong>Bootpartition</strong> eines vollständigen Laufwerks gesichert.
+        </p>
+        <p>
+            PiExt unterstützt sowohl eine grafische Benutzeroberfläche (GUI) als
+            auch die Kommandozeile (CLI). Über die CLI ist die automatisierte
+            Image-Erstellung möglich.
+        </p>
+    </section>
+
+    <section class="platform">
+        <h3>PiExtRestorer – Windows</h3>
+        <p>
+            <strong>PiExtRestorer</strong> ist das Windows-Programm zur
+            Wiederherstellung von Images, die mit PiExt erstellt wurden.
+            MBR, Bootpartition und Systempartition können gezielt ausgewählt
+            und einzeln oder gemeinsam wiederhergestellt werden.
+        </p>
+        <p>
+            Die Image-Erstellung ist unter Windows nicht verfügbar.
+            PiExtRestorer dient ausschließlich der Wiederherstellung.
+        </p>
+    </section>
+</div>
+
+<p>
+    Beide Programme verwenden dasselbe PiExt-Imageformat und werden gemeinsam
+    in einem Release veröffentlicht.
 </p>
 
 <p>
-    PiExt kann über die <strong>grafische Benutzeroberfläche (GUI)</strong>
-    oder über die <strong>Kommandozeile (CLI)</strong> verwendet werden.
+    Für das Systemimage speichert PiExt nur die vom Dateisystem aktuell
+    verwendeten Sektoren. Die Daten werden während der Image-Erstellung mit
+    <strong>Zstandard (ZSTD)</strong> komprimiert. MBR und Bootpartition werden
+    separat gespeichert.
 </p>
 
-<p>
-    Für die Systempartition speichert PiExt nur die vom Dateisystem aktuell
-    verwendeten Sektoren. Das Image wird mit
-    <strong>Zstandard (ZSTD)</strong> komprimiert. Dadurch wird der benötigte
-    Speicherplatz für ein Backup deutlich reduziert.
-</p>
+<div class="important">
+    <strong>Unterstützte Laufwerke:</strong>
+    PiExt unterstützt ausschließlich Laufwerke mit einer
+    <strong>MBR-Partitionstabelle</strong>. GPT-partitionierte Laufwerke werden
+    nicht unterstützt.
+</div>
 
 <h2>Download und Installation</h2>
 
 <p>
-    PiExt ist über GitHub und SourceForge verfügbar.
+    Die jeweils aktuelle Version von PiExt und PiExtRestorer steht gemeinsam
+    auf GitHub zur Verfügung. Im Release sind beide Installationsdateien enthalten.
 </p>
 
+<ul>
+    <li><strong>Linux:</strong> <code>piext.deb</code> – Debian-Paket für Raspberry Pi OS und andere geeignete Debian-basierte Systeme.</li>
+    <li><strong>Windows:</strong> <code>PiExtRestorer_Setup.exe</code> – Installationsprogramm für PiExtRestorer.</li>
+</ul>
+
 <p>
-    <a href="https://github.com/RaspberryFpc/piext/releases">
-        PiExt von GitHub herunterladen
+    <a href="https://github.com/RaspberryFpc/piext/releases/latest">
+        Aktuelle Version von PiExt und PiExtRestorer auf GitHub herunterladen
     </a>
 </p>
 
@@ -144,43 +203,51 @@
     </a>
 </p>
 
+<h3>Installation unter Linux</h3>
 <p>
-    Laden Sie das Debian-Paket herunter und installieren Sie es auf Ihrem
-    Raspberry Pi. PiExt ist für Linux-Systeme auf Raspberry-Pi-Hardware
-    ausgelegt.
+    Laden Sie <code>piext.deb</code> herunter und installieren Sie das Paket
+    auf Ihrem Raspberry Pi, zum Beispiel mit:
 </p>
 
-<div class="important">
-    <strong>Wichtig:</strong>
-    PiExt muss mit Root-Rechten gestartet werden, da beim Backup und bei der
-    Wiederherstellung direkt auf Laufwerke und Partitionen zugegriffen wird.
-</div>
+<pre><code>sudo apt install ./piext.deb</code></pre>
+
+<p>
+    PiExt kann anschließend über das Anwendungsmenü oder über ein Terminal
+    gestartet werden. Für den Zugriff auf Laufwerke und Partitionen muss PiExt
+    mit Root-Rechten ausgeführt werden:
+</p>
 
 <pre><code>sudo piext</code></pre>
 
-<h2>Grafische Benutzeroberfläche</h2>
-
+<h3>Installation unter Windows</h3>
 <p>
-    Die grafische Oberfläche ermöglicht die Auswahl des Quelllaufwerks für
-    ein Backup und des Ziellaufwerks für eine Wiederherstellung.
+    Laden Sie <code>PiExtRestorer_Setup.exe</code> aus dem GitHub-Release herunter
+    und führen Sie das Installationsprogramm aus. Starten Sie PiExtRestorer
+    anschließend mit Administratorrechten, damit das Programm direkt auf
+    physische Laufwerke und Partitionen zugreifen kann.
 </p>
 
+<h2>Grafische Benutzeroberflächen</h2>
+
 <p>
-    PiExt arbeitet bei einem vollständigen Backup mit dem gesamten Laufwerk.
-    Der Benutzer muss die einzelnen Partitionen daher nicht manuell für ein
-    vollständiges Laufwerk-Backup auswählen.
+    Unter Linux bietet PiExt Funktionen zum Erstellen und Wiederherstellen
+    von Images. Unter Windows stellt PiExtRestorer die Wiederherstellungsfunktionen
+    bereit. In beiden Programmen können das Ziellaufwerk, der Image-Ordner und
+    die wiederherzustellenden Komponenten ausgewählt werden.
 </p>
 
-<img src="piext.png" alt="PiExt Backup- und Wiederherstellungstool für Raspberry Pi">
+<img src="piext.png" alt="PiExt – grafische Benutzeroberfläche unter Linux">
+
+<p>
+    Die Abbildung zeigt die Linux-Version PiExt.
+</p>
 
 <h2>Laufwerksstruktur</h2>
-
 <p>
     Ein typisches Raspberry-Pi-Systemlaufwerk enthält eine Bootpartition und
-    eine Linux-Systempartition. PiExt kann die vollständige Struktur des
-    Laufwerks einschließlich MBR, Bootpartition und Systempartition sichern.
+    eine Linux-Systempartition. PiExt sichert die Laufwerksinformationen
+    einschließlich MBR sowie Boot- und Systempartition.
 </p>
-
 <p>
     Abhängig vom verwendeten Gerät können sich die Partitionsnamen
     unterscheiden. Bei normalen Laufwerken werden beispielsweise
@@ -191,10 +258,10 @@
 </p>
 
 <h2>Backup erstellen</h2>
-
 <p>
-    Wählen Sie in PiExt das vollständige Quelllaufwerk und anschließend das
-    Verzeichnis aus, in dem die Images gespeichert werden sollen.
+    Die Image-Erstellung ist ausschließlich unter Linux mit PiExt möglich.
+    Wählen Sie das vollständige Quelllaufwerk und anschließend das Verzeichnis,
+    in dem die Images gespeichert werden sollen.
 </p>
 
 <p>
@@ -215,168 +282,167 @@
 </p>
 
 <h2>Base Image</h2>
-
 <p>
-    Das erste System-Backup in einem Image-Verzeichnis wird zum
-    <strong>Base Image</strong>.
-</p>
-
-<p>
-    Das Base Image enthält die vollständigen benötigten Dateisystemdaten,
-    die für die Wiederherstellung der Systempartition erforderlich sind.
+    Das erste System-Backup in einem Image-Verzeichnis wird automatisch zum
+    <strong>Base Image</strong>. Es enthält die vollständigen benötigten
+    Dateisystemdaten für die Wiederherstellung der Systempartition.
 </p>
 
 <h2>Differential Images</h2>
-
 <p>
-    Nachfolgende Backups können als <strong>Differential Images</strong>
-    gespeichert werden. Ein Differential Image wird direkt ausgehend vom
-    Base Image erstellt und enthält die Änderungen gegenüber diesem
-    Base Image.
+    Nachfolgende System-Backups werden als <strong>Differential Images</strong>
+    gespeichert. Ein Differential Image wird direkt auf Basis des Base Image
+    erstellt und enthält die Änderungen gegenüber diesem Base Image.
 </p>
 
 <p>
     Differential Images werden nicht miteinander verkettet. Jedes
-    Differential Image bleibt daher direkt mit dem Base Image verbunden.
+    Differential Image basiert direkt auf dem Base Image. Für die
+    Wiederherstellung eines Differential Images werden daher nur das
+    zugehörige Base Image und das ausgewählte Differential Image benötigt.
 </p>
 
 <h2>Image-Typen</h2>
-
 <p>
     PiExt verwendet für die verschiedenen Bereiche eines Laufwerks
     unterschiedliche Image-Formate:
 </p>
 
 <ul>
-    <li><strong>MBR-Image:</strong> enthält die Partitionstabelle und die Bootinformationen des Laufwerks.</li>
-    <li><strong>Boot-Image:</strong> komprimiertes Image der Bootpartition.</li>
-    <li><strong>System-Image:</strong> dateisystembezogenes komprimiertes Image einer EXT2-, EXT3- oder EXT4-Systempartition.</li>
+    <li><strong>MBR-Image:</strong> enthält den gespeicherten MBR einschließlich Partitionstabelle.</li>
+    <li><strong>Boot-Image:</strong> vollständiges, komprimiertes Image der Bootpartition.</li>
+    <li><strong>System-Image:</strong> komprimiertes, dateisystembezogenes Image einer EXT2-, EXT3- oder EXT4-Systempartition.</li>
 </ul>
 
 <p>
     System- und Boot-Images werden mit <strong>Zstandard (ZSTD)</strong>
-    komprimiert.
+    komprimiert. Das MBR-Image wird separat und unkomprimiert gespeichert.
+    Bei jeder Image-Erstellung werden das MBR- und das Boot-Image aktualisiert.
 </p>
 
 <h2>Backup wiederherstellen</h2>
-
 <p>
-    PiExt ermöglicht die unabhängige Auswahl von MBR, Bootpartition und
-    Systempartition für eine Wiederherstellung.
+    Images können sowohl unter Linux mit PiExt als auch unter Windows mit
+    PiExtRestorer wiederhergestellt werden. In beiden Programmen lassen sich
+    die folgenden Komponenten unabhängig voneinander auswählen:
 </p>
 
+<ul>
+    <li><strong>MBR</strong></li>
+    <li><strong>Bootpartition</strong></li>
+    <li><strong>Systempartition</strong></li>
+</ul>
+
 <p>
-    Dadurch kann gezielt nur der benötigte Teil eines Backups oder ein
-    vollständiges Raspberry-Pi-System wiederhergestellt werden.
+    Dadurch kann gezielt nur ein benötigter Teil des Backups oder das gesamte
+    System wiederhergestellt werden. Auch die Wiederherstellung auf ein
+    vollständig leeres Ziellaufwerk ohne vorhandene Partitionstabelle ist möglich.
 </p>
 
+<div class="important">
+    <strong>Wichtig bei der Image-Auswahl:</strong>
+    Vor jeder Wiederherstellung muss ein Base Image oder ein Differential Image
+    ausgewählt werden. Das gilt auch dann, wenn ausschließlich der MBR oder die
+    Bootpartition wiederhergestellt werden soll. Bei Auswahl eines Differential
+    Images muss außerdem das dazugehörige Base Image im selben Image-Ordner
+    vorhanden sein, wenn die Systempartition wiederhergestellt wird.
+</div>
+
+<h3>MBR wiederherstellen</h3>
 <p>
-    PiExt kann ein Image auch auf einem <strong>vollständig leeren Laufwerk</strong>
-    wiederherstellen. Das Ziellaufwerk muss vor der Wiederherstellung keine
-    vorhandenen Partitionen enthalten.
+    Bei der MBR-Wiederherstellung wird der gespeicherte erste Sektor einschließlich
+    Partitionstabelle auf das Ziellaufwerk geschrieben. Dadurch kann sich dessen
+    Partitionsstruktur ändern. Andere Partitionen und deren Daten bleiben nach
+    Möglichkeit erhalten; dies kann jedoch nicht in jedem Fall garantiert werden.
 </p>
 
+<h3>Aktive Root-Partition unter Linux</h3>
 <p>
-    Bei der Wiederherstellung des MBR wird die für das Image benötigte
-    Partitionsstruktur wiederhergestellt. Anschließend können Boot- und
-    Systemdaten auf die entsprechenden Partitionen geschrieben werden.
+    Die aktuell laufende Root-Partition kann unter Linux nicht wiederhergestellt
+    werden, während das System von genau dieser Partition ausgeführt wird. Für
+    die Wiederherstellung muss der Raspberry Pi zunächst von einem anderen
+    System oder Bootmedium gestartet werden. Alternativ kann die Wiederherstellung
+    mit PiExtRestorer unter Windows erfolgen.
 </p>
 
-<h2>Kommandozeile</h2>
-
+<h2>Kommandozeile (CLI)</h2>
 <p>
-    PiExt kann auch ohne grafische Oberfläche verwendet werden. Dies ist
-    besonders für Skripte, automatisierte Backups und Systeme ohne
-    grafische Oberfläche geeignet.
+    PiExt kann unter Linux auch ohne grafische Oberfläche verwendet werden.
+    Die Kommandozeile unterstützt die automatisierte <strong>Image-Erstellung</strong>;
+    eine Wiederherstellung über die CLI ist nicht vorgesehen.
 </p>
 
 <p>Beispiel:</p>
-
 <pre><code>sudo piext /dev/sda /backup/piext</code></pre>
 
 <p>
     Eine SD-Karte kann auf die gleiche Weise angegeben werden:
 </p>
-
 <pre><code>sudo piext /dev/mmcblk0 /backup/piext</code></pre>
 
 <p>
-    Die Kommandozeilenversion unterstützt Backup für einen unbeaufsichtigten Betrieb.
-</p>
-
-<h2>Aktive Root-Partition</h2>
-
-<p>
-    PiExt berücksichtigt das aktuell laufende System. Die aktive
-    Root-Partition wird nicht als normales Wiederherstellungsziel angeboten.
-</p>
-
-<p>
-    Dadurch wird verhindert, dass versehentlich das Dateisystem überschrieben
-    wird, von dem das laufende Betriebssystem aktuell ausgeführt wird.
+    Die Kommandozeile eignet sich insbesondere für Skripte und automatisierte
+    Backups. Die grafische Oberfläche wird dabei nicht angezeigt.
 </p>
 
 <h2>Kompatibilität</h2>
-
 <p>
-    PiExt wurde für Raspberry-Pi-Systeme unter Linux entwickelt.
-    Unterstützt werden gängige Raspberry-Pi-Speichergeräte wie SD-Karten,
-    USB-Laufwerke und NVMe-Laufwerke.
+    PiExt wurde für Raspberry-Pi-Systeme unter Linux entwickelt. Unterstützt
+    werden gängige Raspberry-Pi-Speichergeräte wie SD-Karten, USB-Laufwerke
+    und NVMe-Laufwerke, sofern sie mit einer MBR-Partitionstabelle eingerichtet
+    sind.
+</p>
+<p>
+    Für dateisystembezogene System-Backups werden EXT2, EXT3 und EXT4 unterstützt.
+    Die von PiExt erstellten Systemimages können mit PiExt unter Linux oder
+    PiExtRestorer unter Windows wiederhergestellt werden. Die komprimierten
+    <code>.zst</code>-Dateien sind keine gewöhnlichen Rohimages und können nicht
+    direkt mit Programmen wie <code>dd</code> auf eine Partition geschrieben werden.
 </p>
 
-<p>
-    Für dateisystembezogene System-Backups werden EXT2, EXT3 und EXT4
-    unterstützt.
-</p>
-
-<h2>Typischer Backup-Ablauf</h2>
-
+<h2>Typischer Backup-Ablauf unter Linux</h2>
 <ol>
     <li>PiExt mit <code>sudo</code> starten.</li>
     <li>Das vollständige Quelllaufwerk auswählen.</li>
     <li>Das Image-Verzeichnis auswählen.</li>
     <li>Das Backup erstellen.</li>
-    <li>Das erste Systemimage wird zum Base Image.</li>
-    <li>Weitere Backups können als Differential Images gespeichert werden.</li>
+    <li>Das erste Systemimage wird automatisch zum Base Image.</li>
+    <li>Weitere System-Backups werden als Differential Images gespeichert.</li>
 </ol>
 
 <h2>Typischer Wiederherstellungsablauf</h2>
-
 <ol>
-    <li>PiExt mit <code>sudo</code> starten.</li>
-    <li>Das Ziellaufwerk auswählen.</li>
-    <li>Die benötigten MBR-, Boot- und Systemimages auswählen.</li>
-    <li>Die ausgewählten Komponenten wiederherstellen.</li>
-    <li>Nach Abschluss der Wiederherstellung den Raspberry Pi neu starten.</li>
+    <li>PiExt unter Linux oder PiExtRestorer unter Windows starten (unter Windows mit Administratorrechten).</li>
+    <li>Das vollständige Ziellaufwerk auswählen.</li>
+    <li>Den Ordner mit den benötigten Images auswählen.</li>
+    <li>Ein Base Image oder Differential Image auswählen.</li>
+    <li>MBR, Bootpartition und/oder Systempartition zur Wiederherstellung auswählen.</li>
+    <li>Die Auswahl sorgfältig prüfen und die Wiederherstellung starten.</li>
 </ol>
 
 <h2>Voraussetzungen</h2>
-
 <ul>
-    <li>Raspberry-Pi-System mit Linux</li>
-    <li>Root-Rechte für den Zugriff auf Laufwerke</li>
-    <li>Speichergerät mit den Backup-Images</li>
-    <li>EXT2, EXT3 oder EXT4 für dateisystembezogene Systemimages</li>
+    <li><strong>PiExt (Linux):</strong> Raspberry-Pi-System mit Linux, EXT2/EXT3/EXT4-Systempartition und Root-Rechte für den Laufwerkszugriff.</li>
+    <li><strong>PiExtRestorer (Windows):</strong> Windows-System, Zugriff auf den Image-Ordner und Administratorrechte für den Laufwerkszugriff.</li>
+    <li>Für beide Programme: ein unterstütztes MBR-partitioniertes Laufwerk und die benötigten PiExt-Image-Dateien.</li>
 </ul>
 
 <h2>Projekt</h2>
-
 <p>
-    PiExt ist ein Open-Source-Projekt von RaspberryFpc.
+    PiExt und PiExtRestorer sind Open-Source-Programme von RaspberryFpc.
+    Quellcode, Dokumentation und aktuelle Releases finden Sie auf GitHub.
 </p>
 
 <p>
     <a href="https://github.com/RaspberryFpc/piext">
-        PiExt-Quellcode auf GitHub
+        PiExt- und PiExtRestorer-Quellcode auf GitHub
     </a>
 </p>
-
 <p>
-    <a href="https://github.com/RaspberryFpc/piext/releases">
-        PiExt-Releases
+    <a href="https://github.com/RaspberryFpc/piext/releases/latest">
+        Aktuelle Releases herunterladen
     </a>
 </p>
-
 <p>
     <a href="https://sourceforge.net/projects/piext/">
         PiExt auf SourceForge

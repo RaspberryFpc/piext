@@ -1,102 +1,121 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>PiExt – Raspberry Pi Backup and Restore Tool</title>
+    <title>PiExt – Raspberry Pi Backup and Restore Tools</title>
 
-<meta name="description" content="PiExt is a backup and restore tool for Raspberry Pi systems. It creates and restores complete drive backups including MBR, boot and EXT2, EXT3 or EXT4 system partitions.">
+    <meta name="description" content="PiExt creates and restores compressed Raspberry Pi drive images under Linux. PiExtRestorer restores these images under Windows, including the MBR, boot and EXT2, EXT3 or EXT4 system partitions.">
 
-<link rel="canonical" href="https://raspberryfpc.github.io/piext/">
-<link rel="alternate" hreflang="en" href="https://raspberryfpc.github.io/piext/">
-<link rel="alternate" hreflang="de" href="https://raspberryfpc.github.io/piext/index-de.html">
-<link rel="alternate" hreflang="x-default" href="https://raspberryfpc.github.io/piext/">
+    <link rel="canonical" href="https://raspberryfpc.github.io/piext/">
+    <link rel="alternate" hreflang="en" href="https://raspberryfpc.github.io/piext/">
+    <link rel="alternate" hreflang="de" href="https://raspberryfpc.github.io/piext/index-de.html">
+    <link rel="alternate" hreflang="x-default" href="https://raspberryfpc.github.io/piext/">
 
-<link rel="icon" type="image/png" href="piext.png">
+    <link rel="icon" type="image/png" href="piext.png">
 
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "PiExt",
-    "description": "Backup and restore tool for Raspberry Pi systems. PiExt creates and restores complete drive backups including the MBR, boot partition and EXT2, EXT3 or EXT4 system partitions.",
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "Linux",
-    "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "EUR"
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "SoftwareApplication",
+                "name": "PiExt",
+                "description": "Linux application for creating and restoring compressed Raspberry Pi drive images, including the MBR, boot partition and EXT2, EXT3 or EXT4 system partition.",
+                "applicationCategory": "UtilitiesApplication",
+                "operatingSystem": "Linux",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "EUR"
+                }
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "PiExtRestorer",
+                "description": "Windows application for restoring Raspberry Pi drive images created with PiExt. The MBR, boot partition and system partition can be selected independently.",
+                "applicationCategory": "UtilitiesApplication",
+                "operatingSystem": "Windows",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "EUR"
+                }
+            }
+        ]
     }
-}
-</script>
+    </script>
 
-<style>
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-        line-height: 1.6;
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 20px;
-        color: #222;
-    }
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #222;
+        }
 
-    h1, h2, h3 {
-        color: #333;
-    }
+        h1, h2, h3 {
+            color: #333;
+        }
 
-    h1 {
-        border-bottom: 2px solid #ccc;
-        padding-bottom: 10px;
-    }
+        h1 {
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
 
-    h2 {
-        margin-top: 35px;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 5px;
-    }
+        h2 {
+            margin-top: 35px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
 
-    h3 {
-        margin-top: 25px;
-    }
+        h3 {
+            margin-top: 25px;
+        }
 
-    code {
-        background: #f2f2f2;
-        padding: 2px 5px;
-        border-radius: 3px;
-    }
+        code {
+            background: #f2f2f2;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
 
-    pre {
-        background: #f2f2f2;
-        padding: 12px;
-        overflow-x: auto;
-        border-radius: 4px;
-    }
+        pre {
+            background: #f2f2f2;
+            padding: 12px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
 
-    .important {
-        background: #fff4cc;
-        border-left: 5px solid #e0b000;
-        padding: 10px 15px;
-        margin: 20px 0;
-    }
+        .important {
+            background: #fff4cc;
+            border-left: 5px solid #e0b000;
+            padding: 10px 15px;
+            margin: 20px 0;
+        }
 
-    img {
-        max-width: 100%;
-        height: auto;
-    }
+        .application {
+            background: #f7f7f7;
+            border-left: 4px solid #bbb;
+            padding: 12px 16px;
+            margin: 18px 0;
+        }
 
-    nav {
-        margin-bottom: 25px;
-    }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
 
-    nav a {
-        margin-right: 15px;
-    }
-</style>
-```
+        nav {
+            margin-bottom: 25px;
+        }
 
+        nav a {
+            margin-right: 15px;
+        }
+    </style>
 </head>
 
 <body>
@@ -105,36 +124,58 @@
     <a href="index-de.html">Deutsch</a>
 </nav>
 
-<h1>PiExt – Raspberry Pi Backup and Restore Tool</h1>
+<h1>PiExt – Raspberry Pi Backup and Restore Tools</h1>
 
 <p>
-    <strong>PiExt</strong> is a backup and restore tool for
-    <strong>Raspberry Pi systems</strong>. It can create and restore
-    complete drive backups including the MBR, boot partition and
-    EXT2, EXT3 or EXT4 system partitions.
+    <strong>PiExt</strong> is a backup and restore solution for
+    <strong>Raspberry Pi systems</strong>. It consists of two applications:
+    <strong>PiExt</strong> for Linux and <strong>PiExtRestorer</strong> for Windows.
+</p>
+
+<div class="application">
+    <h3>PiExt for Linux</h3>
+    <p>
+        PiExt creates and restores compressed images of complete Raspberry Pi
+        drives, including the MBR, boot partition and EXT2, EXT3 or EXT4 system
+        partition. It provides a graphical user interface (GUI) and supports
+        image creation from the command line (CLI).
+    </p>
+</div>
+
+<div class="application">
+    <h3>PiExtRestorer for Windows</h3>
+    <p>
+        PiExtRestorer restores images created with PiExt directly under Windows.
+        The MBR, boot partition and system partition can be selected independently.
+        Image creation is not available in PiExtRestorer.
+    </p>
+</div>
+
+<p>
+    For system images, PiExt stores only the sectors currently used by the
+    filesystem. The image data is compressed using <strong>Zstandard (ZSTD)</strong>,
+    reducing the amount of data that needs to be stored.
 </p>
 
 <p>
-    PiExt can be used through its <strong>graphical user interface (GUI)</strong>
-    or from the <strong>command line (CLI)</strong>.
-</p>
-
-<p>
-    For the system partition, PiExt stores only the sectors currently used
-    by the filesystem. The image is compressed using
-    <strong>Zstandard (ZSTD)</strong>, which significantly reduces the required
-    backup space.
+    Both applications use the same PiExt image format and are distributed together
+    in each release.
 </p>
 
 <h2>Download and Installation</h2>
 
 <p>
-    PiExt is available from GitHub and SourceForge.
+    Download the latest release from GitHub. Each release contains both applications:
 </p>
+
+<ul>
+    <li><strong>Linux:</strong> <code>piext.deb</code> – PiExt for Raspberry Pi OS and other Debian-based systems.</li>
+    <li><strong>Windows:</strong> <code>PiExtRestorer_Setup.exe</code> – PiExtRestorer for Windows.</li>
+</ul>
 
 <p>
     <a href="https://github.com/RaspberryFpc/piext/releases">
-        Download PiExt from GitHub
+        Download PiExt and PiExtRestorer from GitHub Releases
     </a>
 </p>
 
@@ -144,59 +185,79 @@
     </a>
 </p>
 
+<h3>Installing PiExt on Linux</h3>
+
 <p>
-    Download the Debian package and install it on your Raspberry Pi.
-    PiExt is intended for Linux systems running on Raspberry Pi hardware.
+    Download <code>piext.deb</code> and install it on your Raspberry Pi:
+</p>
+
+<pre><code>sudo apt install ./piext.deb</code></pre>
+
+<p>
+    PiExt can then be started from the desktop application menu or from a terminal.
 </p>
 
 <div class="important">
-    <strong>Important:</strong>
-    PiExt must be started with root privileges because backup and restore
-    operations directly access drives and partitions.
+    <strong>Linux – root privileges required:</strong>
+    PiExt must be started with root privileges for operations that directly access
+    drives and partitions. Start it from a terminal with:
 </div>
 
 <pre><code>sudo piext</code></pre>
 
-<h2>Graphical User Interface</h2>
+<h3>Installing PiExtRestorer on Windows</h3>
 
 <p>
-    The graphical interface allows you to select the source drive for a
-    backup and the target drive for a restore.
+    Download <code>PiExtRestorer_Setup.exe</code> from the GitHub Releases page and
+    run the installer. Start PiExtRestorer using <strong>Run as administrator</strong>
+    so that it can access physical drives and partitions.
+</p>
+
+<h2>Graphical User Interfaces</h2>
+
+<p>
+    PiExt provides a graphical interface for selecting the source drive for a backup,
+    the target drive for a restore and the folder used to store the images.
+    PiExtRestorer provides the corresponding restoration interface under Windows.
 </p>
 
 <p>
-    PiExt works with complete drives rather than requiring the user to
-    manually select individual partitions for a complete backup.
+    PiExt works with complete drives rather than requiring the user to manually
+    select individual partitions for a complete backup.
 </p>
 
-<img src="piext.png" alt="PiExt Raspberry Pi backup and restore tool">
+<img src="piext.png" alt="PiExt Linux graphical user interface">
 
-<h2>Drive Structure</h2>
+<h2>Drive Structure and Supported Partitioning</h2>
 
 <p>
-    A typical Raspberry Pi system drive contains a boot partition and a
-    Linux system partition. PiExt can back up the complete drive structure,
-    including the MBR, boot partition and system partition.
+    A typical Raspberry Pi system drive contains a boot partition and a Linux system
+    partition. PiExt stores the MBR, boot partition and system partition as separate
+    image components.
 </p>
 
 <p>
-    Depending on the device, partition names can differ. For example,
-    normal drives use names such as <code>/dev/sda1</code> and
-    <code>/dev/sda2</code>, while devices such as SD cards and NVMe drives
-    may use names such as <code>/dev/mmcblk0p1</code> or
+    Depending on the device, partition names can differ. For example, normal drives
+    use names such as <code>/dev/sda1</code> and <code>/dev/sda2</code>, while SD cards
+    and NVMe drives may use names such as <code>/dev/mmcblk0p1</code> or
     <code>/dev/nvme0n1p1</code>.
 </p>
 
-<h2>Creating a Backup</h2>
+<div class="important">
+    <strong>Partition table support:</strong>
+    PiExt and PiExtRestorer support drives using an MBR partition table.
+    GPT-partitioned drives are not supported.
+</div>
+
+<h2>Creating a Backup with PiExt</h2>
 
 <p>
-    Select the complete source drive in PiExt and specify the directory
-    where the images should be stored.
+    Select the complete source drive in PiExt and specify the directory where the
+    images should be stored. PiExt creates or updates the MBR and boot images and
+    creates a system image.
 </p>
 
-<p>
-    A complete Raspberry Pi backup consists of separate image components:
-</p>
+<p>A complete Raspberry Pi backup consists of separate image components:</p>
 
 <ul>
     <li>MBR image</li>
@@ -205,34 +266,30 @@
 </ul>
 
 <p>
-    The system image contains only the sectors currently used by the
-    filesystem. This makes the image considerably smaller than a raw image
-    of the complete partition.
+    The system image contains only the sectors currently used by the filesystem.
+    This can make it considerably smaller than a raw image of the complete partition.
 </p>
 
 <h2>Base Image</h2>
 
 <p>
     The first system backup stored in an image directory becomes the
-    <strong>Base Image</strong>.
-</p>
-
-<p>
-    The Base Image contains the complete used filesystem data required to
-    restore the system partition.
+    <strong>Base Image</strong>. It contains the used filesystem data required as
+    the starting point for restoring the system partition.
 </p>
 
 <h2>Differential Images</h2>
 
 <p>
-    Subsequent backups can be stored as <strong>Differential Images</strong>.
-    A Differential Image is created directly from the Base Image and contains
-    the differences from that Base Image.
+    Subsequent system backups can be stored as <strong>Differential Images</strong>.
+    Each Differential Image is created directly from the Base Image and contains
+    the differences relative to that Base Image.
 </p>
 
 <p>
-    Differential Images are not chained together. Each Differential Image
-    therefore remains directly associated with the Base Image.
+    Differential Images are not chained together. Each Differential Image therefore
+    remains directly associated with the Base Image and can be restored without
+    any other Differential Images.
 </p>
 
 <h2>Image Types</h2>
@@ -242,83 +299,87 @@
 </p>
 
 <ul>
-    <li><strong>MBR image:</strong> contains the drive's partition table and boot information.</li>
-    <li><strong>Boot image:</strong> compressed image of the boot partition.</li>
-    <li><strong>System image:</strong> filesystem-aware compressed image of an EXT2, EXT3 or EXT4 system partition.</li>
+    <li><strong>MBR image:</strong> contains the saved MBR and partition table.</li>
+    <li><strong>Boot image:</strong> complete compressed image of the boot partition.</li>
+    <li><strong>System image:</strong> filesystem-aware image of the used sectors of an EXT2, EXT3 or EXT4 system partition.</li>
 </ul>
 
 <p>
-    System and boot images use <strong>Zstandard (ZSTD)</strong> compression.
+    Boot and system images use <strong>Zstandard (ZSTD)</strong> compression.
+    MBR images are stored separately as <code>.img</code> files.
 </p>
 
 <h2>Restoring a Backup</h2>
 
 <p>
-    PiExt allows the MBR, boot partition and system partition to be selected
-    independently during a restore.
+    Images can be restored with PiExt under Linux or PiExtRestorer under Windows.
+    In both applications, the MBR, boot partition and system partition can be
+    selected independently. Only the selected components are restored.
 </p>
 
 <p>
-    This makes it possible to restore only the required part of a backup or
-    to restore a complete Raspberry Pi system.
+    A Base Image or Differential Image must be selected before starting a restore,
+    even when restoring only the MBR or only the boot partition.
+</p>
+
+<p>
+    When restoring a Differential Image, the corresponding Base Image must also be
+    available. The selected Differential Image is applied directly to that Base Image;
+    no other Differential Images are required.
 </p>
 
 <p>
     PiExt can also restore an image to a <strong>completely empty drive</strong>.
-    The drive does not have to contain existing partitions before the restore.
+    The target drive does not need to contain an existing partition table before
+    restoration.
 </p>
 
 <p>
-    When restoring the MBR, PiExt recreates the partition structure required
-    by the image. The boot and system data can then be restored to the
-    corresponding partitions.
+    Restoring the MBR writes the saved partition table to the target drive. This can
+    change the target drive's partition layout and may affect access to other partitions.
 </p>
 
 <h2>Command Line Interface</h2>
 
 <p>
-    PiExt can also be used without the graphical interface.
-    This is useful for scripts, automated backups and systems where a GUI
-    is not required.
+    PiExt for Linux can also be used without the graphical interface. The CLI supports
+    automated <strong>image creation</strong> and is useful for scripts and scheduled
+    backups. Image restoration is performed through the GUI.
 </p>
 
 <p>For example:</p>
 
 <pre><code>sudo piext /dev/sda /backup/piext</code></pre>
 
-<p>
-    An SD card can be specified in the same way:
-</p>
+<p>An SD card can be specified in the same way:</p>
 
 <pre><code>sudo piext /dev/mmcblk0 /backup/piext</code></pre>
-
-<p>
-    The command line interface supports backup operations.
-</p>
 
 <h2>Active Root Partition</h2>
 
 <p>
-    PiExt takes special care when the currently running system is involved.
-    The active root partition is not offered as a normal restore target.
+    Under Linux, the currently running root partition cannot be restored while the
+    system is running from that partition. To restore the active system partition,
+    boot the Raspberry Pi from another system or boot medium first.
 </p>
 
 <p>
-    This prevents accidental attempts to overwrite the filesystem from which
-    the running operating system is currently operating.
+    Alternatively, use <strong>PiExtRestorer under Windows</strong> to restore the
+    system partition without booting the Raspberry Pi from another Linux system.
 </p>
 
 <h2>Compatibility</h2>
 
 <p>
-    PiExt is designed for Raspberry Pi systems running Linux.
-    It supports common Raspberry Pi storage devices including SD cards,
-    USB drives and NVMe drives.
+    PiExt is designed for Raspberry Pi systems running Linux. It supports common
+    storage devices including SD cards, USB drives and NVMe drives, provided that
+    the drive uses an MBR partition table.
 </p>
 
 <p>
     EXT2, EXT3 and EXT4 system partitions are supported for filesystem-aware
-    system backups.
+    system backups. PiExtRestorer runs under Windows and restores images created
+    by PiExt.
 </p>
 
 <h2>Typical Backup Workflow</h2>
@@ -326,35 +387,46 @@
 <ol>
     <li>Start PiExt with <code>sudo</code>.</li>
     <li>Select the complete source drive.</li>
-    <li>Select the image directory.</li>
+    <li>Select or create the image directory.</li>
     <li>Create the backup.</li>
-    <li>The first system image becomes the Base Image.</li>
-    <li>Later backups can be stored as Differential Images.</li>
+    <li>The first system image in the directory becomes the Base Image.</li>
+    <li>Later system backups can be stored as Differential Images.</li>
 </ol>
 
 <h2>Typical Restore Workflow</h2>
 
 <ol>
-    <li>Start PiExt with <code>sudo</code>.</li>
-    <li>Select the target drive.</li>
-    <li>Select the required MBR, boot and system images.</li>
-    <li>Restore the selected components.</li>
+    <li>Start PiExt with root privileges under Linux or PiExtRestorer as administrator under Windows.</li>
+    <li>Select the complete target drive.</li>
+    <li>Select a Base Image or the required Differential Image.</li>
+    <li>Select one or more restore components: MBR, boot partition and/or system partition.</li>
+    <li>Check the selected target drive and start the restore.</li>
     <li>Reboot the Raspberry Pi after the restore is complete.</li>
 </ol>
 
 <h2>Requirements</h2>
 
+<h3>PiExt for Linux</h3>
 <ul>
     <li>Raspberry Pi system running Linux</li>
-    <li>Root privileges for drive access</li>
-    <li>Storage device containing the backup images</li>
+    <li>MBR-partitioned drive (GPT is not supported)</li>
+    <li>Root privileges for direct drive access</li>
     <li>EXT2, EXT3 or EXT4 for filesystem-aware system images</li>
+    <li>Storage device containing the backup images when restoring</li>
+</ul>
+
+<h3>PiExtRestorer for Windows</h3>
+<ul>
+    <li>Windows operating system</li>
+    <li>Administrator privileges for direct drive access</li>
+    <li>Access to the folder containing the PiExt image files</li>
+    <li>MBR-partitioned target drive (GPT is not supported)</li>
 </ul>
 
 <h2>Project</h2>
 
 <p>
-    PiExt is an open-source project developed by RaspberryFpc.
+    PiExt and PiExtRestorer are open-source tools developed by RaspberryFpc.
 </p>
 
 <p>
@@ -365,7 +437,7 @@
 
 <p>
     <a href="https://github.com/RaspberryFpc/piext/releases">
-        PiExt releases
+        PiExt and PiExtRestorer releases
     </a>
 </p>
 
