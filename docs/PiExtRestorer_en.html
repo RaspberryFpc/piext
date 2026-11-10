@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>PiExtRestorer – Help</title>
+    <style>
+        :root {
+            --bg: #f4f6fa;
+            --panel: #fff;
+            --ink: #202938;
+            --muted: #647084;
+            --line: #e3e8f0;
+            --accent: #c51f3a;
+            --accent-soft: #fff0f2;
+            --code: #172033;
+            --code-ink: #e9eef8;
+            --shadow: 0 12px 32px rgba(24,39,75,.08);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #111722;
+                --panel: #1b2533;
+                --ink: #edf2f8;
+                --muted: #aab6c6;
+                --line: #303d4e;
+                --accent: #ff7186;
+                --accent-soft: #38232c;
+                --code: #0c121c;
+                --code-ink: #e9eef8;
+                --shadow: 0 12px 32px rgba(0,0,0,.22);
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 17px/1.82 system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+            letter-spacing: .005em;
+        }
+
+        header {
+            background: linear-gradient(125deg, #19263b, #303e58 65%, #7c263d);
+            color: #fff;
+            padding: 42px 24px 38px;
+        }
+
+        .hero { max-width: 1060px; margin: auto; }
+
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            font-size: .76rem;
+            font-weight: 750;
+            opacity: .78;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            line-height: 1.1;
+            margin: .45rem 0;
+        }
+
+        .hero p {
+            max-width: 760px;
+            margin: .8rem 0 0;
+            color: #e4eaf2;
+            font-size: 1.05rem;
+        }
+
+        .layout {
+            max-width: 1160px;
+            margin: 34px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
+            gap: 28px;
+        }
+
+        nav {
+            align-self: start;
+            position: sticky;
+            top: 18px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        nav strong {
+            display: block;
+            margin: 0 0 9px;
+            font-size: .9rem;
+        }
+
+        nav a {
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            padding: 7px 9px;
+            border-radius: 7px;
+            font-size: .9rem;
+            line-height: 1.5;
+        }
+
+        nav a:hover {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        main { min-width: 0; max-width: 850px; }
+
+        .intro, .section {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 30px 34px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow);
+        }
+
+        .intro p, .section p { max-width: 72ch; }
+
+        h2 {
+            font-size: 1.58rem;
+            line-height: 1.3;
+            margin: 0 0 19px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--line);
+            letter-spacing: -.02em;
+        }
+
+        h3 {
+            font-size: 1.13rem;
+            line-height: 1.4;
+            margin: 27px 0 10px;
+            color: var(--accent);
+        }
+
+        p { margin: 13px 0; }
+
+        ul, ol {
+            padding-left: 1.55rem;
+            margin: 12px 0 18px;
+        }
+
+        li { padding: 4px 0 4px 3px; }
+        li::marker { color: var(--accent); }
+
+        .lead {
+            font-size: 1.13rem;
+            line-height: 1.8;
+            color: var(--muted);
+        }
+
+        .callout {
+            padding: 18px 20px;
+            margin: 22px 0;
+            line-height: 1.75;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            background: var(--accent-soft);
+        }
+
+        .callout strong { color: var(--accent); }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .tile {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 18px;
+            line-height: 1.65;
+        }
+
+        .tile b {
+            display: block;
+            font-size: 1.03rem;
+            margin-bottom: 7px;
+        }
+
+        .tile span {
+            color: var(--muted);
+            font-size: .98rem;
+            line-height: 1.65;
+        }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: .9em;
+            background: var(--accent-soft);
+            padding: .12em .35em;
+            border-radius: 5px;
+        }
+
+        pre {
+            overflow: auto;
+            background: var(--code);
+            color: var(--code-ink);
+            padding: 18px 21px;
+            margin: 14px 0 18px;
+            font-size: .98rem;
+            line-height: 1.7;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 11px;
+        }
+
+        pre code { background: none; padding: 0; color: inherit; }
+
+        footer {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 4px 20px 35px;
+            color: var(--muted);
+            font-size: .88rem;
+        }
+
+        section[id] { scroll-margin-top: 20px; }
+
+        @media (max-width: 800px) {
+            body { font-size: 16px; line-height: 1.75; }
+            .layout {
+                display: block;
+                margin-top: 20px;
+                gap: 18px;
+            }
+            nav { position: static; margin-bottom: 18px; }
+            nav a { display: inline-block; margin: 2px 4px 2px 0; }
+            .intro, .section {
+                padding: 23px 22px;
+                margin-bottom: 17px;
+            }
+            h2 { font-size: 1.4rem; }
+            h3 { margin-top: 23px; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="hero">
+        <div class="eyebrow">Raspberry Pi · Image Restoration</div>
+        <h1>PiExtRestorer – Help</h1>
+        <p>
+            Restore Raspberry Pi drives under Windows.
+            Selectively restore the MBR, boot partition and Linux system partition.
+        </p>
+    </div>
+</header>
+
+<div class="layout">
+    <nav aria-label="Table of contents">
+        <strong>Contents</strong>
+        <a href="#overview">Overview</a>
+        <a href="#components">Restorable components</a>
+        <a href="#requirements">Requirements</a>
+        <a href="#restore">Restoration</a>
+        <a href="#base">Base image</a>
+        <a href="#differential">Differential image</a>
+        <a href="#mbr">About the MBR</a>
+        <a href="#notes">Important notes</a>
+    </nav>
+
+    <main>
+        <section class="intro" id="overview">
+            <h2>Overview</h2>
+            <p class="lead">
+                PiExtRestorer is the Windows tool for restoring Raspberry Pi images
+                created with PiExt.
+            </p>
+            <p>
+                The application restores selected components of a physical target drive.
+                The MBR, boot partition and Linux system partition can be selected
+                independently.
+            </p>
+            <div class="callout">
+                <strong>Administrator privileges required:</strong>
+                Start PiExtRestorer using <em>Run as administrator</em>.
+                This is required for the program to access physical drives and partitions
+                directly.
+            </div>
+        </section>
+
+        <section class="section" id="components">
+            <h2>Restorable components</h2>
+            <div class="grid">
+                <div class="tile">
+                    <b>MBR</b>
+                    <span>
+                        The first sector of the drive, containing the MBR boot code
+                        and partition table.
+                    </span>
+                </div>
+                <div class="tile">
+                    <b>Boot partition</b>
+                    <span>
+                        The complete Raspberry Pi boot partition.
+                    </span>
+                </div>
+                <div class="tile">
+                    <b>System partition</b>
+                    <span>
+                        The EXT-based Linux system partition. To restore it, PiExtRestorer
+                        uses either the base image or the combination of the base image
+                        and the selected differential image.
+                    </span>
+                </div>
+                <div class="tile">
+                    <b>Other partitions</b>
+                    <span>
+                        Other partitions are not part of the restoration scope.
+                        PiExtRestorer will avoid modifying their data wherever possible.
+                        However, their preservation cannot be guaranteed in every case.
+                    </span>
+                </div>
+            </div>
+            <p>The expected Raspberry Pi partition layout is:</p>
+            <ol>
+                <li>Partition 1: Boot partition</li>
+                <li>Partition 2: System partition</li>
+            </ol>
+        </section>
+
+        <section class="section" id="requirements">
+            <h2>Requirements</h2>
+            <ul>
+                <li>A Windows system running PiExtRestorer.</li>
+                <li>PiExtRestorer must be run with administrator privileges.</li>
+                <li>A physical target drive with sufficient capacity.</li>
+                <li>The required base image and, if applicable, its corresponding differential image.</li>
+                <li>The MBR image and/or boot image, if these components are to be restored.</li>
+            </ul>
+            <div class="callout">
+                <strong>Important:</strong>
+                A base image or a differential image must be selected before every
+                restoration. This also applies if only the MBR or only the boot
+                partition is to be restored.
+            </div>
+        </section>
+
+        <section class="section" id="restore">
+            <h2>Performing a restoration</h2>
+            <ol>
+                <li>Start PiExtRestorer with administrator privileges.</li>
+                <li>Select the physical target drive.</li>
+                <li>Select the required base image or differential image.</li>
+                <li>
+                    Select the components you want to restore:
+                    the MBR, boot partition and/or system partition.
+                </li>
+                <li>Check your selections and start the restoration.</li>
+            </ol>
+            <p>
+                Only the selected components are written.
+                Components that are not selected are not restored during this operation.
+            </p>
+            <div class="callout">
+                <strong>Please check carefully:</strong>
+                Before starting, check the selected target drive carefully.
+                The restoration overwrites the data belonging to each selected
+                component on that drive.
+            </div>
+        </section>
+
+        <section class="section" id="base">
+            <h2>Restoring a base image</h2>
+            <p>
+                Select the required base image. If the system partition is to be
+                restored, PiExtRestorer uses this image as the complete source image
+                for the system partition.
+            </p>
+            <p>
+                The MBR image and boot image are only required if the corresponding
+                component has also been selected for restoration.
+            </p>
+        </section>
+
+        <section class="section" id="differential">
+            <h2>Restoring a differential image</h2>
+            <p>
+                Select the required differential image.
+            </p>
+            <p>
+                To restore the system partition, both the original base image and the
+                selected differential image are required. The differential image
+                contains the changes relative to the base image. During restoration,
+                the base image is applied first, followed by the selected differential
+                image.
+            </p>
+            <p>
+                No additional differential images are required. Each differential
+                image refers directly to the base image, not to a previous
+                differential image.
+            </p>
+            <p>
+                To restore the MBR or boot partition, the corresponding current image
+                files are only required if those components have been selected.
+            </p>
+        </section>
+
+        <section class="section" id="mbr">
+            <h2>About the MBR</h2>
+            <p>
+                When restoring the MBR, the entire stored first sector, including
+                the MBR boot code and partition table, is written to the target drive.
+                This can change the target drive's partition layout. Existing
+                partitions and their data may become inaccessible as a result.
+            </p>
+        </section>
+
+        <section class="section" id="notes">
+            <h2>Important notes</h2>
+            <ul>
+                <li>Carefully check the selected target drive before every operation.</li>
+                <li>The restoration overwrites the data belonging to each selected component.</li>
+                <li>Other partitions are not part of the restoration scope. Their data will be left untouched wherever possible, but their preservation cannot be guaranteed in every case.</li>
+                <li>The corresponding base image must be available when using a differential image.</li>
+                <li>A base image or differential image must also be selected when restoring only the MBR or boot partition.</li>
+                <li>When restoring the MBR, the entire stored first sector, including the partition table, is written. This may make other partitions inaccessible.</li>
+            </ul>
+            <div class="callout">
+                <strong>Recommendation:</strong>
+                Keep an additional copy of your image files on an NTFS- or
+                exFAT-formatted drive. This keeps the backups accessible both under
+                Windows with PiExtRestorer and under Linux with PiExt, even if the
+                original drive is damaged.
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer>
+    PiExtRestorer · Help · English version
+</footer>
+</body>
+</html>
+
